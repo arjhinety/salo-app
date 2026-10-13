@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Animated, Easing, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import Svg, { Line, Path } from 'react-native-svg';
-import { barLabel, clock24, type TapeLine, type TentativeBar } from '../live/tape';
+import { barLabel, clock24, type TapeLine, type TapeRow, type TentativeBar } from '../live/tape';
 import { useTheme } from '../theme/theme';
 import { SPACE, TYPE } from '../theme/tokens';
 
@@ -10,9 +10,6 @@ export const MINUTE_DP = 44;
 const BAR_H = 14;
 const TEAR_H = 10;
 const TEAR_STEP = 10;
-
-/** One printed row: a tape line, or a TENTATIVE bar that hangs under the line it started from. */
-export type TapeRow = { key: string; kind: 'line'; line: TapeLine } | { key: string; kind: 'bar'; bar: TentativeBar };
 
 /** The receipt tape: off-white paper with a torn top edge, the lot's header on top, the lines below, newest last. */
 export function ReceiptTape({
@@ -65,7 +62,11 @@ export function ReceiptTape({
             }}
           >
             {rows.map((r) =>
-              r.kind === 'line' ? <LineRow key={r.key} line={r.line} /> : <BarRow key={r.key} bar={r.bar} />,
+              r.kind === 'line' ? (
+                <LineRow key={r.key} line={r.line} strikeMinutes={r.strikeMinutes} />
+              ) : (
+                <BarRow key={r.key} bar={r.bar} />
+              ),
             )}
           </ScrollView>
         )}
@@ -96,8 +97,12 @@ function TornEdge({ width, color }: { width: number; color: string }) {
   );
 }
 
-/** One line of the tape. The whole line is one Text, so a screen reader reads the full sentence. */
-function LineRow({ line }: { line: TapeLine }) {
+/**
+ * One line of the tape. The whole line is one Text, so a screen reader reads the full sentence. A FAILURE that struck
+ * a wait carries the struck bar's copy under its text: same struck style, same length, hidden from TalkBack because the
+ * bar's label is already read on its TENTATIVE line.
+ */
+function LineRow({ line, strikeMinutes }: { line: TapeLine; strikeMinutes: number | null }) {
   const { c } = useTheme();
   return (
     <View style={styles.lineWrap}>
@@ -109,6 +114,33 @@ function LineRow({ line }: { line: TapeLine }) {
           {`  ${line.who}${line.detail ? ` · ${line.detail}` : ''}`}
         </Text>
       </Text>
+      {strikeMinutes !== null ? (
+        <View style={styles.strikeCopy} importantForAccessibility="no" accessibilityElementsHidden>
+          <BarGlyph target={strikeMinutes * MINUTE_DP} struck width={strikeMinutes * MINUTE_DP} />
+        </View>
+      ) : null}
+    </View>
+  );
+}
+
+/**
+ * The lime bar and its marker-red strike, drawn at `target` dp wide. `width` is the lime fill: the full length, or the
+ * animated value while an open bar grows.
+ */
+function BarGlyph({ target, struck, width }: { target: number; struck: boolean; width: number | Animated.Value }) {
+  const { c } = useTheme();
+  return (
+    <View style={{ width: target, height: BAR_H }}>
+      <Animated.View
+        importantForAccessibility="no"
+        accessibilityElementsHidden
+        style={[styles.bar, { width, backgroundColor: c.lime, borderColor: c.onTape }]}
+      />
+      {struck ? (
+        <Svg width={target} height={BAR_H} style={StyleSheet.absoluteFill} importantForAccessibility="no" accessibilityElementsHidden>
+          <Line x1={-2} y1={BAR_H + 2} x2={target + 2} y2={-2} stroke={c.onKraftAlert} strokeWidth={3} strokeLinecap="round" />
+        </Svg>
+      ) : null}
     </View>
   );
 }
@@ -138,18 +170,7 @@ function BarRow({ bar }: { bar: TentativeBar }) {
   const struck = bar.status === 'struck';
   return (
     <View style={styles.barWrap}>
-      <View style={{ width: target, height: BAR_H }}>
-        <Animated.View
-          importantForAccessibility="no"
-          accessibilityElementsHidden
-          style={[styles.bar, { width: reduceMotion ? target : grown, backgroundColor: c.lime, borderColor: c.onTape }]}
-        />
-        {struck ? (
-          <Svg width={target} height={BAR_H} style={StyleSheet.absoluteFill} importantForAccessibility="no" accessibilityElementsHidden>
-            <Line x1={-2} y1={BAR_H + 2} x2={target + 2} y2={-2} stroke={c.onKraftAlert} strokeWidth={3} strokeLinecap="round" />
-          </Svg>
-        ) : null}
-      </View>
+      <BarGlyph target={target} struck={struck} width={reduceMotion ? target : grown} />
       <Text style={[TYPE.tapeType, styles.barLabel, { color: struck ? c.onKraftAlert : c.onTape }]} accessibilityRole="text">
         {barLabel(bar)}
       </Text>
@@ -166,6 +187,7 @@ const styles = StyleSheet.create({
   empty: { flex: 1, justifyContent: 'center', paddingVertical: SPACE.xl },
   lineWrap: { paddingVertical: 6, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: 'rgba(22, 22, 22, 0.18)' },
   barWrap: { paddingVertical: SPACE.s, paddingLeft: SPACE.xs, gap: 4 },
+  strikeCopy: { paddingTop: 4, paddingBottom: 2 },
   bar: { position: 'absolute', left: 0, top: 0, height: BAR_H, borderWidth: 1.5, borderRadius: 2 },
   barLabel: { lineHeight: 20 },
 });

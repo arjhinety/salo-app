@@ -29,9 +29,20 @@ export interface TentativeBar {
   endMinute: Minute;
   /** open: still waiting at the clock. committed: capped at COMMIT. struck: a FAILURE ended this driver. */
   status: 'open' | 'committed' | 'struck';
+  /** seq of the FAILURE that struck the bar, or null while the bar is open or only committed. */
+  struckBySeq: number | null;
   /** Whole simulated minutes waited. */
   minutes: number;
 }
+
+/**
+ * One row of a lot's tape, in print order. A line row is a printed message; when it is a FAILURE that struck a wait,
+ * `strikeMinutes` is that bar's length, drawn again on the FAILURE line. A bar row is a TENTATIVE wait hanging under
+ * the line it started from.
+ */
+export type TapeRow =
+  | { key: string; kind: 'line'; line: TapeLine; strikeMinutes: number | null }
+  | { key: string; kind: 'bar'; bar: TentativeBar };
 
 export interface NameLookup {
   donor(id: string): string;
@@ -202,25 +213,47 @@ export function tentativeBars(
     if (m.type === 'TENTATIVE_ACCEPT') {
       open = { startSeq: seq, startMinute: m.atMinute };
     } else if (m.type === 'COMMIT' && open) {
-      bars.push({ ...open, endMinute: m.atMinute, status: 'committed', minutes: Math.max(0, m.atMinute - open.startMinute) });
+      bars.push({ ...open, endMinute: m.atMinute, status: 'committed', struckBySeq: null, minutes: Math.max(0, m.atMinute - open.startMinute) });
       lastCommitted = bars.length - 1;
       open = null;
     } else if (m.type === 'FAILURE' && open) {
-      bars.push({ ...open, endMinute: m.atMinute, status: 'struck', minutes: Math.max(0, m.atMinute - open.startMinute) });
+      bars.push({ ...open, endMinute: m.atMinute, status: 'struck', struckBySeq: seq, minutes: Math.max(0, m.atMinute - open.startMinute) });
       open = { startSeq: seq, startMinute: m.atMinute };
       lastCommitted = null;
     } else if (m.type === 'FAILURE' && lastCommitted !== null) {
       // The committed driver failed: the bar keeps its length (the minutes it waited) and is struck in marker red.
-      bars[lastCommitted] = { ...bars[lastCommitted], status: 'struck' };
+      bars[lastCommitted] = { ...bars[lastCommitted], status: 'struck', struckBySeq: seq };
       lastCommitted = null;
     }
   }
   // A re-announcement that never found a driver leaves the lot stranded, so its waiting bar is dropped.
   if (open !== null && state === 'tentative') {
     const o: { startSeq: number; startMinute: Minute } = open;
-    bars.push({ ...o, endMinute: clock, status: 'open', minutes: Math.max(0, clock - o.startMinute) });
+    bars.push({ ...o, endMinute: clock, status: 'open', struckBySeq: null, minutes: Math.max(0, clock - o.startMinute) });
   }
   return bars;
+}
+
+/**
+ * The rows of one lot's tape, in print order: each line, then the TENTATIVE bars that hang under it. A FAILURE line
+ * that struck a wait also carries that bar's length (`strikeMinutes`), so the struck copy sits on the FAILURE line.
+ * The original bar stays under its TENTATIVE line. `state` and `clock` are as for tentativeBars.
+ */
+export function tapeRows(
+  log: readonly LogEntry[],
+  lotId: LotId,
+  state: AwardState | undefined,
+  clock: Minute,
+  names: NameLookup = WORLD_NAMES,
+): TapeRow[] {
+  const bars = tentativeBars(log, lotId, state, clock);
+  const rows: TapeRow[] = [];
+  for (const line of tapeLines(log, lotId, names)) {
+    const struck = bars.find((b) => b.struckBySeq === line.seq) ?? null;
+    rows.push({ key: `l${line.seq}`, kind: 'line', line, strikeMinutes: struck ? struck.minutes : null });
+    for (const bar of bars) if (bar.startSeq === line.seq) rows.push({ key: `b${bar.startSeq}`, kind: 'bar', bar });
+  }
+  return rows;
 }
 
 /** The label printed on a bar. */

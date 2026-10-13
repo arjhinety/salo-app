@@ -4,12 +4,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EveningRuler } from '../../components/EveningRuler';
 import { LotStrip, type StripState } from '../../components/LotStrip';
 import { PolicySheet } from '../../components/PolicySheet';
-import { ReceiptTape, type TapeRow } from '../../components/ReceiptTape';
+import { ReceiptTape } from '../../components/ReceiptTape';
 import { SimControl } from '../../components/SimControl';
 import { TarpBar } from '../../components/TarpBar';
 import type { LotId, PolicyId } from '../../engine/types';
 import { dash } from '../../i18n/strings';
-import { cancelledAtMinute, clock24, lotsWithBids, stripState, tapeLines, tentativeBars, WORLD_NAMES } from '../../live/tape';
+import { cancelledAtMinute, clock24, lotsWithBids, stripState, tapeRows, type TapeRow, WORLD_NAMES } from '../../live/tape';
 import { liveEvening, useLiveSnapshot } from '../../live/useLive';
 import { useTheme } from '../../theme/theme';
 import { SPACE, TYPE } from '../../theme/tokens';
@@ -41,18 +41,11 @@ export default function Dashboard() {
   const selected = posted.find((l) => l.id === selectedId) ?? null;
   const selState = selectedId ? liveEvening.stateOf(selectedId) : undefined;
   const bidLots = lotsWithBids(log);
-  const bars = selectedId ? tentativeBars(log, selectedId, selState, sim.minute) : [];
   // The status line is the cancel's own event: it shows only while the clock is at or after that cancel, so a rewind
   // or a seek before it clears it without any extra state.
   const cancelMinute = selectedId ? cancelledAtMinute(liveEvening.inputLog(), selectedId, sim.minute) : null;
   const status = refusal ?? (cancelMinute !== null ? dash.cancelledStatus(clock24(cancelMinute)) : null);
-  const rows: TapeRow[] = [];
-  if (selectedId) {
-    for (const line of tapeLines(log, selectedId)) {
-      rows.push({ key: `l${line.seq}`, kind: 'line', line });
-      for (const bar of bars) if (bar.startSeq === line.seq) rows.push({ key: `b${bar.startSeq}`, kind: 'bar', bar });
-    }
-  }
+  const rows: TapeRow[] = selectedId ? tapeRows(log, selectedId, selState, sim.minute) : [];
   const canCancel = selState === 'final';
   const stripStateOf = (id: LotId): StripState => stripState(liveEvening.stateOf(id), bidLots.has(id));
 

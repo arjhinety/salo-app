@@ -7,9 +7,11 @@ import {
   pantryBidDetail,
   stripState,
   tapeLines,
+  tapeRows,
   tentativeBars,
   tentativeDetail,
   type NameLookup,
+  type TapeRow,
 } from '../tape';
 import { dash } from '../../i18n/strings';
 
@@ -80,7 +82,7 @@ describe('tentativeBars', () => {
   test('an open wait counts whole minutes from TENTATIVE_ACCEPT to the clock', () => {
     const log = logOf([[1100, msg({ type: 'TENTATIVE_ACCEPT', lotId: LOT, atMinute: 1100, donorId: 'D01', pantryId: 'P01', shares: 2 })]]);
     const bars = tentativeBars(log, LOT, 'tentative', 1103);
-    expect(bars).toEqual([{ startSeq: 1, startMinute: 1100, endMinute: 1103, status: 'open', minutes: 3 }]);
+    expect(bars).toEqual([{ startSeq: 1, startMinute: 1100, endMinute: 1103, status: 'open', struckBySeq: null, minutes: 3 }]);
     expect(barLabel(bars[0])).toBe('TENTATIVE · held until a driver commits · 3 min');
   });
 
@@ -90,7 +92,7 @@ describe('tentativeBars', () => {
       [1102, msg({ type: 'COMMIT', lotId: LOT, atMinute: 1102, driverId: 'V01', pantryId: 'P01', etaMinute: 1115 })],
     ]);
     const bars = tentativeBars(log, LOT, 'final', 1130);
-    expect(bars).toEqual([{ startSeq: 1, startMinute: 1100, endMinute: 1102, status: 'committed', minutes: 2 }]);
+    expect(bars).toEqual([{ startSeq: 1, startMinute: 1100, endMinute: 1102, status: 'committed', struckBySeq: null, minutes: 2 }]);
     expect(barLabel(bars[0])).toBe('held 2 min · driver committed');
   });
 
@@ -103,8 +105,8 @@ describe('tentativeBars', () => {
     // at the clock 1106 the lot is FINAL again: the struck bar is 4 min, the re-announced bar is 1 min and capped
     const bars = tentativeBars(log, LOT, 'final', 1106);
     expect(bars).toEqual([
-      { startSeq: 1, startMinute: 1100, endMinute: 1104, status: 'struck', minutes: 4 },
-      { startSeq: 2, startMinute: 1104, endMinute: 1105, status: 'committed', minutes: 1 },
+      { startSeq: 1, startMinute: 1100, endMinute: 1104, status: 'struck', struckBySeq: 2, minutes: 4 },
+      { startSeq: 2, startMinute: 1104, endMinute: 1105, status: 'committed', struckBySeq: null, minutes: 1 },
     ]);
     expect(barLabel(bars[0])).toBe('held 4 min · driver failed');
   });
@@ -253,5 +255,54 @@ describe('cancel status is tied to the clock', () => {
     expect(cancelledAtMinute(inputs, 'L0300', 1205)).toBeNull();
     expect(cancelledAtMinute(inputs, 'L0300', 1215)).toBe(1210);
     expect(cancelledAtMinute(inputs, LOT, 1300)).toBe(1230);
+  });
+});
+
+describe('tapeRows: the FAILURE line carries the struck bar length', () => {
+  /** One row as a short string: a line with its strike length, or a bar with its status and minutes. */
+  const describeRow = (r: TapeRow): string =>
+    r.kind === 'line' ? `${r.line.type}${r.strikeMinutes !== null ? ` strike ${r.strikeMinutes}` : ''}` : `bar ${r.bar.status} ${r.bar.minutes}`;
+
+  test('a FAILURE after a TENTATIVE wait carries that wait: 1104 - 1100 = 4 min, and the original bar stays struck', () => {
+    const log = logOf([
+      [1100, msg({ type: 'TENTATIVE_ACCEPT', lotId: LOT, atMinute: 1100, donorId: 'D01', pantryId: 'P01', shares: 2 })],
+      [1104, msg({ type: 'FAILURE', lotId: LOT, atMinute: 1104, driverId: 'V01', reason: 'no_show' })],
+      [1105, msg({ type: 'COMMIT', lotId: LOT, atMinute: 1105, driverId: 'V02', pantryId: 'P01', etaMinute: 1120 })],
+    ]);
+    const rows = tapeRows(log, LOT, 'final', 1106, NAMES);
+    // The original bar hangs under its TENTATIVE line; the copy sits on the FAILURE line; the re-announced bar follows it.
+    expect(rows.map(describeRow)).toEqual(['TENTATIVE', 'bar struck 4', 'FAILURE strike 4', 'bar committed 1', 'COMMIT']);
+  });
+
+  test('a FAILURE after a COMMIT carries the committed bar it struck, in place (1103 - 1100 = 3 min)', () => {
+    const log = logOf([
+      [1100, msg({ type: 'TENTATIVE_ACCEPT', lotId: LOT, atMinute: 1100, donorId: 'D01', pantryId: 'P01', shares: 2 })],
+      [1103, msg({ type: 'COMMIT', lotId: LOT, atMinute: 1103, driverId: 'V01', pantryId: 'P01', etaMinute: 1115 })],
+      [1106, msg({ type: 'FAILURE', lotId: LOT, atMinute: 1106, driverId: 'V01', reason: 'cancelled_by_operator' })],
+      [1107, msg({ type: 'TENTATIVE_ACCEPT', lotId: LOT, atMinute: 1107, donorId: 'D01', pantryId: 'P02', shares: 1 })],
+    ]);
+    const rows = tapeRows(log, LOT, 'tentative', 1108, NAMES);
+    expect(rows.map(describeRow)).toEqual(['TENTATIVE', 'bar struck 3', 'COMMIT', 'FAILURE strike 3', 'TENTATIVE', 'bar open 1']);
+  });
+
+  test('a stranded lot still shows the struck copy on its FAILURE line, and no re-announced bar', () => {
+    const log = logOf([
+      [1100, msg({ type: 'TENTATIVE_ACCEPT', lotId: LOT, atMinute: 1100, donorId: 'D01', pantryId: 'P01', shares: 2 })],
+      [1103, msg({ type: 'FAILURE', lotId: LOT, atMinute: 1103, driverId: 'V01', reason: 'no_show' })],
+    ]);
+    expect(tapeRows(log, LOT, 'stranded', 1110, NAMES).map(describeRow)).toEqual(['TENTATIVE', 'bar struck 3', 'FAILURE strike 3']);
+  });
+
+  test('a FAILURE with no wait before it carries no strike', () => {
+    const log = logOf([[1100, msg({ type: 'FAILURE', lotId: LOT, atMinute: 1100, driverId: 'V01', reason: 'no_show' })]]);
+    expect(tapeRows(log, LOT, 'unawarded', 1105, NAMES).map(describeRow)).toEqual(['FAILURE']);
+  });
+
+  test('no other line carries a strike: a COMMIT or TENTATIVE line of a clean wait does not', () => {
+    const log = logOf([
+      [1100, msg({ type: 'TENTATIVE_ACCEPT', lotId: LOT, atMinute: 1100, donorId: 'D01', pantryId: 'P01', shares: 2 })],
+      [1102, msg({ type: 'COMMIT', lotId: LOT, atMinute: 1102, driverId: 'V01', pantryId: 'P01', etaMinute: 1115 })],
+    ]);
+    expect(tapeRows(log, LOT, 'final', 1130, NAMES).map(describeRow)).toEqual(['TENTATIVE', 'bar committed 2', 'COMMIT']);
   });
 });

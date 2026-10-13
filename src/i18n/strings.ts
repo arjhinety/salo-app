@@ -31,13 +31,13 @@ export const S = {
   tagWho: {
     bids: (n: number) => `${n} pantry ang nag-bid.`,
     tentative: (pantry: string) => `Para sa ${pantry} muna ang pagkain hanggang may driver na mag-confirm.`,
-    final: (pantry: string, driver: string, eta: string) => `Para sa ${pantry} ang pagkain. Si ${driver} ang driver at darating bandang ${eta}.`,
+    final: (pantry: string, driver: string, eta: string) => `Para sa ${pantry} ang pagkain. Si ${driver} ang maghahatid; darating bandang ${eta}.`,
     delivered: (pantry: string, driver: string) => `Naihatid sa ${pantry} ni ${driver}.`,
   },
   /** Donor-screen simulation control labels (the dashboard uses `dash` instead). */
   simDonor: {
     finished: 'Tapos na ang simulasyon.',
-    pause: 'I-pause ang simulasyon. Pause the simulation.',
+    pause: 'I-pause ang simulasyon.',
     play: 'Ituloy ang simulasyon. Play the simulation.',
   },
   slots: {
@@ -53,7 +53,7 @@ export const S = {
     final: { fil: 'May driver na', en: 'Driver committed', sticker: 'FINAL' },
     delivered: { fil: 'Naihatid', en: 'Delivered', sticker: 'NAIHATID' },
     stranded: { fil: 'Hindi naihatid', en: 'Not delivered', sticker: 'DI NAIHATID' },
-    unawarded: { fil: 'Walang pantry na tumanggap', en: 'No pantry took it', sticker: 'WALANG PANTRY' },
+    unawarded: { fil: 'Walang pantry ang tumanggap', en: 'No pantry accepted it', sticker: 'WALANG TUMANGGAP' },
   },
   journey: ['Nai-post', 'May bid', 'Tentative', 'May driver', 'Naihatid'] as const,
   heldUntilDriver: { fil: 'Hawak muna hanggang may driver na mag-confirm.', en: 'Held until a driver commits.' },
