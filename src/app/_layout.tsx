@@ -1,5 +1,40 @@
-import { Stack } from "expo-router";
+import { Archivo_400Regular, Archivo_600SemiBold, Archivo_700Bold } from '@expo-google-fonts/archivo';
+import { ArchivoNarrow_500Medium, ArchivoNarrow_600SemiBold } from '@expo-google-fonts/archivo-narrow';
+import { PermanentMarker_400Regular } from '@expo-google-fonts/permanent-marker';
+import { useFonts } from 'expo-font';
+import { Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
+import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { ThemeProvider, useTheme } from '../theme/theme';
+
+SplashScreen.preventAutoHideAsync();
+
+function Shell() {
+  const { c } = useTheme();
+  return (
+    <>
+      <StatusBar style="light" />
+      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: c.ground }, animation: 'fade' }} />
+    </>
+  );
+}
 
 export default function RootLayout() {
-  return <Stack />;
+  const [loaded] = useFonts({
+    Archivo_400Regular, Archivo_600SemiBold, Archivo_700Bold,
+    ArchivoNarrow_500Medium, ArchivoNarrow_600SemiBold, PermanentMarker_400Regular,
+  });
+  useEffect(() => {
+    if (loaded) SplashScreen.hideAsync();
+  }, [loaded]);
+  if (!loaded) return null;
+  return (
+    <SafeAreaProvider>
+      <ThemeProvider>
+        <Shell />
+      </ThemeProvider>
+    </SafeAreaProvider>
+  );
 }
