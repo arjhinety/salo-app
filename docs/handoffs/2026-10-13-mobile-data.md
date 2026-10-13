@@ -144,3 +144,15 @@ The driver-rule block now reads "On E01-E10 under Salo (537 driver rounds)" (was
 - The rounding-caveat counts (68/384 of 545) are stale: they come from the pre-delay engine, and the snapshot's round count is now 537. They should be re-counted before anyone quotes them as current. Re-counting was out of scope here.
 - The delay range (1-3 minutes, uniform) is an assumption (decisions.md). Tuning on E01-E10 should be rerun once the frozen parameters exist, since the delay changes event order.
 - Only the tuning evenings were run. Pilot and main_sample evenings are untouched.
+
+## Re-measure of D-Q1 evidence with the reply delay (follow-up)
+
+Date: 2026-10-13. Tuning E01-E10 only, UNTUNED parameters, delay on (default 3). The D-Q1 rule is unchanged. Nothing committed.
+
+- Method check: a temporary copy of `simulate.ts` that records exact (unrounded) arrivals was run against the real engine on 80 pairs (10 evenings x 4 policies x 2 driver rules): logs, results and driver-rule stats identical. At delay 0 the procedure reproduced every pre-delay figure (545 rounds; 239 / 68 / 384 ties; -4.91 [-9.51, -0.19], +0.20 [-0.40, +0.70], -1.30 [-3.50, +1.20]).
+- Exact-tie definition: unrounded arrivals within 1e-9 minute. Bitwise equality gives 65 at delay 0, not 68, so the tolerance is needed to reproduce the pre-delay figure.
+- With delay: 537 rounds; rounded ties 239 (44.5%); exact ties 72 (13.4%); within 1-minute band 380 (70.8%).
+- Paired most reliable minus earliest ETA, delay on: food -5.75 [-10.38, -1.46] (still entirely below zero); stranded +0.50 [0.00, +1.00]; driver failures -1.30 [-3.80, +1.30].
+- Written: `docs/decisions.md` (caveat labelled pre-delay, new sub-section), `src/engine/__tests__/report.test.ts` (caveat text), `docs/reports/m1-tuning-snapshot.md` (regenerated).
+- Temporary files (`zz_exactsim.ts`, `zz_dq1.test.ts`, the JSON in TEMP) deleted. `src/engine` has only the requested caveat change in `report.test.ts`.
+- Open risk: stranded interval now touches zero at its lower end; more evenings would settle it.

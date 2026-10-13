@@ -17,7 +17,7 @@ On E01-E10 under Salo (537 driver rounds):
 - Earliest-ETA rule: reliability broke an ETA tie in 239 rounds (44.5%). Counted on arrivals rounded to whole minutes (see the caveat below).
 - The most-reliable rule would have picked a different driver in 506 rounds (94.2%).
 
-**Rounding caveat:** arrivals are rounded up to whole minutes, so most of these ties are rounding ties. On exact arrival times, reliability broke a tie in 68 of 545 rounds (12.5%); within a 1-minute band, 384 of 545 (70.5%). These counts predate the 1-3 minute driver reply delay (decisions.md, Driver reply delay) and were not re-counted after it. Quote the rounded figure only with these counts (decisions.md, D-Q1 evidence).
+**Rounding caveat:** arrivals are rounded up to whole minutes, so most of these ties are rounding ties. With the 1-3 minute driver reply delay (re-measured 2026-10-13, 537 rounds): reliability broke a tie on rounded minutes in 239 rounds (44.5%), on exact arrival times in 72 (13.4%), and within a 1-minute band in 380 (70.8%). Exact ties mean unrounded arrivals within 1e-9 minute. Pre-delay counts (545 rounds): 68 (12.5%) on exact arrivals and 384 (70.5%) within the band. Quote the rounded figure only with these counts (decisions.md, D-Q1 evidence and its re-measure subsection).
 
 D-Q1 is final: earliest ETA, reliability breaks ties (decisions.md).
 
