@@ -40,6 +40,8 @@ Setup: Salo policy, UNTUNED parameters, T1 hidden true show rates (the default),
 
 Reading: the food-rescued interval lies entirely below zero, so on these tuning evenings "most reliable" clearly rescues less food (about 5 kg per evening), and it often picks a farther driver. The failures and stranded intervals both include zero, so there is no clear difference in failures or stranding. Caveats: only 10 evenings, untuned weights, and the tuned weights may shift this. **Decided 2026-10-13:** Arjhine fixed "earliest ETA, reliability breaks ties" as final.
 
+**Rounding caveat (checked 2026-10-13, tuning evenings E01–E10, Salo, 545 driver rounds):** the engine rounds each arrival up to a whole minute (`Math.ceil` in `simulate.ts`), so drivers arriving at 18:04.2 and 18:04.9 tie at 18:05. Reliability broke an earliest-ETA tie in 239 rounds (43.9%) on rounded minutes, but only in 68 (12.5%) on exact unrounded arrival times. 384 rounds (70.5%) had two or more drivers within 1 minute of the earliest exact arrival. So most of the "44%" comes from minute rounding. Quote it only together with these three counts. They were measured with a temporary, uncommitted copy of the engine, whose event logs matched the real engine on all 10 evenings. The engine's rounding and the final D-Q1 rule are unchanged; changing either needs Arjhine's approval.
+
 ## Demo behaviour
 
 | ID | Question | Decision | Source |

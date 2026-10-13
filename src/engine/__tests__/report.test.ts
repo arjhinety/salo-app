@@ -56,7 +56,8 @@ run('writes the M1 snapshot', () => {
     `On E01-E10 under Salo (${rounds} driver rounds):`, '',
     `- Earliest-ETA rule: reliability broke an ETA tie in ${ties} rounds (${(100 * ties / rounds).toFixed(1)}%). That is how often learning decides who delivers under this rule.`,
     `- The most-reliable rule would have picked a different driver in ${decided} rounds (${(100 * decided / rounds).toFixed(1)}%).`, '',
-    'The final rule is chosen before the pilot (decisions.md D-Q1).', '');
+    '**Rounding caveat:** arrivals are rounded up to whole minutes, so most of these ties are rounding ties. On exact arrival times, reliability broke a tie in 68 of 545 rounds (12.5%); within a 1-minute band, 384 of 545 (70.5%). Quote the rounded figure only with these counts (decisions.md, D-Q1 evidence).', '',
+    'D-Q1 is final: earliest ETA, reliability breaks ties (decisions.md).', '');
   const ev = tuning[0];
   const { log } = runEvening(wx, ev, { policy: 'salo', params: UNTUNED_PARAMS });
   const first = log.filter((e) => e.event.type === 'MESSAGE' || e.event.type === 'AWARD_STATE' || e.event.type === 'DELIVERY' || e.event.type === 'RELIABILITY_UPDATED')
