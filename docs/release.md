@@ -26,8 +26,8 @@ Environment: `scripts/android-env.sh` sets the Android Studio JDK and the user S
 ## Artifact
 
 - Path: `android/app/build/outputs/apk/release/app-release.apk`
-- Size: 110,913,577 bytes (about 110.9 MB; the bundled JS is `assets/index.android.bundle`, 2,701,160 bytes).
-- SHA-256: `57556a9917224635c221198bd7339556694cec8b50212f6e44ab49d72eb740cc`
+- Size: 110,935,113 bytes (about 110.9 MB; the bundled JS is `assets/index.android.bundle`, 2,722,696 bytes). This is the M3 post-flow build (2026-10-13, 17:03); the earlier M3e build was 110,913,577 bytes.
+- SHA-256: `8a0d4323fef167308b5562255828ddf21b0c322c9295e582734c74f2f25ff648` (replaces `57556a99...` from the M3e build).
 - Package: `com.arjhinety.salo`
 - Contains the milestone strings: `WALANG TUMANGGAP`, `maghahatid; darating`, `I-pause ang simulasyon.` (checked by grepping the extracted bundle).
 
@@ -92,3 +92,23 @@ Screenshots (`.impeccable/review/`):
 - The live post flow (donor form → LOT_POSTED) is not built yet; the post screen is still the M2 shell.
 - The release APK was not installed on a real phone. Arjhine must run the install steps above.
 - Demo-day rehearsal (laptop off, airplane mode, at least one week before the demo) is not done.
+
+## Offline run of the post flow (2026-10-13, M3 manual post)
+
+Build: the same APK as above (`8a0d4323…`), built from the current tree after engine commit `44e596a`. Gradle `assembleRelease -x lintVitalAnalyzeRelease` finished in 2m 13s; `packageRelease` was up to date, so the bundle is identical to the 17:03 build. Metro was stopped before the offline run (`curl localhost:8081/status` got no response). Wi-Fi and mobile data were off (`svc wifi disable; svc data disable`); the release app launched and ran with no dev server.
+
+| Step | Result |
+|---|---|
+| Donor picker, Donor row, donor home at 5:00 PM | "Tonight · 0 lots" before posting |
+| Post form: pick pork adobo, raise to 3 trays; pick pandesal (20 pieces) | cards show "3 tray / Mga 6 kg" and "20 piraso / Mga 0.6 kg"; pickup chips 5:45, 6:00, 6:15, 6:30 PM; "Magiging LIVE-1 at LIVE-2 ito." |
+| Post "Tama, i-post" | back on donor home: "Tonight · 2 lots", both tags as MAY BID |
+| Clock played from 5:00 PM | tags moved MAY BID → TENTATIVE → FINAL → NAIHATID (delivered) |
+| Clock past 5:42 PM | "Tonight · 4 lots": dataset lots L0211 (lumpia, posted 5:37 PM) and L0218 (adobo, posted 5:42 PM) appeared as tags |
+| Dashboard, clock paused at 18:29: Cancel driver on FINAL lot L0246 (monay) | tape: `18:29 FAILURE N. Lim · driver cancelled by the operator`; the lot read "tentative, held until a driver commits"; a second press was refused ("That lot has no driver to cancel right now.") |
+| Play after the cancel | `18:31 COMMIT L. Mendoza · to Bayanihan Pantry · ETA 18:43`, two simulated minutes after the cancel, inside the engine's 1 to 3 minute re-announce delay |
+
+Screenshots (`.impeccable/review/`): `release-post.png` (donor home at 5:45 PM with the dataset and LIVE tags), `release-cancel-paused.png` (dashboard paused at 18:29, lot held after Cancel driver).
+
+Not run on the device: a double tap on "Tama, i-post" (covered by the pure guard test `submitLots`, `src/donor/__tests__/postForm.test.ts`); Cancel driver while the clock was running.
+
+Open items: the Filipino copy in the new `postForm` strings (listed in the handoff) is for the Codex grammar review. Physical phone install is still Arjhine's step.

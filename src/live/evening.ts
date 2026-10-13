@@ -194,6 +194,11 @@ export class LiveEvening {
     return { ok: true, value: lot };
   }
 
+  /** The ids the next `count` posts will get, in order. Read-only: nothing is posted. */
+  nextLiveIds(count: number): LotId[] {
+    return Array.from({ length: Math.max(0, count) }, (_, i) => `LIVE-${this.liveCount + 1 + i}`);
+  }
+
   /** Cancel the driver of a lot. Only allowed while that lot is FINAL at the clock (decision D-Q7). */
   cancelDriver(lotId: LotId): LiveResult<LotId> {
     const state = this.stateOf(lotId);

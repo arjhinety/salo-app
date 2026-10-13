@@ -25,6 +25,42 @@ export const S = {
     voiceBody: 'Sa susunod na bersyon, mauunawaan ni Salo ang text o boses mo at gagawa ng mga tag na kukumpirmahin mo.',
     back: 'Bumalik · Back',
   },
+  /**
+   * The manual post form under the text box (M3). Filipino first; English after " · " or " / ". The one word
+   * "expiry" appears only inside the negated pickup note; the test in src/donor/__tests__ checks that.
+   */
+  postForm: {
+    heading: 'O pumili rito · Or pick here',
+    hint: 'Pumili ng hanggang 5 item, ilagay ang dami, at piliin ang oras ng pagkuha. / Pick up to 5 items, set the amounts, and choose a pickup time.',
+    fromBefore: 'Galing sa mga na-post mo dati · From your earlier posts',
+    others: 'Iba pa · Others',
+    addA11y: (fil: string, en: string) => `Idagdag ang ${fil}. Add ${en}.`,
+    full: 'Hanggang 5 item lang sa isang post. / Up to 5 items per post.',
+    noItems: 'Wala pang napiling item. / No items picked yet.',
+    amount: 'Dami · Amount',
+    decreaseA11y: (fil: string, en: string) => `Bawasan ang dami ng ${fil}. Decrease the amount of ${en}.`,
+    increaseA11y: (fil: string, en: string) => `Dagdagan ang dami ng ${fil}. Increase the amount of ${en}.`,
+    amountSaid: (qty: number, unitFil: string, unitEn: string) => `Dami: ${qty} ${unitFil}. Amount: ${qty} ${unitEn}.`,
+    kg: (kg: number) => `Mga ${kg} kg · about ${kg} kg`,
+    storage: 'Imbakan · Storage',
+    fridge: 'Kailangan ng ref kung itatabi · if kept',
+    noFridge: 'Walang ref · no fridge needed',
+    removeA11y: (fil: string, en: string) => `Alisin ang ${fil}. Remove ${en}.`,
+    pickupLabel: 'Oras ng pagkuha · Pickup time',
+    pickupChip: (time: string) => `Kunin bago ${time}`,
+    pickupNote: 'Oras ito ng pagkuha, hindi expiry. / This is a pickup time, not an expiry date.',
+    pickupClosed: 'Sarado na ang pagkuha ngayong gabi. / Pickups are closed for tonight.',
+    /** Names the ids the posts will get: one lot, or two or more lots (callers pass at least one id). */
+    becomes: (ids: readonly string[]) => {
+      if (ids.length === 1) return `Ito ang magiging lot ID: ${ids[0]}. / This will be lot ${ids[0]}.`;
+      const last = ids[ids.length - 1];
+      const head = ids.slice(0, -1);
+      return `Ito ang mga magiging lot ID: ${head.join(', ')} at ${last}. / These will be lots ${head.join(', ')} and ${last}.`;
+    },
+    post: 'Tama, i-post · Correct, post it',
+    pickFirst: 'Pumili muna ng item. / Pick an item first.',
+    problems: 'Hindi pa ma-post ngayon. Tingnan ang oras ng pagkuha at subukan ulit. / Not able to post yet. Check the pickup time and try again.',
+  },
   /** TalkBack hint on a donor tag. */
   openLot: 'Buksan ang detalye ng lot',
   /** The sentences a tag reads aloud, by state. The state word is in the sentence where it matters. */
