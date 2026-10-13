@@ -10,11 +10,11 @@ Only tuning evenings E01-E10 were run.
 | nearest | 144.7 | 31.0 | 0.00 | 0.2 |
 | central_greedy | 151.2 | 24.4 | 0.00 | 0.1 |
 
-## Driver rule (D-Q1, provisional)
+## Driver rule (D-Q1)
 
 On E01-E10 under Salo (545 driver rounds):
 
-- Earliest-ETA rule: reliability broke an ETA tie in 239 rounds (43.9%). That is how often learning decides who delivers under this rule.
+- Earliest-ETA rule: reliability broke an ETA tie in 239 rounds (43.9%). Counted on arrivals rounded to whole minutes (see the caveat below).
 - The most-reliable rule would have picked a different driver in 513 rounds (94.1%).
 
 **Rounding caveat:** arrivals are rounded up to whole minutes, so most of these ties are rounding ties. On exact arrival times, reliability broke a tie in 68 of 545 rounds (12.5%); within a 1-minute band, 384 of 545 (70.5%). Quote the rounded figure only with these counts (decisions.md, D-Q1 evidence).
