@@ -6,7 +6,7 @@ These decisions were made by Arjhine on 2026-10-13, from the open questions in `
 
 | ID | Question | Decision | Source of the question |
 |---|---|---|---|
-| D-Q1 | Which driver gets the run when several are on time | **Provisional until tuning.** The default is the earliest ETA that meets the pickup deadline, with reliability breaking ties. The engine implements both this rule and "most reliable on-time driver, ETA breaks ties". On the tuning evenings E01–E10 only, count how often reliability changes the pick (a side agent warned that ETA ties may be rare, so learning might seldom matter). Arjhine then fixes the final rule before any pilot run, and it cannot change after that. | O-1 |
+| D-Q1 | Which driver gets the run when several are on time | **FINAL (2026-10-13):** the earliest ETA that meets the pickup deadline. Reliability breaks ties. Chosen by Arjhine on tuning-evening evidence (see "D-Q1 evidence" below) before any pilot run. It cannot change after this. | O-1 |
 | D-Q2 | How a pantry's score becomes a share bid | `shares = min(shares_left, round(scale × score))`. `scale` is tuned on E01–E10 only, then frozen. The guide's 14 and 9 shares are illustrative (scale 17 gives Bukal 14 and Socorro 10). | O-3, SQ-3 |
 | D-Q3 | Food wasted | Posted kg minus food rescued, where rescued is capped at each pantry's need. Food beyond need counts as wasted. **Consequence:** posted kg is identical across policies, so wasted(Salo) − wasted(baseline) = −(rescued(Salo) − rescued(baseline)) on every evening. The 3 food-wasted intervals are exact mirrors of the food-rescued results, as long as both measures use the same bootstrap resamples (required: one set of resample draws is shared by all measures). So they are not independent support. | O-5 |
 | D-Q4 | Do losing bids cost shares? | No. Only winning bids spend shares ("your 14 shares were spent on Lot 14"). | O-7 |
@@ -38,7 +38,7 @@ Setup: Salo policy, UNTUNED parameters, T1 hidden true show rates (the default),
 | Stranded awards | +0.20 [-0.40, +0.70] |
 | Driver failures (withdrawals + no-shows + operator cancels) | -1.30 [-3.50, +1.20] |
 
-Reading: the food-rescued interval lies entirely below zero, so on these tuning evenings "most reliable" clearly rescues less food (about 5 kg per evening), and it often picks a farther driver. The failures and stranded intervals both include zero, so there is no clear difference in failures or stranding. Caveats: only 10 evenings, untuned weights, and the tuned weights may shift this. **Pending:** Arjhine chooses the final D-Q1 rule before any pilot run.
+Reading: the food-rescued interval lies entirely below zero, so on these tuning evenings "most reliable" clearly rescues less food (about 5 kg per evening), and it often picks a farther driver. The failures and stranded intervals both include zero, so there is no clear difference in failures or stranding. Caveats: only 10 evenings, untuned weights, and the tuned weights may shift this. **Decided 2026-10-13:** Arjhine fixed "earliest ETA, reliability breaks ties" as final.
 
 ## Demo behaviour
 

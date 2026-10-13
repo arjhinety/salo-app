@@ -29,9 +29,8 @@ import type {
 } from './types';
 
 /**
- * Decision D-Q1 is provisional until it is measured on the tuning evenings: both rules are built.
- * 'earliest_eta': earliest on-time arrival wins, reliability breaks ties (the default).
- * 'most_reliable': most reliable on-time driver wins, earliest arrival breaks ties.
+ * Decision D-Q1 is FINAL: 'earliest_eta' (earliest on-time arrival wins, reliability breaks ties).
+ * 'most_reliable' stays only for the recorded tuning-evening comparison; pilot and main runs use the default.
  */
 export type DriverRule = 'earliest_eta' | 'most_reliable';
 
