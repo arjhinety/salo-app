@@ -5,17 +5,17 @@ Only tuning evenings E01-E10 were run.
 
 | Policy | Food rescued (kg, mean/evening) | Food wasted (kg) | Worst-served need met (mean) | Stranded awards (mean) |
 |---|---|---|---|---|
-| salo | 150.6 | 25.1 | 0.00 | 0.3 |
-| fcfs | 136.5 | 39.1 | 0.00 | 0.0 |
-| nearest | 144.1 | 31.6 | 0.00 | 0.2 |
-| central_greedy | 151.2 | 24.5 | 0.00 | 0.4 |
+| salo | 150.2 | 25.4 | 0.00 | 0.3 |
+| fcfs | 135.9 | 39.7 | 0.00 | 0.1 |
+| nearest | 144.7 | 31.0 | 0.00 | 0.2 |
+| central_greedy | 151.2 | 24.4 | 0.00 | 0.1 |
 
 ## Driver rule (D-Q1, provisional)
 
-On E01-E10 under Salo (572 driver rounds):
+On E01-E10 under Salo (545 driver rounds):
 
-- Earliest-ETA rule: reliability broke an ETA tie in 263 rounds (46.0%). That is how often learning decides who delivers under this rule.
-- The most-reliable rule would have picked a different driver in 535 rounds (93.5%).
+- Earliest-ETA rule: reliability broke an ETA tie in 239 rounds (43.9%). That is how often learning decides who delivers under this rule.
+- The most-reliable rule would have picked a different driver in 513 rounds (94.1%).
 
 The final rule is chosen before the pilot (decisions.md D-Q1).
 

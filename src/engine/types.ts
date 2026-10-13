@@ -121,7 +121,10 @@ export interface Driver {
    */
   tuningRuns: number;
   tuningShows: number;
-  /** reliability_estimate_frozen from drivers.csv. Kept only to check the formula in tests. */
+  /**
+   * reliability_estimate_frozen from drivers.csv: what the agents believe after tuning. Kept to check the
+   * formula in tests. It is NOT the driver's real show rate (that hidden truth lives in hiddenTruth.generated.ts).
+   */
   frozenReliability: number;
   anchor: boolean;
 }

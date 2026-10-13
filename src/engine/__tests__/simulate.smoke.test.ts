@@ -83,3 +83,25 @@ function checkTwoPhase(log: readonly LogEntry[]) {
     if (event.type === 'DELIVERY') expect(committed.has(event.lotId)).toBe(true);
   }
 }
+
+describe('hidden true show rate (decision T1)', () => {
+  it('drives outcomes from the hidden truth, not from the agents\u2019 estimate', () => {
+    const ev = tuning[2];
+    const never = Object.fromEntries(WORLD.drivers.map((d) => [d.id, 0]));
+    const always = Object.fromEntries(WORLD.drivers.map((d) => [d.id, 1]));
+    const fails = (t: Record<string, number>) => runEvening(wx, ev, { policy: 'salo', params: UNTUNED_PARAMS, trueShowRate: t })
+      .log.filter((e) => e.event.type === 'MESSAGE' && e.event.message.type === 'FAILURE').length;
+    const deliveries = (t: Record<string, number>) => runEvening(wx, ev, { policy: 'salo', params: UNTUNED_PARAMS, trueShowRate: t })
+      .log.filter((e) => e.event.type === 'DELIVERY').length;
+    expect(fails(always)).toBe(0);
+    expect(deliveries(never)).toBe(0);
+  });
+
+  it('agents never see the truth: a PROPOSE carries the learned estimate from tuning counts', () => {
+    const { log } = runEvening(wx, tuning[0], { policy: 'salo', params: UNTUNED_PARAMS });
+    const first = log.find((e) => e.event.type === 'MESSAGE' && e.event.message.type === 'PROPOSE' && e.event.message.proposer === 'driver')!;
+    const m = first.event.type === 'MESSAGE' && first.event.message.type === 'PROPOSE' && first.event.message.proposer === 'driver' ? first.event.message : null;
+    const d = WORLD.drivers.find((x) => x.id === m!.driverId)!;
+    expect(m!.reliability).toBeCloseTo((d.tuningShows + 1) / (d.tuningRuns + 2), 10);
+  });
+});

@@ -1,3 +1,4 @@
+import { TRUE_SHOW_RATE } from './hiddenTruth.generated';
 import { resultFromLog } from './metrics';
 import { BID_WINDOW_MINUTES, LATE_SHARE_OF_SHOWS, WITHDRAW_SHARE_OF_MISSES } from './params';
 import { centralGreedyPolicy, fcfsPolicy, nearestPolicy, saloPolicy } from './policies';
@@ -40,6 +41,12 @@ export interface RunOptions {
   /** Outside events with the minute they happen (live posts, Cancel driver). Replay = same inputs. */
   inputs?: readonly { atMinute: Minute; input: EngineInput }[];
   driverRule?: DriverRule;
+  /**
+   * Hidden ground truth: each driver's real show rate (decision "Hidden true show rate", T1). Only the
+   * simulated world reads it; agents learn from tuning counts and never see it. Defaults to the
+   * generator's recovered p_show.
+   */
+  trueShowRate?: Readonly<Record<DriverId, number>>;
 }
 
 export interface RunOutput {
@@ -151,6 +158,7 @@ export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): 
   const { world } = wx;
   const { params, policy: policyId } = opts;
   const driverRule = opts.driverRule ?? 'earliest_eta';
+  const truth = opts.trueShowRate ?? TRUE_SHOW_RATE;
   const seed = evening.seed;
   const weights: UtilityWeights =
     policyId === 'central_greedy' ? params.centralGreedy.utilityWeights : params.salo.utilityWeights;
@@ -329,7 +337,8 @@ export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): 
 
     // Ground truth for this offer, from the counter-based RNG (same draws under every policy).
     const k = ls.attempts++;
-    const pShow = ds.d.frozenReliability;
+    const pShow = truth[ds.d.id];
+    if (pShow === undefined) throw new Error(`no true show rate for ${ds.d.id}`);
     const u = u01(seed, STREAM.driverOutcome, ds.idx, ls.idx, 2 * k);
     if (u >= pShow) {
       const withdraws = u01(seed, STREAM.driverOutcome, ds.idx, ls.idx, 2 * k + 1) < WITHDRAW_SHARE_OF_MISSES;
