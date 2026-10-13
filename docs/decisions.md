@@ -82,11 +82,14 @@ Refusals (the reflex step, guide p.11), checked in this order:
 2. The lot is bigger than the pantry's dry storage plus fridge capacity.
 3. No remaining need.
 
+**Review flag:** the 0.2 no-fridge storage score is the main reason some pantries get nothing (see "Fairness measure check"). Review the storage formula before tuning.
+
 Untuned starting weights for development: need 0.4, storage 0.3, distance 0.15, freshness 0.15. The share-bid scale starts at 17. Tuning on E01–E10 replaces them.
 
 ## Fairness measure check (decided 2026-10-13)
 
 - On the tuning evenings with untuned parameters, worst-served need met was 0 on all 10 evenings for all four policies: at least one pantry with need got nothing. Pantries left with 0 kg per evening: Salo 1–3, central greedy 1–4, first-come-first-served 4–9, nearest 3–11 (`docs/reports/m1-tuning-snapshot.md`).
+- **Correction (2026-10-13, prompted by a side-agent note):** this was first described as mostly structural (small, indivisible lots and scarce food). A check on the same tuning evenings shows the proposed **storage score** is the main cause. With the 0.2 no-fridge storage score, Salo leaves 1, 3, 1, 2, 2, 1, 1, 2, 1, 1 pantries with nothing, and 15 of those 16 have no fridge (16 of the 30 pantries have no fridge). With the storage part removed (weights 0.57 / 0 / 0.215 / 0.215), it leaves 0, 0, 0, 0, 1, 0, 0, 2, 0, 0, and food rescued rises from 150.2 to 155.3 kg per evening. The storage formula and weight are therefore on Arjhine's pre-tuning review list. The trade-off: the storage part is what sends cooked food to pantries that can keep it, which is the guide's Bukal-vs-Socorro example.
 - **Decision (option A):** keep the guide's measure and check it again right after tuning, on the tuning evenings only. If it is still 0 on most tuning evenings, Arjhine picks a replacement measure (for example, pantries left with nothing, or the mean of the five worst-served) **before any pilot run**. No pilot or main evening may run until this check is done and recorded here.
 
 ## Hidden true show rate (APPROVED 2026-10-13, option T1: pre-tuning engine definition)
