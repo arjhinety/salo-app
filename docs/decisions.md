@@ -58,3 +58,8 @@ Refusals (the reflex step, guide p.11), checked in this order:
 3. No remaining need.
 
 Untuned starting weights for development: need 0.4, storage 0.3, distance 0.15, freshness 0.15. The share-bid scale starts at 17. Tuning on E01–E10 replaces them.
+
+## Fairness measure check (decided 2026-10-13)
+
+- On the tuning evenings with untuned parameters, worst-served need met was 0 on all 10 evenings for all four policies: at least one pantry with need got nothing. Pantries left with 0 kg per evening: Salo 1–3, central greedy 1–4, first-come-first-served 4–9, nearest 3–11 (`docs/reports/m1-tuning-snapshot.md`).
+- **Decision (option A):** keep the guide's measure and check it again right after tuning, on the tuning evenings only. If it is still 0 on most tuning evenings, Arjhine picks a replacement measure (for example, pantries left with nothing, or the mean of the five worst-served) **before any pilot run**. No pilot or main evening may run until this check is done and recorded here.
