@@ -583,7 +583,13 @@ Each item says what is undecided, the options, and a recommendation. None of the
     - message IDs shift, and the split counts move from 163 / 166 / 171 (tuning / pilot / main) to 132 / 127 / 241.
 
     So the tuning and pilot messages the parser would be developed and checked on would change.
-  - *Required fix (option A, approved by Arjhine 2026-10-13; to be applied in the dataset repo and verified there):* freeze the published 500 messages exactly as they are. Generate messages for any new evening (E31 onwards) with a separate generator seeded per evening, a fixed number of messages per new evening, and IDs that continue after M0500. That makes message generation append-only and leaves every published row, checksum and the Hugging Face release unchanged. The alternative, sampling messages per evening for all evenings, would also be append-only from then on, but it rewrites today's 500 messages, so the dataset would need a new version.
+  - *Fix applied: dataset v1.1 (approved by Arjhine 2026-10-13; this replaces the option A chosen earlier the same day).* `messages.build()` now samples 17 lots per evening and writes their messages with a generator seeded from that evening's own seed. Message IDs run in evening order. Verification:
+  - `verify.py --update`, then `verify.py`: 16 of 16 files match.
+  - Every table except `donor_messages.csv` is byte-identical to v1.0.
+  - `donor_messages` has 510 rows, 170 per split.
+  - A 40-evening scratch build reproduces all 510 E01 to E30 messages exactly, `message_id` included, and the new ones start at M0511.
+
+  Adding main evenings is now append-only for every table. Recorded in the dataset repo's README changelog as v1.1. The v1.0 messages had not been used to tune any parser rule or prompt (checked `src/` and `docs/` on 2026-10-13).
 
 **O-9 In-evening learning during evaluation.** Guide page 15 says learning is frozen between evenings, and its R. Dizon example shows an update within an evening after a withdrawal.
 - Recommendation: in-evening updates apply to every evaluation run, Salo and central greedy alike, and reset at the start of each evening. Confirm.
