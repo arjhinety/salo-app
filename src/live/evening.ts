@@ -230,13 +230,17 @@ export class LiveEvening {
   lotViews(donorId: DonorId): LotView[] {
     const hit = this.viewCache.get(donorId);
     if (hit && hit.revision === this.revision) return hit.views;
-    const minute = this.minute();
-    const log = this.visibleLog();
-    const lots: Lot[] = this.evening.lots.filter((l) => l.postedMinute <= minute);
-    for (const { input } of this.inputsVisible()) if (input.type === 'LOT_POSTED') lots.push(input.lot);
-    const views = foldLotViews(lots, log, donorId);
+    const views = foldLotViews(this.postedLots(), this.visibleLog(), donorId);
     this.viewCache.set(donorId, { revision: this.revision, views });
     return views;
+  }
+
+  /** Every lot posted by the clock, dataset and live, in posting order. Built fresh; cache it by `revision`. */
+  postedLots(): Lot[] {
+    const minute = this.minute();
+    const lots: Lot[] = this.evening.lots.filter((l) => l.postedMinute <= minute);
+    for (const { input } of this.inputsVisible()) if (input.type === 'LOT_POSTED') lots.push(input.lot);
+    return lots;
   }
 
   /** The state of a posted lot at the clock, or undefined if it is not posted yet. */

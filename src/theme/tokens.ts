@@ -15,6 +15,9 @@ export interface Palette {
   onKraftMuted: string;
   /** Marker red on kraft: withdrawn, failed, not delivered. Same in both themes (the tag is the same tag). */
   onKraftAlert: string;
+  /** The receipt tape the dashboard prints on: off-white paper, ink on top. */
+  tape: string;
+  onTape: string;
   marker: string;
   red: string;
   lime: string;
@@ -37,6 +40,8 @@ export const LIGHT: Palette = {
   onKraft: '#161616',
   onKraftMuted: '#4a3520',
   onKraftAlert: '#8f110b',
+  tape: '#fbf8f0',
+  onTape: '#161616',
   marker: '#161616',
   red: '#a8150f',
   lime: '#d6ff3d',
@@ -60,6 +65,8 @@ export const DARK: Palette = {
   onKraft: '#161616',
   onKraftMuted: '#4a3520',
   onKraftAlert: '#8f110b',
+  tape: '#ece5d2',
+  onTape: '#141414',
   marker: '#161616',
   red: '#ff7a6b',
   lime: '#d6ff3d',
@@ -90,6 +97,11 @@ export const TYPE = {
   label: { fontFamily: FONT.label, fontSize: 13, lineHeight: 16, letterSpacing: 0.4 },
   small: { fontFamily: FONT.labelRegular, fontSize: 13, lineHeight: 17 },
   sticker: { fontFamily: FONT.marker, fontSize: 15, lineHeight: 18 },
+  /** Receipt tape: message type in Archivo Narrow caps, then the sentence in Archivo. */
+  tapeType: { fontFamily: FONT.label, fontSize: 15, lineHeight: 20, letterSpacing: 0.6 },
+  tapeBody: { fontFamily: FONT.body, fontSize: 16, lineHeight: 22 },
+  /** Lot name on a kraft chip (the strip and the tape header). */
+  chipItem: { fontFamily: FONT.marker, fontSize: 20, lineHeight: 24 },
 } as const;
 
 export const SPACE = { xs: 4, s: 8, m: 12, l: 16, xl: 24, xxl: 32 } as const;

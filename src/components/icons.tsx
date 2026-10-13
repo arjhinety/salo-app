@@ -18,3 +18,22 @@ export function FridgeIcon({ size = 16, color }: { size?: number; color: string 
     </Svg>
   );
 }
+
+/** Play: an outlined triangle, same stroke and weight as the rest of the set. */
+export function PlayIcon({ size = 24, color }: { size?: number; color: string }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" accessibilityElementsHidden importantForAccessibility="no">
+      <Path d="M7 4.5v15l12.5-7.5z" stroke={color} strokeWidth={2} strokeLinejoin="round" />
+    </Svg>
+  );
+}
+
+/** Pause: two outlined bars, same stroke and weight as the rest of the set. */
+export function PauseIcon({ size = 24, color }: { size?: number; color: string }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" accessibilityElementsHidden importantForAccessibility="no">
+      <Rect x={6} y={4.5} width={4} height={15} rx={1} stroke={color} strokeWidth={2} />
+      <Rect x={14} y={4.5} width={4} height={15} rx={1} stroke={color} strokeWidth={2} />
+    </Svg>
+  );
+}

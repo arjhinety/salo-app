@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { S } from '../i18n/strings';
+import { dash, S } from '../i18n/strings';
 import { useTheme } from '../theme/theme';
 import { SPACE, TYPE } from '../theme/tokens';
 
@@ -9,9 +9,26 @@ import { SPACE, TYPE } from '../theme/tokens';
  * The tarp canopy over the stall: wordmark, the simulated clock, and the simulated-data label.
  * `children` sit under the subtitle, on the tarp (the demo's play control uses this).
  */
-export function TarpBar({ clock, subtitle, children }: { clock: string; subtitle?: string; children?: ReactNode }) {
+export function TarpBar({
+  clock,
+  subtitle,
+  children,
+  chip,
+  english,
+}: {
+  clock: string;
+  subtitle?: string;
+  children?: ReactNode;
+  /** The label on the simulated-data chip. Defaults to the Filipino "SIMULASYON". */
+  chip?: { text: string; label: string };
+  /** Dashboard copy is English; donor and picker screens keep the Filipino labels. */
+  english?: boolean;
+}) {
   const { c } = useTheme();
   const insets = useSafeAreaInsets();
+  const chipText = chip?.text ?? S.simulated.fil.toUpperCase();
+  const chipLabel = chip?.label ?? `${S.simulated.fil}. ${S.simulated.en}.`;
+  const clockLabel = english ? dash.clockA11y(clock) : `Oras sa simulasyon ${clock}`;
   return (
     <View style={[styles.bar, { backgroundColor: c.tarp, paddingTop: insets.top + SPACE.s }]}>
       <View style={styles.row}>
@@ -19,14 +36,10 @@ export function TarpBar({ clock, subtitle, children }: { clock: string; subtitle
           {S.appName}
         </Text>
         <View style={styles.right}>
-          <View
-            style={[styles.chip, { borderColor: c.onTarp }]}
-            accessible
-            accessibilityLabel={`${S.simulated.fil}. ${S.simulated.en}.`}
-          >
-            <Text style={[TYPE.label, { color: c.onTarp }]}>{S.simulated.fil.toUpperCase()}</Text>
+          <View style={[styles.chip, { borderColor: c.onTarp }]} accessible accessibilityLabel={chipLabel}>
+            <Text style={[TYPE.label, { color: c.onTarp }]}>{chipText}</Text>
           </View>
-          <Text style={[TYPE.title, { color: c.onTarp }]} accessibilityLabel={`Oras sa simulasyon ${clock}`}>
+          <Text style={[TYPE.title, { color: c.onTarp }]} accessibilityLabel={clockLabel}>
             {clock}
           </Text>
         </View>

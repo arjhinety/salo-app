@@ -327,3 +327,13 @@ describe('determinism and views', () => {
     expect(live.lotViews('D01')).not.toBe(a);
   });
 });
+
+describe('postedLots', () => {
+  test('counts the dataset lots posted by the clock, then adds a live lot at the clock', () => {
+    // E05 posts L0207 and L0227 at 17:03, and L0242 at 17:10 (minutes 1023, 1023, 1030)
+    const live = at(1030);
+    expect(live.postedLots().map((l) => l.id)).toEqual(['L0207', 'L0227', 'L0242']);
+    expect(live.postLot(draft()).ok).toBe(true);
+    expect(live.postedLots().map((l) => l.id)).toEqual(['L0207', 'L0227', 'L0242', 'LIVE-1']);
+  });
+});

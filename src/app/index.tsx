@@ -7,10 +7,10 @@ import { SPACE, TYPE } from '../theme/tokens';
 
 /** No sign-in (decision): pick who you are tonight from the simulated dataset. */
 const ROLES = [
-  { key: 'donor', fil: 'Donor', en: 'Food business with surplus', who: WORLD.donors.find((d) => d.id === 'D01')!.name, ready: true },
-  { key: 'pantry', fil: 'Pantry', en: 'Community pantry coordinator', who: WORLD.pantries.find((p) => p.id === 'P01')!.name, ready: false },
-  { key: 'driver', fil: 'Driver', en: 'Volunteer driver', who: WORLD.drivers.find((d) => d.id === 'V01')!.name, ready: false },
-  { key: 'dashboard', fil: 'Dashboard', en: 'Live view for the panel', who: 'Walang profile na kailangan', ready: false },
+  { key: 'donor', fil: 'Donor', en: 'Food business with surplus', who: WORLD.donors.find((d) => d.id === 'D01')!.name, ready: true, route: '/donor' },
+  { key: 'pantry', fil: 'Pantry', en: 'Community pantry coordinator', who: WORLD.pantries.find((p) => p.id === 'P01')!.name, ready: false, route: null },
+  { key: 'driver', fil: 'Driver', en: 'Volunteer driver', who: WORLD.drivers.find((d) => d.id === 'V01')!.name, ready: false, route: null },
+  { key: 'dashboard', fil: 'Dashboard', en: 'Live view for the panel', who: 'Walang profile na kailangan', ready: true, route: '/dashboard' },
 ] as const;
 
 export default function Picker() {
@@ -27,8 +27,8 @@ export default function Picker() {
           {ROLES.map((r) => (
             <Pressable
               key={r.key}
-              disabled={!r.ready}
-              onPress={() => router.push('/donor')}
+              disabled={!r.ready || r.route === null}
+              onPress={() => r.route && router.push(r.route)}
               accessibilityRole="button"
               accessibilityState={{ disabled: !r.ready }}
               accessibilityLabel={`${r.fil}, ${r.en}. ${r.who}.${r.ready ? '' : ' Darating sa susunod na build.'}`}
