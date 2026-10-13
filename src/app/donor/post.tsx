@@ -2,6 +2,8 @@ import { router } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { MicIcon } from '../../components/icons';
 import { TarpBar } from '../../components/TarpBar';
+import { hhmm } from '../../donor/tonight';
+import { useLiveSnapshot } from '../../live/useLive';
 import { S } from '../../i18n/strings';
 import { useTheme } from '../../theme/theme';
 import { SPACE, TYPE } from '../../theme/tokens';
@@ -12,9 +14,10 @@ import { SPACE, TYPE } from '../../theme/tokens';
  */
 export default function Post() {
   const { c } = useTheme();
+  const sim = useLiveSnapshot();
   return (
     <View style={{ flex: 1, backgroundColor: c.ground }}>
-      <TarpBar clock="5:45 PM" subtitle={`${S.post.fil} · ${S.post.en}`} />
+      <TarpBar clock={hhmm(sim.minute)} subtitle={`${S.post.fil} · ${S.post.en}`} />
       <ScrollView contentContainerStyle={styles.body} keyboardShouldPersistTaps="handled">
         <Text nativeID="msgLabel" style={[TYPE.title, { color: c.text }]}>
           {S.postScreen.question}
@@ -46,6 +49,7 @@ export default function Post() {
         <Pressable
           onPress={() => router.back()}
           accessibilityRole="button"
+          accessibilityLabel="Bumalik"
           style={({ pressed }) => [styles.back, { borderColor: c.tarp, opacity: pressed ? 0.8 : 1 }]}
         >
           <Text style={[TYPE.bodyStrong, { color: c.tarp }]}>{S.postScreen.back}</Text>

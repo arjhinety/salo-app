@@ -35,11 +35,11 @@ export function tagLabel(v: LotView): string {
   const head = `${it.foodItemFil}, ${it.quantity} ${S.units[it.unit]}. Kunin bago ${hhmm(v.lot.pickupByMinute)}.`;
   switch (v.state) {
     case 'tentative':
-      return `${head} ${S.tagWho.tentative(v.pantryName ?? '', S.heldUntilDriver.fil)}`;
+      return `${head} ${S.tagWho.tentative(v.pantryName ?? '')}`;
     case 'final':
       return `${head} ${S.states.final.fil}. ${S.tagWho.final(v.pantryName ?? '', v.driverName ?? '', hhmm(v.etaMinute!))}`;
     case 'delivered':
-      return `${head} ${S.states.delivered.fil}. ${S.tagWho.delivered(v.pantryName ?? '', v.driverName ?? '')}`;
+      return `${head} ${S.tagWho.delivered(v.pantryName ?? '', v.driverName ?? '')}`;
     case 'bids':
       return `${head} ${S.states.bids.fil}. ${S.tagWho.bids(v.bids)}`;
     default:

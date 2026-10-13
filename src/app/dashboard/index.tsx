@@ -9,7 +9,7 @@ import { SimControl } from '../../components/SimControl';
 import { TarpBar } from '../../components/TarpBar';
 import type { LotId, PolicyId } from '../../engine/types';
 import { dash } from '../../i18n/strings';
-import { clock24, lotsWithBids, stripState, tapeLines, tentativeBars, WORLD_NAMES } from '../../live/tape';
+import { cancelledAtMinute, clock24, lotsWithBids, stripState, tapeLines, tentativeBars, WORLD_NAMES } from '../../live/tape';
 import { liveEvening, useLiveSnapshot } from '../../live/useLive';
 import { useTheme } from '../../theme/theme';
 import { SPACE, TYPE } from '../../theme/tokens';
@@ -29,7 +29,8 @@ export default function Dashboard() {
   const sim = useLiveSnapshot();
   const [picked, setPicked] = useState<LotId | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [status, setStatus] = useState<string | null>(null);
+  // A refused cancel. Cleared by a replay and by a seek.
+  const [refusal, setRefusal] = useState<string | null>(null);
 
   // Everything below is a fold of the store's visible state. The store caches the log, so re-deriving per publish is cheap.
   const posted = liveEvening.postedLots();
@@ -41,6 +42,10 @@ export default function Dashboard() {
   const selState = selectedId ? liveEvening.stateOf(selectedId) : undefined;
   const bidLots = lotsWithBids(log);
   const bars = selectedId ? tentativeBars(log, selectedId, selState, sim.minute) : [];
+  // The status line is the cancel's own event: it shows only while the clock is at or after that cancel, so a rewind
+  // or a seek before it clears it without any extra state.
+  const cancelMinute = selectedId ? cancelledAtMinute(liveEvening.inputLog(), selectedId, sim.minute) : null;
+  const status = refusal ?? (cancelMinute !== null ? dash.cancelledStatus(clock24(cancelMinute)) : null);
   const rows: TapeRow[] = [];
   if (selectedId) {
     for (const line of tapeLines(log, selectedId)) {
@@ -55,12 +60,16 @@ export default function Dashboard() {
   const cancelDriver = () => {
     if (!selectedId) return;
     const r = liveEvening.cancelDriver(selectedId);
-    setStatus(r.ok ? dash.cancelledStatus(clock24(liveEvening.getSnapshot().minute)) : dash.cancelRefused);
+    setRefusal(r.ok ? null : dash.cancelRefused);
   };
   const replayUnder = (p: PolicyId) => {
     setSheetOpen(false);
-    setStatus(null);
+    setRefusal(null);
     liveEvening.replayUnder(p);
+  };
+  const seek = (m: number) => {
+    setRefusal(null);
+    liveEvening.seek(m);
   };
 
   const header = selected ? (
@@ -99,7 +108,7 @@ export default function Dashboard() {
         </View>
       ) : null}
 
-      <EveningRuler minute={sim.minute} postings={posted.map((l) => l.postedMinute)} onSeek={(m) => liveEvening.seek(m)} />
+      <EveningRuler minute={sim.minute} postings={posted.map((l) => l.postedMinute)} onSeek={seek} />
 
       <ReceiptTape key={selectedId ?? 'none'} rows={rows} emptyText={emptyText} header={header} />
 

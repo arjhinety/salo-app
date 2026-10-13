@@ -1,5 +1,16 @@
 import type { AgentMessage, EngineEvent, LogEntry, LotId, Minute, PolicyId } from '../../engine/types';
-import { barLabel, clock24, lotsWithBids, pantryBidDetail, stripState, tapeLines, tentativeBars, type NameLookup } from '../tape';
+import {
+  barLabel,
+  cancelledAtMinute,
+  clock24,
+  lotsWithBids,
+  pantryBidDetail,
+  stripState,
+  tapeLines,
+  tentativeBars,
+  tentativeDetail,
+  type NameLookup,
+} from '../tape';
 import { dash } from '../../i18n/strings';
 
 const NAMES: NameLookup = {
@@ -201,5 +212,46 @@ describe('no cross-policy comparison on the dashboard', () => {
     for (const t of texts) {
       expect(t).not.toMatch(/\bvs\.?\b|\brescued\b|\bsaved\b|\bbeat\b|\bbetter than\b/i);
     }
+  });
+});
+
+describe('TENTATIVE line detail by policy', () => {
+  test('salo prints its shares; a baseline prints only "award held", never "0 shares"', () => {
+    expect(tentativeDetail('salo', 2)).toBe('2 shares, award held');
+    expect(tentativeDetail('salo', 0)).toBe('0 shares, award held');
+    for (const policy of ['fcfs', 'nearest', 'central_greedy'] as PolicyId[]) {
+      expect(tentativeDetail(policy, 0)).toBe('award held');
+      expect(tentativeDetail(policy, 2)).toBe('award held');
+    }
+  });
+
+  test('a baseline TENTATIVE line in the tape reads "award held" with no shares', () => {
+    const log: LogEntry[] = [
+      { seq: 1, evening: 'E05', policy: 'fcfs', atMinute: 1104, event: msg({ type: 'TENTATIVE_ACCEPT', lotId: LOT, atMinute: 1104, donorId: 'D01', pantryId: 'P01', shares: 0 }) },
+      { seq: 2, evening: 'E05', policy: 'central_greedy', atMinute: 1105, event: msg({ type: 'TENTATIVE_ACCEPT', lotId: LOT, atMinute: 1105, donorId: 'D01', pantryId: 'P01', shares: 0 }) },
+    ];
+    expect(tapeLines(log, LOT, NAMES).map((l) => `${clock24(l.minute)} ${l.type} ${l.who} · ${l.detail}`)).toEqual([
+      '18:24 TENTATIVE Bukal Community Kitchen · award held',
+      '18:25 TENTATIVE Bukal Community Kitchen · award held',
+    ]);
+  });
+});
+
+describe('cancel status is tied to the clock', () => {
+  const cancel = (atMinute: Minute, lotId: LotId = LOT) => ({ atMinute, input: { type: 'CANCEL_DRIVER' as const, lotId } });
+
+  test('is visible from the minute of the cancel and hidden before it', () => {
+    const inputs = [cancel(1198)];
+    expect(cancelledAtMinute(inputs, LOT, 1197)).toBeNull();
+    expect(cancelledAtMinute(inputs, LOT, 1198)).toBe(1198);
+    expect(cancelledAtMinute(inputs, LOT, 1260)).toBe(1198);
+  });
+
+  test('a rewind to 17:00 hides it; another lot never shows it; the latest cancel at or before the clock wins', () => {
+    const inputs = [cancel(1198), cancel(1210, 'L0300'), cancel(1230)];
+    expect(cancelledAtMinute(inputs, LOT, 1020)).toBeNull();
+    expect(cancelledAtMinute(inputs, 'L0300', 1205)).toBeNull();
+    expect(cancelledAtMinute(inputs, 'L0300', 1215)).toBe(1210);
+    expect(cancelledAtMinute(inputs, LOT, 1300)).toBe(1230);
   });
 });

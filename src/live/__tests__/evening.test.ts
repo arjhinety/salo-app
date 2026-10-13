@@ -4,6 +4,7 @@ import { runEvening } from '../../engine/simulate';
 import type { LogEntry, LotItem, PolicyId } from '../../engine/types';
 import { indexWorld } from '../../engine/world';
 import { LiveEvening, type LiveLotDraft } from '../evening';
+import { cancelledAtMinute } from '../tape';
 
 // Hand-checked literal values below come from one deterministic run of E05 (tuning, simulated) with
 // UNTUNED_PARAMS. If the engine's timing rules change, these literals change with them, on purpose.
@@ -441,5 +442,30 @@ describe('seek (ruler scrubbing)', () => {
     live.seek(1150);
     expect(seen).toHaveBeenCalledTimes(1);
     expect(live.getSnapshot().minute).toBe(1150);
+  });
+});
+
+describe('the cancel status line follows the clock (replay and seek clear it)', () => {
+  test('after a cancel at 18:26, a replay to 17:00 or a seek before 18:26 shows no cancel; the input stays in the log', () => {
+    const live = at(1100);
+    live.postLot(draft());
+    live.start(0);
+    advance(live, 6); // 1106: LIVE-1 is FINAL
+    live.pause(0);
+    expect(live.cancelDriver('LIVE-1').ok).toBe(true);
+    const cancelAt = live.inputLog().find((i) => i.input.type === 'CANCEL_DRIVER')!.atMinute;
+    expect(cancelAt).toBe(1106);
+    const shownAt = (m: number) => cancelledAtMinute(live.inputLog(), 'LIVE-1', m);
+    expect(shownAt(live.getSnapshot().minute)).toBe(1106);
+
+    live.replayUnder('fcfs');
+    expect(live.getSnapshot().minute).toBe(1020);
+    expect(shownAt(live.getSnapshot().minute)).toBeNull();
+
+    live.seek(1105);
+    expect(shownAt(live.getSnapshot().minute)).toBeNull();
+    live.seek(1106);
+    expect(shownAt(live.getSnapshot().minute)).toBe(1106);
+    expect(live.inputLog().some((i) => i.input.type === 'CANCEL_DRIVER')).toBe(true);
   });
 });

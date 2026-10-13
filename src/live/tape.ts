@@ -6,7 +6,7 @@
  */
 import { WORLD } from '../data/dataset';
 import { dash } from '../i18n/strings';
-import type { AwardState, FailureReason, LogEntry, LotId, Minute, PolicyId, RefuseReason } from '../engine/types';
+import type { AwardState, EngineInput, FailureReason, LogEntry, LotId, Minute, PolicyId, RefuseReason } from '../engine/types';
 
 export type TapeType = 'CALL' | 'PROPOSE' | 'REFUSE' | 'TENTATIVE' | 'COMMIT' | 'FAILURE' | 'DELIVERED';
 
@@ -77,6 +77,29 @@ export function pantryBidDetail(policy: PolicyId, shares: number, valuePercent: 
   return '';
 }
 
+/**
+ * The detail of a TENTATIVE line. Salo prints its shares; a baseline has no share budget, so it prints only "award held".
+ */
+export function tentativeDetail(policy: PolicyId, shares: number): string {
+  return policy === 'salo' ? dash.tentativeDetail(shareText(shares)) : dash.awardHeld;
+}
+
+/**
+ * The clock minute of the latest driver cancel of this lot at or before `clock`, or null when none is visible yet.
+ * The dashboard's status line comes from this, so rewinding or seeking before the cancel clears it.
+ */
+export function cancelledAtMinute(
+  inputs: readonly { atMinute: Minute; input: EngineInput }[],
+  lotId: LotId,
+  clock: Minute,
+): Minute | null {
+  let at: Minute | null = null;
+  for (const { atMinute, input } of inputs) {
+    if (input.type === 'CANCEL_DRIVER' && input.lotId === lotId && atMinute <= clock) at = atMinute;
+  }
+  return at;
+}
+
 /** The tape lines for one lot, in log order. Pass the visible log so nothing after the clock appears. */
 export function tapeLines(log: readonly LogEntry[], lotId: LotId, names: NameLookup = WORLD_NAMES): TapeLine[] {
   const lines: TapeLine[] = [];
@@ -136,7 +159,7 @@ export function tapeLines(log: readonly LogEntry[], lotId: LotId, names: NameLoo
           minute: m.atMinute,
           type: 'TENTATIVE',
           who: names.pantry(m.pantryId),
-          detail: dash.tentativeDetail(shareText(m.shares)),
+          detail: tentativeDetail(policy, m.shares),
           alert: false,
         });
         break;

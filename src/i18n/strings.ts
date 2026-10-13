@@ -19,10 +19,10 @@ export const S = {
   /** The donor post screen. The Filipino lines are the donor's; `en` lines are the English subtitles. */
   postScreen: {
     question: 'Ano ang natira?',
-    example: 'Ano ang natira? Isulat gaya ng pag-text, halimbawa: “May 3 tray ng adobo pa, kunin bago mag-8 PM.”',
+    example: 'Isulat gaya ng pag-text. Halimbawa: “May 3 tray ng adobo pa, kunin bago mag-8 PM.”',
     placeholder: 'May 3 tray ng adobo pa, kunin bago mag-8',
-    voiceSoon: 'Pag-post gamit ang boses, hindi pa available. Darating sa susunod na build.',
-    voiceBody: 'Ang pag-unawa sa mensahe at boses ay darating sa susunod na build. Babasahin ito ni Salo at gagawing tag na iyong kukumpirmahin.',
+    voiceSoon: 'Hindi pa puwedeng mag-post gamit ang boses. Sa susunod na bersyon pa ito.',
+    voiceBody: 'Sa susunod na bersyon, mauunawaan ni Salo ang text o boses mo at gagawa ng mga tag na kukumpirmahin mo.',
     back: 'Bumalik · Back',
   },
   /** TalkBack hint on a donor tag. */
@@ -30,14 +30,14 @@ export const S = {
   /** The sentences a tag reads aloud, by state. The state word is in the sentence where it matters. */
   tagWho: {
     bids: (n: number) => `${n} pantry ang nag-bid.`,
-    tentative: (pantry: string, held: string) => `Para sa ${pantry}, hawak muna ang pagkain. ${held}`,
-    final: (pantry: string, driver: string, eta: string) => `Para sa ${pantry}. Si ${driver} ang driver; tinatayang darating bandang ${eta}.`,
+    tentative: (pantry: string) => `Para sa ${pantry} muna ang pagkain hanggang may driver na mag-confirm.`,
+    final: (pantry: string, driver: string, eta: string) => `Para sa ${pantry} ang pagkain. Si ${driver} ang driver at darating bandang ${eta}.`,
     delivered: (pantry: string, driver: string) => `Naihatid sa ${pantry} ni ${driver}.`,
   },
   /** Donor-screen simulation control labels (the dashboard uses `dash` instead). */
   simDonor: {
-    finished: 'Tapos na ang simulasyon. Simulation finished.',
-    pause: 'Ihinto ang simulasyon. Pause the simulation.',
+    finished: 'Tapos na ang simulasyon.',
+    pause: 'I-pause ang simulasyon. Pause the simulation.',
     play: 'Ituloy ang simulasyon. Play the simulation.',
   },
   slots: {
@@ -53,7 +53,7 @@ export const S = {
     final: { fil: 'May driver na', en: 'Driver committed', sticker: 'FINAL' },
     delivered: { fil: 'Naihatid', en: 'Delivered', sticker: 'NAIHATID' },
     stranded: { fil: 'Hindi naihatid', en: 'Not delivered', sticker: 'DI NAIHATID' },
-    unawarded: { fil: 'Walang pantry na tumanggap', en: 'No pantry took it', sticker: 'DI TINANGGAP' },
+    unawarded: { fil: 'Walang pantry na tumanggap', en: 'No pantry took it', sticker: 'WALANG PANTRY' },
   },
   journey: ['Nai-post', 'May bid', 'Tentative', 'May driver', 'Naihatid'] as const,
   heldUntilDriver: { fil: 'Hawak muna hanggang may driver na mag-confirm.', en: 'Held until a driver commits.' },
@@ -127,6 +127,8 @@ export const dash = {
   rulerHint: 'Tap or drag to move the clock and pause. Swipe up or down to move 5 minutes.',
   driverBid: (eta: string, reliability: number) => `ETA ${eta} · reliability ${reliability}%`,
   tentativeDetail: (shares: string) => `${shares} shares, award held`,
+  /** A baseline's TENTATIVE line: no share budget, so no shares. */
+  awardHeld: 'award held',
   refuse: {
     closed_before_earliest_arrival: 'closed before the earliest driver could arrive',
     cannot_store_lot: "can't store it, too big for dry and fridge space",
