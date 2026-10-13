@@ -392,7 +392,7 @@ Acceptance:
 - Each policy row shows four measures: food rescued, food wasted, need met (worst-served pantry), stranded awards.
 - Before a run every cell reads "Not measured yet" (mockup Fig 3). No result number is shown before it is computed.
 - Numbers are computed on the device. Test: change the seed or one pantry's need in the fixture and the numbers change. The build contains no stored results table.
-- Only the 10 main_sample evenings (E21 to E30) are used (RES-06).
+- Only main_sample evenings are used, and only after the pilot has run and the main-evening count is written down (RES-06). Until then no main_sample number is shown.
 
 Source: PRODUCT Stack (Results); mockup Fig 3; guide p.19.
 
@@ -415,7 +415,8 @@ Source: guide p.14, p.19; mockup Fig 3.
 As the panel, I want Salo compared with central greedy using confidence intervals, so that a gap is called a win only when it is clear.
 
 Acceptance:
-- Two main results, fixed before any run: Salo minus central greedy on food rescued, and on worst-served need met. Each has a 97.5% paired bootstrap interval over the main_sample evenings E21 to E30 (guide p.16, p.19).
+- Two main results, fixed before any run: Salo minus central greedy on food rescued, and on worst-served need met. Each has a 97.5% paired bootstrap interval over the main_sample evenings (E21 to E30 in the current dataset) (guide p.16, p.19).
+- Nothing in this story is computed or shown until the pilot on E11 to E20 has run and the main-evening count is written down (RES-06; guide p.19: "write that number down before any main runs"). Before then the panel shows "Not measured yet".
 - Supporting comparisons: the other 10 of the 12 intervals (4 measures × 3 baselines, minus the 2 main results), each at 95%. They are labelled supporting and cannot be a win on their own (guide p.19).
 - An interval that contains zero is labelled "no clear difference".
 - The resample count and the random seed are shown on screen (assumption: 10,000 resamples). The same inputs and seed give the same bounds.
@@ -455,7 +456,8 @@ Acceptance:
 - The Results screen reports only the main_sample evenings E21 to E30. "Pilot and tuning evenings stay out of the reported results, and main evenings are never used for tuning" (guide p.19).
 - Tuning evenings E01 to E10 are used only to tune the weights, the share-bid scale and central greedy's settings (guide p.11 and p.12), and to learn driver reliability (guide p.15). Pilot evenings E11 to E20 are used only for pilot checks: how much the two main differences vary, which sets the number of main evenings (guide p.19), and how often each method hits the need ceiling (guide p.13). Neither split appears on the Results screen.
 - Test: the Results screen lists exactly E21 to E30, and no pilot or tuning evening ID appears anywhere on it.
-- The count of 10 main_sample evenings is provisional. The guide says a pilot sets the final count so that each 97.5% interval is narrower than 6 kg (guide p.19). Until that pilot has run, the Results screen shows a visible note: "Provisional: 10 main evenings. The pilot will set the final count." If the pilot asks for more, the dataset is regenerated with more main evenings (decision by Arjhine, 2026-10-13).
+- **No main_sample numbers before the count is written down.** The Results screen shows no number for E21 to E30 until the pilot on E11 to E20 has run and the number of main evenings is written down. Guide p.19: "I then set the number of main evenings so each 97.5% interval’s full width is smaller than the smallest gap worth caring about (6 kg per evening; a fairness target fixed before the pilot), and write that number down before any main runs." Until then every Results cell reads "Not measured yet", with the note "Waiting for the pilot: the number of main evenings is not set yet." Test: with no recorded main-evening count, no E21 to E30 metric or interval appears anywhere on the Results screen, and the main runs cannot be started.
+- *Change to the 2026-10-13 decision* (Arjhine, 2026-10-13): this replaces the earlier choice to show the 10 main_sample evenings with a "provisional count" note. Showing main results before the count is written down would let the main evenings influence that count, which page 19 rules out. If the pilot asks for more than 10 main evenings, the dataset is regenerated before any main run.
 - Interval levels follow guide p.19: 97.5% for the two main results, 95% for the other 10, which are labelled supporting (decision by Arjhine, 2026-10-13).
 - Tuning parameters are frozen. The results screen shows a version or checksum of them (assumption). The app does not change them while results run.
 - Reliability estimates for every pilot and main_sample evening start from the frozen values learned on tuning evenings E01 to E10, and nothing learned in one evening carries into the next (guide p.15). Test: R. Dizon starts at 0.85 on every pilot and main_sample evening.

@@ -564,7 +564,26 @@ Each item says what is undecided, the options, and a recommendation. None of the
 - (b) Regenerate the dataset with more main evenings, then run the count the pilot sets. This is the guide's rule.
 - (c) Include pilot evenings in the results. Not recommended: it breaks the held-out rule (guide p.12, D-11).
 - Recommendation: (b). The number is still set by the pilot, as the guide requires. The phone's results screen takes that count as a parameter.
-- **Resolved 2026-10-13 (Arjhine):** for now the Results screen reports the 10 main_sample evenings E21 to E30, with a visible "provisional count" note. The pilot on E11 to E20 sets the final count later (guide page 19). If it asks for more than 10, the dataset is regenerated with more main evenings, and the screen reads the count as a parameter. Interval levels stay as on guide page 19: 97.5% for the two main results and 95% for the 10 supporting ones.
+- **Resolved 2026-10-13 (Arjhine), changed later the same day:** the Results screen shows no main_sample (E21 to E30) number until the pilot on E11 to E20 has run and the number of main evenings is written down. Guide page 19: "I then set the number of main evenings so each 97.5% interval’s full width is smaller than the smallest gap worth caring about (6 kg per evening; a fairness target fixed before the pilot), and write that number down before any main runs." The written count is stored as a frozen parameter, alongside the tuned values, before the main runs are allowed to start. The runner refuses to start main_sample jobs while it is missing, and the screen shows "Not measured yet" with a "waiting for the pilot" note. If the count is above 10, the dataset is regenerated with more main evenings first. Interval levels stay as on guide page 19: 97.5% for the two main results and 95% for the 10 supporting ones.
+- *Change to the earlier 2026-10-13 decision:* that decision showed the 10 main_sample evenings straight away with a "provisional count" note. It is withdrawn, because main results seen before the count is fixed could influence the count, which page 19 rules out.
+- **Is adding main_sample evenings append-only? Checked 2026-10-13: not fully. Lots, needs, evenings and driver runs are unchanged; donor messages are not.**
+  - *Method.* `dataset/build_dataset.py` was copied to a scratch folder unchanged and rebuilt. All 12 published CSVs came out byte-identical, so the scratch build is a faithful baseline. Then only two lines of the copy were changed: the loop `range(1, 31)` became `range(1, 41)`, and the split list gained 10 more `main_sample` evenings. The E01 to E20 rows were then compared with the published CSVs by key. The build script itself was **not** changed.
+  - *Unchanged (identical by diff):*
+    - `evenings`: 20 of 20 rows;
+    - `pantry_needs`: 600 of 600 rows;
+    - `food_offers`: 959 of 959 rows, same lot IDs;
+    - `driver_runs`: 406 of 406 rows;
+    - `drivers`, `pantries`, `donors`, `road_distances`: whole tables.
+
+    Each evening draws from its own seeded generator (`SEED * 100 + e`), lot IDs are numbered in evening order, and driver runs use only E01 to E10 lots with their own generator. That is why these rows don't move.
+  - *Changed:* `donor_messages`. `messages.build()` samples 500 lots from **all** evenings at once (`offers.sample(n=500, random_state=SEED)`), then writes them one after another from a single generator, numbering them M0001 onwards. With 10 more evenings in the pool:
+    - the E01 to E20 messages drop from 329 to 259;
+    - only 164 of those lots keep a message;
+    - only 1 of those 164 keeps the same text and gold labels;
+    - message IDs shift, and the split counts move from 163 / 166 / 171 (tuning / pilot / main) to 132 / 127 / 241.
+
+    So the tuning and pilot messages the parser would be developed and checked on would change.
+  - *Required fix (option A, approved by Arjhine 2026-10-13; to be applied in the dataset repo and verified there):* freeze the published 500 messages exactly as they are. Generate messages for any new evening (E31 onwards) with a separate generator seeded per evening, a fixed number of messages per new evening, and IDs that continue after M0500. That makes message generation append-only and leaves every published row, checksum and the Hugging Face release unchanged. The alternative, sampling messages per evening for all evenings, would also be append-only from then on, but it rewrites today's 500 messages, so the dataset would need a new version.
 
 **O-9 In-evening learning during evaluation.** Guide page 15 says learning is frozen between evenings, and its R. Dizon example shows an update within an evening after a withdrawal.
 - Recommendation: in-evening updates apply to every evaluation run, Salo and central greedy alike, and reset at the start of each evening. Confirm.
