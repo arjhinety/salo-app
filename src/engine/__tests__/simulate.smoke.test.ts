@@ -188,17 +188,22 @@ describe('driver reply delay (decision "Driver reply delay")', () => {
     expect(lots).toBeGreaterThan(0);
   });
 
-  it('after a driver failure the re-announcement stays in the same minute (no reply delay)', () => {
+  it('after a driver failure the re-announcement waits the seeded reply delay (not the same minute)', () => {
     const none = Object.fromEntries(WORLD.drivers.map((d) => [d.id, 0]));
-    const { log } = runEvening(wx, tuning[2], { policy: 'salo', params: UNTUNED_PARAMS, trueShowRate: none });
+    const ev = tuning[2];
+    const { log } = runEvening(wx, ev, { policy: 'salo', params: UNTUNED_PARAMS, trueShowRate: none });
+    const failuresPerLot = new Map<string, number>();
     let failures = 0;
     log.forEach((e, i) => {
       if (e.event.type !== 'MESSAGE' || e.event.message.type !== 'FAILURE') return;
       const lotId = e.event.message.lotId;
+      const r = (failuresPerLot.get(lotId) ?? 0) + 1; // the lot's r-th re-announcement
+      failuresPerLot.set(lotId, r);
       const next = log.slice(i + 1).find((x) =>
         x.event.type === 'MESSAGE' && x.event.message.type === 'CALL_FOR_PROPOSALS' && x.event.message.lotId === lotId);
       expect(next).toBeDefined();
-      expect(next!.atMinute).toBe(e.atMinute);
+      const idx = Number(/^L(\d+)$/.exec(lotId)![1]);
+      expect(next!.atMinute - e.atMinute).toBe(1 + intBelow(DRIVER_REPLY_DELAY_MAX_MIN, ev.seed, STREAM.driverReply, r, idx));
       failures++;
     });
     expect(failures).toBeGreaterThan(0);

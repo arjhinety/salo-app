@@ -207,7 +207,8 @@ describe('cancelling a driver', () => {
     const reannounce = rows.slice(failIdx + 1).find((e) => e.event.type === 'MESSAGE' && e.event.message.type === 'CALL_FOR_PROPOSALS');
     expect(reannounce).toBeDefined();
     expect((reannounce!.event as { message: { target: string } }).message.target).toBe('driver');
-    expect(reannounce!.atMinute).toBe(1106);
+    // re-announced after the seeded 1-3 min reply delay (decision "Driver reply delay"): 1106 + 3
+    expect(reannounce!.atMinute).toBe(1109);
     // the award goes back to tentative, then the lot is re-committed or stranded
     const after = rows.slice(failIdx).find((e) => e.event.type === 'AWARD_STATE');
     expect((after!.event as { state: string }).state).toBe('tentative');

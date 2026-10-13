@@ -5,19 +5,19 @@ Only tuning evenings E01-E10 were run.
 
 | Policy | Food rescued (kg, mean/evening) | Food wasted (kg) | Worst-served need met (mean) | Stranded awards (mean) |
 |---|---|---|---|---|
-| salo | 150.2 | 25.5 | 0.00 | 0.8 |
-| fcfs | 132.7 | 43.0 | 0.00 | 1.0 |
-| nearest | 143.4 | 32.3 | 0.00 | 0.4 |
-| central_greedy | 150.8 | 24.9 | 0.00 | 0.7 |
+| salo | 149.0 | 26.7 | 0.00 | 1.0 |
+| fcfs | 133.3 | 42.3 | 0.00 | 0.8 |
+| nearest | 143.4 | 32.3 | 0.00 | 0.5 |
+| central_greedy | 151.7 | 24.0 | 0.00 | 0.6 |
 
 ## Driver rule (D-Q1)
 
-On E01-E10 under Salo (537 driver rounds):
+On E01-E10 under Salo (536 driver rounds):
 
-- Earliest-ETA rule: reliability broke an ETA tie in 239 rounds (44.5%). Counted on arrivals rounded to whole minutes (see the caveat below).
-- The most-reliable rule would have picked a different driver in 506 rounds (94.2%).
+- Earliest-ETA rule: reliability broke an ETA tie in 235 rounds (43.8%). Counted on arrivals rounded to whole minutes (see the caveat below).
+- The most-reliable rule would have picked a different driver in 506 rounds (94.4%).
 
-**Rounding caveat:** arrivals are rounded up to whole minutes, so most of these ties are rounding ties. With the 1-3 minute driver reply delay (re-measured 2026-10-13, 537 rounds): reliability broke a tie on rounded minutes in 239 rounds (44.5%), on exact arrival times in 72 (13.4%), and within a 1-minute band in 380 (70.8%). Exact ties mean unrounded arrivals within 1e-9 minute. Pre-delay counts (545 rounds): 68 (12.5%) on exact arrivals and 384 (70.5%) within the band. Quote the rounded figure only with these counts (decisions.md, D-Q1 evidence and its re-measure subsection).
+**Rounding caveat:** arrivals are rounded up to whole minutes, so most of these ties are rounding ties. With the 1-3 minute driver reply delay on first rounds and re-announcements (re-measured 2026-10-13, 536 rounds): reliability broke a tie on rounded minutes in 235 rounds (43.8%), on exact arrival times in 75 (14.0%), and within a 1-minute band in 371 (69.2%). Exact ties mean unrounded arrivals within 1e-9 minute. Pre-delay counts (545 rounds): 68 (12.5%) on exact arrivals and 384 (70.5%) within the band. Quote the rounded figure only with these counts (decisions.md, D-Q1 evidence and its re-measure subsection).
 
 D-Q1 is final: earliest ETA, reliability breaks ties (decisions.md).
 

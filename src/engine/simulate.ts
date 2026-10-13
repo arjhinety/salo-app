@@ -49,8 +49,9 @@ export interface RunOptions {
    */
   trueShowRate?: Readonly<Record<DriverId, number>>;
   /**
-   * Driver reply delay after TENTATIVE_ACCEPT: the first driver round comes 1 to this many minutes later,
-   * seeded per lot (decision "Driver reply delay"). 0 means immediate (the pre-delay behaviour).
+   * Driver reply delay: the first driver round after TENTATIVE_ACCEPT, and every re-announcement after a
+   * driver FAILURE, comes 1 to this many minutes later, seeded per lot and per round (decision "Driver
+   * reply delay"). 0 means immediate (the pre-delay behaviour, re-announcements in the same minute).
    * Defaults to DRIVER_REPLY_DELAY_MAX_MIN.
    */
   replyDelayMaxMin?: number;
@@ -90,6 +91,8 @@ interface LotState {
   attempts: number;
   /** Bumped whenever a commit is cancelled, so its pending pickup/arrival events are ignored. */
   token: number;
+  /** Number of re-announcements after a driver FAILURE so far (the r in the reply-delay draw). */
+  reannouncements: number;
   replies: PantryCandidate[];
   bids: Map<PantryId, number>;
 }
@@ -201,6 +204,14 @@ export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): 
     : policyId === 'nearest' ? nearestPolicy
     : centralGreedyPolicy((c) => c.utility.total, params.centralGreedy.transportPenaltyPerMinute);
 
+  /**
+   * Minutes until a driver round (decision "Driver reply delay"): 0 when the reply delay is off. `r` is 0 for
+   * the first round after TENTATIVE_ACCEPT and n for the n-th re-announcement after a FAILURE. The draw depends
+   * only on (evening seed, lot, r), so it is the same under all four policies.
+   */
+  const roundDelay = (ls: LotState, r: number): number =>
+    replyDelayMax > 0 ? 1 + intBelow(replyDelayMax, seed, STREAM.driverReply, r, ls.idx) : 0;
+
   /** Earliest arrival of `ds` at `pantryId` for a lot, starting no earlier than `from`. */
   function trip(ds: DriverState, lot: Lot, pantryId: PantryId, from: Minute) {
     const start = Math.max(from, ds.d.availableFromMinute, ds.freeAt);
@@ -232,7 +243,7 @@ export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): 
   function post(lot: Lot) {
     const ls: LotState = {
       lot, idx: lotIndex(lot.id), state: 'announced', pantryId: null, driverId: null, excluded: new Set(),
-      attempts: 0, token: 0, replies: [], bids: new Map(),
+      attempts: 0, token: 0, reannouncements: 0, replies: [], bids: new Map(),
     };
     lots.set(lot.id, ls);
     msg({ type: 'CALL_FOR_PROPOSALS', lotId: lot.id, atMinute: now, target: 'pantry', from: lot.donorId });
@@ -297,8 +308,7 @@ export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): 
     setState(ls, 'tentative');
     // The first driver round waits 1..replyDelayMax minutes (a seeded draw per lot, same under all
     // policies), so the lot is visibly TENTATIVE. With 0 the round is in this same minute.
-    const delay = replyDelayMax > 0 ? 1 + intBelow(replyDelayMax, seed, STREAM.driverReply, 0, ls.idx) : 0;
-    q.push(now + delay, { kind: 'driverRound', lotId: ls.lot.id });
+    q.push(now + roundDelay(ls, 0), { kind: 'driverRound', lotId: ls.lot.id });
   }
 
   function updateReliability(ds: DriverState, showed: boolean) {
@@ -357,8 +367,9 @@ export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): 
         msg({ type: 'FAILURE', lotId: lot.id, atMinute: now, driverId: ds.d.id, reason: 'withdrew_before_commit' });
         updateReliability(ds, false);
         ls.excluded.add(ds.d.id);
-        // Re-announced in the same minute (no reply delay after a failure).
-        q.push(now, { kind: 'driverRound', lotId: lot.id });
+        // Re-announced after the reply delay, like the first round after TENTATIVE_ACCEPT.
+        ls.reannouncements += 1;
+        q.push(now + roundDelay(ls, ls.reannouncements), { kind: 'driverRound', lotId: lot.id });
         return;
       }
     }
@@ -387,9 +398,11 @@ export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): 
     ls.excluded.add(ds.d.id);
     ls.driverId = null;
     // Only the delivery is re-announced; the pantry keeps its tentative award (guide page 14).
-    // Re-announced in this same minute: the reply delay applies only after TENTATIVE_ACCEPT.
+    // Re-announced after the reply delay. The lot stays 'tentative' while the round is pending, so a
+    // further CANCEL_DRIVER in that window is ignored (it only acts on 'final').
     setState(ls, 'tentative');
-    q.push(now, { kind: 'driverRound', lotId: ls.lot.id });
+    ls.reannouncements += 1;
+    q.push(now + roundDelay(ls, ls.reannouncements), { kind: 'driverRound', lotId: ls.lot.id });
   }
 
   function arrive(ls: LotState, lateMin: number) {

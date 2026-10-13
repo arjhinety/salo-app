@@ -40,9 +40,11 @@ Setup: Salo policy, UNTUNED parameters, T1 hidden true show rates (the default),
 
 Reading: the food-rescued interval lies entirely below zero, so on these tuning evenings "most reliable" clearly rescues less food (about 5 kg per evening), and it often picks a farther driver. The failures and stranded intervals both include zero, so there is no clear difference in failures or stranding. Caveats: only 10 evenings, untuned weights, and the tuned weights may shift this. **Decided 2026-10-13:** Arjhine fixed "earliest ETA, reliability breaks ties" as final.
 
-**Rounding caveat (pre-delay, checked 2026-10-13, tuning evenings E01–E10, Salo, 545 driver rounds):** the engine rounds each arrival up to a whole minute (`Math.ceil` in `simulate.ts`), so drivers arriving at 18:04.2 and 18:04.9 tie at 18:05. Reliability broke an earliest-ETA tie in 239 rounds (43.9%) on rounded minutes, but only in 68 (12.5%) on exact unrounded arrival times. 384 rounds (70.5%) had two or more drivers within 1 minute of the earliest exact arrival. So most of the "44%" comes from minute rounding. Quote it only together with these three counts. They were measured with a temporary, uncommitted copy of the engine, whose event logs matched the real engine on all 10 evenings. **With the 1–3 minute reply delay (re-measured 2026-10-13, 537 driver rounds):** 239 (44.5%) on rounded minutes, 72 (13.4%) on exact arrival times, and 380 (70.8%) within a 1-minute band; see the subsection below. The engine's rounding and the final D-Q1 rule are unchanged; changing either needs Arjhine's approval.
+**Rounding caveat (pre-delay, checked 2026-10-13, tuning evenings E01–E10, Salo, 545 driver rounds):** the engine rounds each arrival up to a whole minute (`Math.ceil` in `simulate.ts`), so drivers arriving at 18:04.2 and 18:04.9 tie at 18:05. Reliability broke an earliest-ETA tie in 239 rounds (43.9%) on rounded minutes, but only in 68 (12.5%) on exact unrounded arrival times. 384 rounds (70.5%) had two or more drivers within 1 minute of the earliest exact arrival. So most of the "44%" comes from minute rounding. Quote it only together with these three counts. They were measured with a temporary, uncommitted copy of the engine, whose event logs matched the real engine on all 10 evenings. **With the 1–3 minute reply delay (re-measured 2026-10-13, 537 driver rounds):** 239 (44.5%) on rounded minutes, 72 (13.4%) on exact arrival times, and 380 (70.8%) within a 1-minute band; **With the delay on every round (re-measured 2026-10-13, 536 rounds):** 235 (43.8%) on rounded minutes, 75 (14.0%) on exact arrival times, 371 (69.2%) within a 1-minute band. See the subsections below. The engine's rounding and the final D-Q1 rule are unchanged; changing either needs Arjhine's approval.
 
 ### Re-measured with the 1–3 minute reply delay (2026-10-13)
+
+**Superseded the same day** by the subsection "Re-measured with the delay on re-announcements too" below (first-round delay only here). Kept for the record.
 
 The same method as above, run on the current engine with the driver reply delay on (its default, `DRIVER_REPLY_DELAY_MAX_MIN = 3`). Tuning evenings E01–E10 only, UNTUNED parameters, T1 hidden true show rates, Salo. Differences are **most reliable minus earliest ETA** on the same evening. Intervals are 95% paired percentile bootstraps from `pairedInterval`, 10,000 resamples, `bootstrapIndices(10, 10000, 20260927)`, one index set for all three measures. The D-Q1 rule is unchanged.
 
@@ -68,6 +70,31 @@ The same method as above, run on the current engine with the driver reply delay 
 Reading: the food-rescued interval still lies entirely below zero (upper end -1.46 kg), so "most reliable" rescues less food, about 6 kg per evening, with the delay on. Stranding moves: the mean is +0.50 and the interval's lower end is exactly 0.00, so zero sits at its edge. That is weaker than before the delay (+0.20 [-0.40, +0.70]) and is still not a clear difference. The failures interval includes zero. Caveats: 10 evenings and untuned weights, as above.
 
 Validation: the same procedure at delay 0 reproduces the pre-delay table exactly (food -4.91 [-9.51, -0.19], stranded +0.20 [-0.40, +0.70], failures -1.30 [-3.50, +1.20]). A temporary copy of the engine that records exact arrivals matched the real engine's log, result and driver-rule stats on all 80 pairs (10 evenings × 4 policies × 2 driver rules). The copy was then deleted.
+
+### Re-measured with the delay on re-announcements too (2026-10-13)
+
+Same method and bootstrap indices as above, current engine (delay on every driver round). Validation: with the re-announcement delay switched off, the run reproduces the subsection above exactly (food −5.75 [−10.38, −1.46], stranded +0.50 [0.00, +1.00], failures −1.30 [−3.80, +1.30]).
+
+| Evening | Food ETA / reliable (kg) | Delta food | Stranded ETA / reliable | Delta | Failures ETA / reliable | Delta |
+|---|---|---|---|---|---|---|
+| E01 | 137.48 / 140.64 | +3.16 | 1 / 0 | -1 | 7 / 2 | -5 |
+| E02 | 142.70 / 138.08 | -4.62 | 2 / 2 | 0 | 9 / 7 | -2 |
+| E03 | 182.88 / 183.06 | +0.18 | 1 / 1 | 0 | 6 / 3 | -3 |
+| E04 | 115.45 / 113.46 | -1.99 | 0 / 0 | 0 | 1 / 6 | +5 |
+| E05 | 139.90 / 136.85 | -3.05 | 1 / 1 | 0 | 5 / 4 | -1 |
+| E06 | 141.10 / 133.14 | -7.96 | 0 / 0 | 0 | 4 / 7 | +3 |
+| E07 | 155.53 / 158.83 | +3.30 | 2 / 3 | +1 | 8 / 3 | -5 |
+| E08 | 137.31 / 135.09 | -2.22 | 2 / 1 | -1 | 11 / 2 | -9 |
+| E09 | 159.00 / 156.66 | -2.34 | 1 / 1 | 0 | 9 / 7 | -2 |
+| E10 | 178.26 / 160.26 | -18.00 | 0 / 2 | +2 | 2 / 5 | +3 |
+
+| Measure (most reliable − earliest ETA, per evening) | Mean [95% interval] |
+|---|---|
+| Food rescued (kg) | −3.35 [−7.30, −0.16] |
+| Stranded awards | +0.10 [−0.40, +0.60] |
+| Driver failures | −1.60 [−4.10, +1.00] |
+
+Reading: the food interval still lies entirely below zero, but only just (upper end −0.16 kg): "most reliable" rescues about 3 kg less per evening. Stranding and failures both include zero. The D-Q1 rule (earliest ETA, reliability breaks ties) is unchanged and remains FINAL; this re-measure does not reverse its evidence. Caveats: 10 evenings, untuned weights.
 
 | Tie count, earliest-ETA rounds under Salo (E01–E10) | With the 1–3 min delay | Pre-delay (delay 0) |
 |---|---|---|
@@ -142,8 +169,9 @@ Untuned starting weights for development: need 0.4, storage 0.3, distance 0.15, 
 ## Driver reply delay (decided 2026-10-13, option B: pre-tuning engine definition)
 
 - **Problem:** simulated drivers answered in the same minute the pantry won, so a lot was never visibly TENTATIVE ("held until a driver commits") in a simulated evening. Instant replies are also unrealistic.
-- **Decision:** after a TENTATIVE_ACCEPT, the first driver round happens 1–3 minutes later (uniform whole minutes, a counter-based seeded draw per lot on its own RNG stream, identical under all four policies). Re-announcements after a driver FAILURE keep their current timing. The delay range is an assumption; there is no measured data on real volunteers' reply times.
+- **Decision:** after a TENTATIVE_ACCEPT, the first driver round happens 1–3 minutes later (uniform whole minutes, a counter-based seeded draw per lot on its own RNG stream, identical under all four policies). **Extended 2026-10-13 (Arjhine, option A):** every re-announcement after a driver FAILURE (withdrawal, no-show or operator cancel) also waits 1–3 minutes. The draw is keyed by evening seed, lot and round number (0 = first round after TENTATIVE_ACCEPT, n = the lot's n-th re-announcement), on the same stream, so it is the same under all four policies; `replyDelayMaxMin: 0` still reproduces the pre-delay engine. Reason: with same-minute re-announcements a paused live Cancel driver showed FINAL again at once (594 of 665 paused cancels on E05), so the button looked broken. The delay range is an assumption; there is no measured data on real volunteers' reply times.
 - **Evidence** (mobile-data study, tuning evenings E01–E10, untuned, throwaway engine copy proven identical at delay 0 on all 40 evening/policy pairs; `docs/handoffs/2026-10-13-mobile-data.md`): for Salo, max delay 3 changes food rescued by −0.07 kg per evening (150.25 → 150.18), stranded awards go from 0.3 to 0.8 per evening, and TENTATIVE lasts 1.9 minutes on average. Max delay 5 would cost 2.2 kg per evening (95% interval [−5.41, −0.05]).
+- **Evidence for the extension** (mobile-data, tuning E01–E10, untuned, T1; `docs/handoffs/2026-10-13-mobile-data-reannounce-delay.md`; orchestrator re-checked the per-evening sums and regenerated the M1 snapshot): Salo food rescued 150.18 → 148.96 kg per evening, stranded awards 0.80 → 1.00, TENTATIVE lasts 2.15 minutes on average (max 6 when rounds chain). fcfs 132.66 → 133.34, nearest 143.36 → 143.38, central greedy 150.80 → 151.70 kg. Paused-cancel probe on E05: 0 of 641 cancels show FINAL again in the same minute (was 594 of 665).
 
 ## Small live-demo defaults (2026-10-13, orchestrator; change on request)
 
