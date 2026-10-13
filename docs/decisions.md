@@ -15,6 +15,31 @@ These decisions were made by Arjhine on 2026-10-13, from the open questions in `
 | D-c | Learning during an evening | Reliability updates within an evening and resets to the frozen tuning values at the start of the next one. This applies to every policy alike. | O-9, SQ-10 |
 | D-d | Share budget reset | 40 shares per pantry per evening ("to spend tonight"). | SQ-4 |
 
+## D-Q1 evidence: driver rule comparison (2026-10-13, tuning evenings E01–E10 only)
+
+Setup: Salo policy, UNTUNED parameters, T1 hidden true show rates (the default), the same seeded evenings for both rules. Each difference is **most reliable minus earliest ETA** on the same evening. Intervals are 95% paired percentile bootstraps from `src/engine/metrics.ts` `pairedInterval`: 10,000 resamples, `bootstrapIndices(10, 10000, 20260927)`, one shared index set for all three measures. Reporting the interval on the difference, rather than which rule scored higher, follows Bestgen (2022, arXiv 2205.11134), as on guide p.20. No pilot or main evening was run.
+
+| Evening | Food rescued, ETA / reliable (kg) | Δ food | Stranded, ETA / reliable | Δ | Driver failures, ETA / reliable | Δ |
+|---|---|---|---|---|---|---|
+| E01 | 141.2 / 140.6 | -0.5 | 0 / 0 | +0 | 5 / 2 | -3 |
+| E02 | 142.7 / 143.5 | +0.8 | 2 / 0 | -2 | 13 / 7 | -6 |
+| E03 | 183.0 / 187.6 | +4.6 | 0 / 0 | +0 | 6 / 3 | -3 |
+| E04 | 115.5 / 102.6 | -12.8 | 0 / 1 | +1 | 1 / 7 | +6 |
+| E05 | 141.9 / 136.8 | -5.1 | 0 / 1 | +1 | 6 / 3 | -3 |
+| E06 | 141.1 / 126.4 | -14.7 | 0 / 0 | +0 | 6 / 6 | +0 |
+| E07 | 157.6 / 164.8 | +7.3 | 1 / 1 | +0 | 8 / 5 | -3 |
+| E08 | 136.9 / 132.7 | -4.2 | 0 / 0 | +0 | 11 / 5 | -6 |
+| E09 | 164.5 / 153.7 | -10.8 | 0 / 1 | +1 | 6 / 7 | +1 |
+| E10 | 178.3 / 164.5 | -13.7 | 0 / 1 | +1 | 2 / 6 | +4 |
+
+| Measure (most reliable − earliest ETA, per evening) | Mean [95% interval] |
+|---|---|
+| Food rescued (kg) | -4.91 [-9.51, -0.19] |
+| Stranded awards | +0.20 [-0.40, +0.70] |
+| Driver failures (withdrawals + no-shows + operator cancels) | -1.30 [-3.50, +1.20] |
+
+Reading: the food-rescued interval lies entirely below zero, so on these tuning evenings "most reliable" clearly rescues less food (about 5 kg per evening), and it often picks a farther driver. The failures and stranded intervals both include zero, so there is no clear difference in failures or stranding. Caveats: only 10 evenings, untuned weights, and the tuned weights may shift this. **Pending:** Arjhine chooses the final D-Q1 rule before any pilot run.
+
 ## Demo behaviour
 
 | ID | Question | Decision | Source |
