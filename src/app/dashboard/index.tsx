@@ -59,7 +59,8 @@ export default function Dashboard() {
   };
   const replayUnder = (p: PolicyId) => {
     setSheetOpen(false);
-    liveEvening.setPolicy(p);
+    setStatus(null);
+    liveEvening.replayUnder(p);
   };
 
   const header = selected ? (
@@ -90,7 +91,15 @@ export default function Dashboard() {
         </View>
       </TarpBar>
 
-      <EveningRuler minute={sim.minute} postings={posted.map((l) => l.postedMinute)} />
+      {sim.policy !== 'salo' ? (
+        <View style={[styles.replayNote, { backgroundColor: c.groundRaised, borderBottomColor: c.rule }]}>
+          <Text style={[TYPE.small, { color: c.text }]} accessibilityRole="text">
+            {dash.replayNote}
+          </Text>
+        </View>
+      ) : null}
+
+      <EveningRuler minute={sim.minute} postings={posted.map((l) => l.postedMinute)} onSeek={(m) => liveEvening.seek(m)} />
 
       <ReceiptTape key={selectedId ?? 'none'} rows={rows} emptyText={emptyText} header={header} />
 
@@ -182,6 +191,7 @@ const styles = StyleSheet.create({
     gap: 2,
     marginBottom: SPACE.s,
   },
+  replayNote: { borderBottomWidth: 1, paddingHorizontal: SPACE.l, paddingVertical: SPACE.s },
   dock: { borderTopWidth: 1, paddingTop: SPACE.s, gap: SPACE.s },
   status: { paddingHorizontal: SPACE.l },
   actions: { paddingHorizontal: SPACE.l, gap: SPACE.s },

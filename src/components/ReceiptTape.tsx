@@ -105,7 +105,9 @@ function LineRow({ line }: { line: TapeLine }) {
         <Text style={[TYPE.tapeBody, { color: c.onTape }]}>{clock24(line.minute)}</Text>
         <Text>{'  '}</Text>
         <Text style={[TYPE.tapeType, { color: line.alert ? c.onKraftAlert : c.onTape }]}>{line.type}</Text>
-        <Text style={[TYPE.tapeBody, { color: c.onTape }]}>{`  ${line.who} · ${line.detail}`}</Text>
+        <Text style={[TYPE.tapeBody, { color: c.onTape }]}>
+          {`  ${line.who}${line.detail ? ` · ${line.detail}` : ''}`}
+        </Text>
       </Text>
     </View>
   );

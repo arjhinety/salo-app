@@ -337,3 +337,109 @@ describe('postedLots', () => {
     expect(live.postedLots().map((l) => l.id)).toEqual(['L0207', 'L0227', 'L0242', 'LIVE-1']);
   });
 });
+
+describe('replay with baseline rewinds the clock', () => {
+  test('replayUnder goes to 17:00, paused, under the new policy, with the same input log', () => {
+    const live = at(1100);
+    live.postLot(draft());
+    live.start(0);
+    advance(live, 30);
+    const inputsBefore = JSON.stringify(live.inputLog());
+    expect(live.getSnapshot().minute).toBe(1130);
+    live.replayUnder('fcfs');
+    const s = live.getSnapshot();
+    expect(s.minute).toBe(1020);
+    expect(s.running).toBe(false);
+    expect(s.ended).toBe(false);
+    expect(s.policy).toBe('fcfs');
+    expect(JSON.stringify(live.inputLog())).toBe(inputsBefore);
+    // paused: ticks do nothing until the panel presses play again
+    live.tick(600_000);
+    expect(live.getSnapshot().minute).toBe(1020);
+  });
+
+  test('after a rewind the evening plays again from 17:00 and the inputs come back at their minutes', () => {
+    const live = at(1100);
+    live.postLot(draft()); // posted at 18:20
+    live.replayUnder('nearest');
+    expect(live.visibleLog().some((e) => e.event.type === 'INPUT')).toBe(false);
+    live.seek(1100);
+    expect(live.visibleLog().some((e) => e.event.type === 'INPUT')).toBe(true);
+  });
+
+  test('replayUnder re-runs the engine only when the policy changes', () => {
+    const live = at(1100);
+    live.visibleLog();
+    expect(live.runCount).toBe(1);
+    live.replayUnder('salo');
+    live.visibleLog();
+    expect(live.runCount).toBe(1);
+    live.replayUnder('central_greedy');
+    live.visibleLog();
+    expect(live.runCount).toBe(2);
+  });
+
+  test('replayUnder publishes once, so subscribers re-render the rewound clock', () => {
+    const live = at(1100);
+    const seen = jest.fn();
+    live.subscribe(seen);
+    live.replayUnder('fcfs');
+    expect(seen).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('seek (ruler scrubbing)', () => {
+  test('seeks to a whole minute and pauses a running clock', () => {
+    const live = at(1100);
+    live.start(0);
+    live.seek(1185.4);
+    const s = live.getSnapshot();
+    expect(s.minute).toBe(1185);
+    expect(s.running).toBe(false);
+    live.tick(600_000);
+    expect(live.getSnapshot().minute).toBe(1185);
+  });
+
+  test('clamps to 17:00 through 21:30', () => {
+    const live = at(1100);
+    live.seek(0);
+    expect(live.getSnapshot().minute).toBe(1020);
+    live.seek(99_999);
+    const s = live.getSnapshot();
+    expect(s.minute).toBe(1290);
+    expect(s.ended).toBe(true);
+  });
+
+  test('a seek is refused for a non-finite minute', () => {
+    const live = at(1100);
+    expect(() => live.seek(Number.NaN)).toThrow(RangeError);
+    expect(live.getSnapshot().minute).toBe(1100);
+  });
+
+  test('seeking changes only the visible log: the input log and the engine run are untouched', () => {
+    const live = at(1100);
+    live.postLot(draft());
+    live.visibleLog();
+    const runsBefore = live.runCount;
+    const inputsBefore = JSON.stringify(live.inputLog());
+    const fullBefore = JSON.stringify(live.visibleLog());
+    live.seek(1060);
+    expect(live.runCount).toBe(runsBefore);
+    expect(JSON.stringify(live.inputLog())).toBe(inputsBefore);
+    const shown = live.visibleLog();
+    expect(shown.every((e) => e.atMinute <= 1060)).toBe(true);
+    expect(shown.length).toBeLessThan(JSON.parse(fullBefore).length);
+    live.seek(1100);
+    expect(JSON.stringify(live.visibleLog())).toBe(fullBefore);
+    expect(live.runCount).toBe(runsBefore);
+  });
+
+  test('seek publishes a snapshot with the new minute', () => {
+    const live = at(1100);
+    const seen = jest.fn();
+    live.subscribe(seen);
+    live.seek(1150);
+    expect(seen).toHaveBeenCalledTimes(1);
+    expect(live.getSnapshot().minute).toBe(1150);
+  });
+});

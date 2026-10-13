@@ -26,17 +26,25 @@ function stickerFor(v: LotView): { text: string; kind: StickerKind } {
   }
 }
 
-/** What TalkBack reads for the whole tag: item, amount, deadline, state, and who has it. */
+/**
+ * What TalkBack reads for the whole tag: item, amount, deadline, state, and who has it. A tentative tag does not
+ * say the word "Tentative" here: its sentence already says the food is held (Codex review, decision kept).
+ */
 export function tagLabel(v: LotView): string {
   const it = v.lot.items[0];
-  const st = S.states[v.state === 'bids' ? 'bids' : v.state];
-  const who =
-    v.state === 'tentative' ? `Tentative kay ${v.pantryName}. ${S.heldUntilDriver.fil}`
-    : v.state === 'final' ? `Para kay ${v.pantryName}. Driver: ${v.driverName}, darating bago ${hhmm(v.etaMinute!)}.`
-    : v.state === 'delivered' ? `Naihatid kay ${v.pantryName} ni ${v.driverName}.`
-    : v.state === 'bids' ? `${v.bids} pantry ang nag-bid.`
-    : '';
-  return `${it.foodItemFil}, ${it.quantity} ${S.units[it.unit]}. Kunin bago ${hhmm(v.lot.pickupByMinute)}. ${st.fil}. ${who}`;
+  const head = `${it.foodItemFil}, ${it.quantity} ${S.units[it.unit]}. Kunin bago ${hhmm(v.lot.pickupByMinute)}.`;
+  switch (v.state) {
+    case 'tentative':
+      return `${head} ${S.tagWho.tentative(v.pantryName ?? '', S.heldUntilDriver.fil)}`;
+    case 'final':
+      return `${head} ${S.states.final.fil}. ${S.tagWho.final(v.pantryName ?? '', v.driverName ?? '', hhmm(v.etaMinute!))}`;
+    case 'delivered':
+      return `${head} ${S.states.delivered.fil}. ${S.tagWho.delivered(v.pantryName ?? '', v.driverName ?? '')}`;
+    case 'bids':
+      return `${head} ${S.states.bids.fil}. ${S.tagWho.bids(v.bids)}`;
+    default:
+      return `${head} ${S.states[v.state].fil}.`;
+  }
 }
 
 /** One lot as a kraft price tag hanging from the stall's string. */
@@ -56,7 +64,7 @@ export function Tag({ view, onPress }: { view: LotView; onPress?: () => void }) 
       disabled={!onPress}
       accessibilityRole={onPress ? 'button' : 'text'}
       accessibilityLabel={tagLabel(view)}
-      accessibilityHint={onPress ? 'Buksan ang detalye ng lot' : undefined}
+      accessibilityHint={onPress ? S.openLot : undefined}
       style={({ pressed }) => [styles.wrap, { transform: [{ translateY: pressed ? 3 : 0 }] }]}
     >
       {/* the drop of string from the main string to the hole */}

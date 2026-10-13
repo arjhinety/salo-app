@@ -205,11 +205,38 @@ export class LiveEvening {
     return { ok: true, value: lotId };
   }
 
-  /** "Replay with baseline": the same inputs under another policy. */
+  /** Switches the policy at the clock, keeping the clock where it is. */
   setPolicy(policy: PolicyId): void {
     if (policy === this.policy) return;
     this.policy = policy;
     this.run = null;
+    this.publish();
+  }
+
+  /**
+   * "Replay with baseline": the same input log under another policy, from 17:00 and paused, so the panel sees
+   * the same evening again from the start. Inputs keep their minutes and appear again as the clock reaches them.
+   */
+  replayUnder(policy: PolicyId): void {
+    if (policy !== this.policy) {
+      this.policy = policy;
+      this.run = null;
+    }
+    this.clock = SIM_START_MINUTE;
+    this.running = false;
+    this.lastTickMs = null;
+    this.publish();
+  }
+
+  /**
+   * Scrubbing: moves the clock to a whole minute, clamped to 17:00 to 21:30, and pauses the run. Only the visible
+   * part of the log changes. The input log and the engine run are untouched.
+   */
+  seek(minute: Minute): void {
+    if (!Number.isFinite(minute)) throw new RangeError(`cannot seek to ${minute}`);
+    this.running = false;
+    this.lastTickMs = null;
+    this.clock = Math.min(SIM_END_MINUTE, Math.max(SIM_START_MINUTE, Math.round(minute)));
     this.publish();
   }
 

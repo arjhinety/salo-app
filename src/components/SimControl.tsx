@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet } from 'react-native';
-import { dash } from '../i18n/strings';
+import { dash, S } from '../i18n/strings';
 import { useTheme } from '../theme/theme';
 import { SPACE } from '../theme/tokens';
 import { PauseIcon, PlayIcon } from './icons';
@@ -24,9 +24,9 @@ export function SimControl({
   const showPause = running && !ended;
   const label = english
     ? ended ? dash.finished : showPause ? dash.pause : dash.play
-    : ended ? 'Tapos na ang simulasyon. Simulation finished.'
-    : showPause ? 'Ihinto ang simulasyon. Pause the simulation.'
-    : 'Ituloy ang simulasyon. Play the simulation.';
+    : ended ? S.simDonor.finished
+    : showPause ? S.simDonor.pause
+    : S.simDonor.play;
   return (
     <Pressable
       onPress={onPress}

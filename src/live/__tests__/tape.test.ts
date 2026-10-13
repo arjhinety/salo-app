@@ -1,5 +1,6 @@
-import type { AgentMessage, EngineEvent, LogEntry, LotId, Minute } from '../../engine/types';
-import { barLabel, clock24, lotsWithBids, stripState, tapeLines, tentativeBars, type NameLookup } from '../tape';
+import type { AgentMessage, EngineEvent, LogEntry, LotId, Minute, PolicyId } from '../../engine/types';
+import { barLabel, clock24, lotsWithBids, pantryBidDetail, stripState, tapeLines, tentativeBars, type NameLookup } from '../tape';
+import { dash } from '../../i18n/strings';
 
 const NAMES: NameLookup = {
   donor: () => 'Karinderya ni Aling Oning',
@@ -130,5 +131,75 @@ describe('lot strip states', () => {
     expect(stripState('announced', false)).toBe('announced');
     expect(stripState('final', true)).toBe('final');
     expect(stripState(undefined, false)).toBe('announced');
+  });
+});
+
+describe('pantry PROPOSE detail by policy', () => {
+  test('salo prints shares and value; central greedy prints value only; fcfs and nearest print nothing extra', () => {
+    expect(pantryBidDetail('salo', 2, 74)).toBe('2 shares · value 74%');
+    expect(pantryBidDetail('salo', 0, 74)).toBe('0 shares · value 74%');
+    expect(pantryBidDetail('central_greedy', 0, 74)).toBe('value 74%');
+    expect(pantryBidDetail('fcfs', 0, 74)).toBe('');
+    expect(pantryBidDetail('nearest', 0, 74)).toBe('');
+  });
+
+  test('no baseline PROPOSE line says "0 shares"; the line has no dangling separator when the detail is empty', () => {
+    const policies: PolicyId[] = ['fcfs', 'nearest', 'central_greedy'];
+    for (const policy of policies) {
+      const log: LogEntry[] = [
+        { seq: 1, evening: 'E05', policy, atMinute: 1101, event: msg({ type: 'PROPOSE', proposer: 'pantry', lotId: LOT, atMinute: 1101, pantryId: 'P01', shares: 0, utility: UTIL }) },
+      ];
+      const [line] = tapeLines(log, LOT, NAMES);
+      expect(line.detail).not.toMatch(/shares/);
+      expect(line.detail).not.toMatch(/^ ?·/);
+      if (policy === 'central_greedy') expect(line.detail).toBe('value 74%');
+      else expect(line.detail).toBe('');
+    }
+  });
+});
+
+describe('a FAILURE after a COMMIT strikes the committed bar (cancelled FINAL lot)', () => {
+  test('the committed bar is struck in place, keeps its waiting length, and the re-announced wait opens', () => {
+    const log = logOf([
+      [1100, msg({ type: 'TENTATIVE_ACCEPT', lotId: LOT, atMinute: 1100, donorId: 'D01', pantryId: 'P01', shares: 2 })],
+      [1103, msg({ type: 'COMMIT', lotId: LOT, atMinute: 1103, driverId: 'V01', pantryId: 'P01', etaMinute: 1115 })],
+      [1106, msg({ type: 'FAILURE', lotId: LOT, atMinute: 1106, driverId: 'V01', reason: 'cancelled_by_operator' })],
+      [1107, msg({ type: 'TENTATIVE_ACCEPT', lotId: LOT, atMinute: 1107, donorId: 'D01', pantryId: 'P02', shares: 1 })],
+    ]);
+    const settled = tentativeBars(log, LOT, 'tentative', 1108);
+    expect(settled.map((b) => [b.status, b.minutes])).toEqual([
+      ['struck', 3],
+      ['open', 1],
+    ]);
+    expect(barLabel(settled[0])).toBe('held 3 min · driver failed');
+  });
+
+  test('a cancel with no bar before it strikes nothing', () => {
+    const log = logOf([[1100, msg({ type: 'FAILURE', lotId: LOT, atMinute: 1100, driverId: 'V01', reason: 'no_show' })]]);
+    expect(tentativeBars(log, LOT, 'unawarded', 1105)).toEqual([]);
+  });
+});
+
+describe('no cross-policy comparison on the dashboard', () => {
+  test('the replay note is one sentence that says the evening is an illustration', () => {
+    expect(dash.replayNote).toMatch(/E05/);
+    expect(dash.replayNote).toMatch(/illustration, not a result/);
+    expect(dash.replayNote.endsWith('.')).toBe(false);
+  });
+
+  test('no line printed for any policy compares it with another policy', () => {
+    const policies: PolicyId[] = ['salo', 'fcfs', 'nearest', 'central_greedy'];
+    const texts: string[] = [dash.replayNote, dash.sheetBody, ...Object.values(dash.policies).map((p) => p.how)];
+    for (const policy of policies) {
+      const log: LogEntry[] = [
+        { seq: 1, evening: 'E05', policy, atMinute: 1101, event: msg({ type: 'PROPOSE', proposer: 'pantry', lotId: LOT, atMinute: 1101, pantryId: 'P01', shares: 2, utility: UTIL }) },
+        { seq: 2, evening: 'E05', policy, atMinute: 1102, event: msg({ type: 'TENTATIVE_ACCEPT', lotId: LOT, atMinute: 1102, donorId: 'D01', pantryId: 'P01', shares: 2 }) },
+        { seq: 3, evening: 'E05', policy, atMinute: 1103, event: msg({ type: 'COMMIT', lotId: LOT, atMinute: 1103, driverId: 'V01', pantryId: 'P01', etaMinute: 1115 }) },
+      ];
+      for (const line of tapeLines(log, LOT, NAMES)) texts.push(`${line.who} ${line.detail}`);
+    }
+    for (const t of texts) {
+      expect(t).not.toMatch(/\bvs\.?\b|\brescued\b|\bsaved\b|\bbeat\b|\bbetter than\b/i);
+    }
   });
 });

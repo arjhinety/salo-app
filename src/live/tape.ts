@@ -6,7 +6,7 @@
  */
 import { WORLD } from '../data/dataset';
 import { dash } from '../i18n/strings';
-import type { AwardState, FailureReason, LogEntry, LotId, Minute, RefuseReason } from '../engine/types';
+import type { AwardState, FailureReason, LogEntry, LotId, Minute, PolicyId, RefuseReason } from '../engine/types';
 
 export type TapeType = 'CALL' | 'PROPOSE' | 'REFUSE' | 'TENTATIVE' | 'COMMIT' | 'FAILURE' | 'DELIVERED';
 
@@ -67,10 +67,20 @@ export function failureWords(reason: FailureReason): string {
   return dash.failure[reason];
 }
 
+/**
+ * The detail of a pantry PROPOSE line. Only Salo has a share budget, so only Salo prints shares. Central greedy
+ * prints its value. First come first served and nearest print nothing extra. Never "0 shares".
+ */
+export function pantryBidDetail(policy: PolicyId, shares: number, valuePercent: number): string {
+  if (policy === 'salo') return dash.pantryBid(shareText(shares), valuePercent);
+  if (policy === 'central_greedy') return dash.valueOnly(valuePercent);
+  return '';
+}
+
 /** The tape lines for one lot, in log order. Pass the visible log so nothing after the clock appears. */
 export function tapeLines(log: readonly LogEntry[], lotId: LotId, names: NameLookup = WORLD_NAMES): TapeLine[] {
   const lines: TapeLine[] = [];
-  for (const { seq, atMinute, event } of log) {
+  for (const { seq, atMinute, policy, event } of log) {
     if (event.type === 'DELIVERY') {
       if (event.lotId !== lotId) continue;
       lines.push({
@@ -104,7 +114,7 @@ export function tapeLines(log: readonly LogEntry[], lotId: LotId, names: NameLoo
                 minute: m.atMinute,
                 type: 'PROPOSE',
                 who: names.pantry(m.pantryId),
-                detail: dash.pantryBid(shareText(m.shares), percent(m.utility.total)),
+                detail: pantryBidDetail(policy, m.shares, percent(m.utility.total)),
                 alert: false,
               }
             : {
@@ -161,6 +171,8 @@ export function tentativeBars(
   const bars: TentativeBar[] = [];
   // The bar that is waiting now: started by a TENTATIVE_ACCEPT, or by a FAILURE that re-announces the delivery.
   let open: { startSeq: number; startMinute: Minute } | null = null;
+  // The index of the last COMMIT's bar. A FAILURE after a COMMIT (a cancelled FINAL lot) strikes that bar.
+  let lastCommitted: number | null = null;
   for (const { seq, event } of log) {
     if (event.type !== 'MESSAGE' || event.message.lotId !== lotId) continue;
     const m = event.message;
@@ -168,10 +180,16 @@ export function tentativeBars(
       open = { startSeq: seq, startMinute: m.atMinute };
     } else if (m.type === 'COMMIT' && open) {
       bars.push({ ...open, endMinute: m.atMinute, status: 'committed', minutes: Math.max(0, m.atMinute - open.startMinute) });
+      lastCommitted = bars.length - 1;
       open = null;
     } else if (m.type === 'FAILURE' && open) {
       bars.push({ ...open, endMinute: m.atMinute, status: 'struck', minutes: Math.max(0, m.atMinute - open.startMinute) });
       open = { startSeq: seq, startMinute: m.atMinute };
+      lastCommitted = null;
+    } else if (m.type === 'FAILURE' && lastCommitted !== null) {
+      // The committed driver failed: the bar keeps its length (the minutes it waited) and is struck in marker red.
+      bars[lastCommitted] = { ...bars[lastCommitted], status: 'struck' };
+      lastCommitted = null;
     }
   }
   // A re-announcement that never found a driver leaves the lot stranded, so its waiting bar is dropped.

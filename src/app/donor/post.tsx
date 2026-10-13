@@ -17,16 +17,14 @@ export default function Post() {
       <TarpBar clock="5:45 PM" subtitle={`${S.post.fil} · ${S.post.en}`} />
       <ScrollView contentContainerStyle={styles.body} keyboardShouldPersistTaps="handled">
         <Text nativeID="msgLabel" style={[TYPE.title, { color: c.text }]}>
-          Ano ang natira?
+          {S.postScreen.question}
         </Text>
-        <Text style={[TYPE.small, { color: c.textMuted }]}>
-          {"What's left? Isulat gaya ng pag-text, halimbawa: “may 3 trays adobo pa, kunin before 8”."}
-        </Text>
+        <Text style={[TYPE.small, { color: c.textMuted }]}>{S.postScreen.example}</Text>
         <View style={[styles.box, { backgroundColor: c.groundRaised, borderColor: c.rule }]}>
           <TextInput
             accessibilityLabelledBy="msgLabel"
             multiline
-            placeholder="may 3 trays adobo pa, kunin before 8"
+            placeholder={S.postScreen.placeholder}
             placeholderTextColor={c.textMuted}
             style={[TYPE.body, styles.input, { color: c.text }]}
             selectionColor={c.tarp}
@@ -36,22 +34,21 @@ export default function Post() {
             disabled
             accessibilityRole="button"
             accessibilityState={{ disabled: true }}
-            accessibilityLabel="Sabihin gamit ang boses. Darating sa susunod na build."
+            accessibilityLabel={S.postScreen.voiceSoon}
             style={[styles.mic, { borderColor: c.rule }]}
           >
             <MicIcon color={c.textMuted} />
           </Pressable>
         </View>
         <Text style={[TYPE.small, { color: c.textMuted }]}>
-          Ang pag-unawa sa mensahe at boses ay darating sa susunod na build. Babasahin ito ni Salo at gagawing tag na
-          iyong kukumpirmahin.
+          {S.postScreen.voiceBody}
         </Text>
         <Pressable
           onPress={() => router.back()}
           accessibilityRole="button"
           style={({ pressed }) => [styles.back, { borderColor: c.tarp, opacity: pressed ? 0.8 : 1 }]}
         >
-          <Text style={[TYPE.bodyStrong, { color: c.tarp }]}>Bumalik · Back</Text>
+          <Text style={[TYPE.bodyStrong, { color: c.tarp }]}>{S.postScreen.back}</Text>
         </Pressable>
       </ScrollView>
     </View>
