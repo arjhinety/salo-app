@@ -8,6 +8,11 @@ export const BID_WINDOW_MINUTES = 5;
 export const LATE_SHARE_OF_SHOWS = 0.12;
 /** Non-shows split evenly between withdrawing before commit and not showing after commit. */
 export const WITHDRAW_SHARE_OF_MISSES = 0.5;
+/**
+ * Decision "Driver reply delay" (2026-10-13): after a pantry's TENTATIVE_ACCEPT the first driver round
+ * happens 1 to this many minutes later (uniform whole minutes). Assumption, not measured data.
+ */
+export const DRIVER_REPLY_DELAY_MAX_MIN = 3;
 
 /**
  * UNTUNED starting values, for development only. Tuning on E01-E10 (milestone M6) replaces them and

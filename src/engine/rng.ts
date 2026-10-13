@@ -5,7 +5,7 @@
  */
 
 /** Stream ids keep different kinds of draws independent. */
-export const STREAM = { pantryReply: 1, driverOutcome: 2, lateMinutes: 3, bootstrap: 4 } as const;
+export const STREAM = { pantryReply: 1, driverOutcome: 2, lateMinutes: 3, bootstrap: 4, driverReply: 5 } as const;
 
 function mix(h: number): number {
   h = Math.imul(h ^ (h >>> 16), 0x7feb352d);

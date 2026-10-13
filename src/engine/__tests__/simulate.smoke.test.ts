@@ -1,6 +1,7 @@
 import { EVENINGS, WORLD } from '../../data/dataset';
-import { UNTUNED_PARAMS } from '../params';
+import { DRIVER_REPLY_DELAY_MAX_MIN, UNTUNED_PARAMS } from '../params';
 import { POLICY_IDS } from '../policies';
+import { STREAM, intBelow } from '../rng';
 import { runEvening } from '../simulate';
 import type { LogEntry } from '../types';
 import { indexWorld } from '../world';
@@ -103,5 +104,103 @@ describe('hidden true show rate (decision T1)', () => {
     const m = first.event.type === 'MESSAGE' && first.event.message.type === 'PROPOSE' && first.event.message.proposer === 'driver' ? first.event.message : null;
     const d = WORLD.drivers.find((x) => x.id === m!.driverId)!;
     expect(m!.reliability).toBeCloseTo((d.tuningShows + 1) / (d.tuningRuns + 2), 10);
+  });
+});
+
+describe('driver reply delay (decision "Driver reply delay")', () => {
+  /** Per lot: the minute of its TENTATIVE_ACCEPT and the minute of its first driver CALL_FOR_PROPOSALS. */
+  function awardsAndFirstDriverRound(log: readonly LogEntry[]) {
+    const award = new Map<string, number>();
+    const firstDriverRound = new Map<string, number>();
+    for (const { atMinute, event } of log) {
+      if (event.type !== 'MESSAGE') continue;
+      const m = event.message;
+      if (m.type === 'TENTATIVE_ACCEPT') award.set(m.lotId, atMinute);
+      if (m.type === 'CALL_FOR_PROPOSALS' && m.target === 'driver' && award.has(m.lotId) && !firstDriverRound.has(m.lotId)) {
+        firstDriverRound.set(m.lotId, atMinute);
+      }
+    }
+    return { award, firstDriverRound };
+  }
+
+  it('every lot that reaches TENTATIVE waits 1 to 3 minutes before its first driver call (salo, all tuning evenings)', () => {
+    let lots = 0;
+    for (const ev of tuning) {
+      const { log } = runEvening(wx, ev, { policy: 'salo', params: UNTUNED_PARAMS });
+      const { award, firstDriverRound } = awardsAndFirstDriverRound(log);
+      expect(firstDriverRound.size).toBe(award.size);
+      for (const [lotId, t] of award) {
+        const wait = firstDriverRound.get(lotId)! - t;
+        expect(wait).toBeGreaterThanOrEqual(1);
+        expect(wait).toBeLessThanOrEqual(DRIVER_REPLY_DELAY_MAX_MIN);
+        lots++;
+      }
+    }
+    expect(lots).toBeGreaterThan(0);
+  });
+
+  it('the delay is the seeded per-lot draw, the same under all four policies', () => {
+    const delaysSeen = new Set<number>();
+    let pairs = 0;
+    for (const ev of tuning) {
+      // Waits for each lot under each policy, keyed by lot.
+      const byPolicy = POLICY_IDS.map((policy) => {
+        const { log } = runEvening(wx, ev, { policy, params: UNTUNED_PARAMS });
+        const { award, firstDriverRound } = awardsAndFirstDriverRound(log);
+        const rows = new Map<string, { at: number; cfp: number }>();
+        for (const [lotId, at] of award) rows.set(lotId, { at, cfp: firstDriverRound.get(lotId)! });
+        return rows;
+      });
+      for (const rows of byPolicy) {
+        for (const [lotId, { at, cfp }] of rows) {
+          const idx = Number(/^L(\d+)$/.exec(lotId)![1]);
+          const drawn = 1 + intBelow(DRIVER_REPLY_DELAY_MAX_MIN, ev.seed, STREAM.driverReply, 0, idx);
+          expect(cfp - at).toBe(drawn);
+          delaysSeen.add(drawn);
+        }
+      }
+      // Where two policies award the same lot in the same minute, the first driver call is in the same minute too.
+      for (let a = 0; a < byPolicy.length; a++) {
+        for (let b = a + 1; b < byPolicy.length; b++) {
+          for (const [lotId, ra] of byPolicy[a]) {
+            const rb = byPolicy[b].get(lotId);
+            if (!rb || rb.at !== ra.at) continue;
+            expect(rb.cfp).toBe(ra.cfp);
+            pairs++;
+          }
+        }
+      }
+    }
+    expect(pairs).toBeGreaterThan(0);
+    expect([...delaysSeen].sort()).toEqual([1, 2, 3]);
+  });
+
+  it('with replyDelayMaxMin 0 the first driver call is in the same minute as TENTATIVE_ACCEPT (the pre-delay behaviour)', () => {
+    let lots = 0;
+    for (const ev of tuning) {
+      const { log } = runEvening(wx, ev, { policy: 'salo', params: UNTUNED_PARAMS, replyDelayMaxMin: 0 });
+      const { award, firstDriverRound } = awardsAndFirstDriverRound(log);
+      for (const [lotId, t] of award) {
+        expect(firstDriverRound.get(lotId)).toBe(t);
+        lots++;
+      }
+    }
+    expect(lots).toBeGreaterThan(0);
+  });
+
+  it('after a driver failure the re-announcement stays in the same minute (no reply delay)', () => {
+    const none = Object.fromEntries(WORLD.drivers.map((d) => [d.id, 0]));
+    const { log } = runEvening(wx, tuning[2], { policy: 'salo', params: UNTUNED_PARAMS, trueShowRate: none });
+    let failures = 0;
+    log.forEach((e, i) => {
+      if (e.event.type !== 'MESSAGE' || e.event.message.type !== 'FAILURE') return;
+      const lotId = e.event.message.lotId;
+      const next = log.slice(i + 1).find((x) =>
+        x.event.type === 'MESSAGE' && x.event.message.type === 'CALL_FOR_PROPOSALS' && x.event.message.lotId === lotId);
+      expect(next).toBeDefined();
+      expect(next!.atMinute).toBe(e.atMinute);
+      failures++;
+    });
+    expect(failures).toBeGreaterThan(0);
   });
 });

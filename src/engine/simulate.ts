@@ -1,6 +1,8 @@
 import { TRUE_SHOW_RATE } from './hiddenTruth.generated';
 import { resultFromLog } from './metrics';
-import { BID_WINDOW_MINUTES, LATE_SHARE_OF_SHOWS, WITHDRAW_SHARE_OF_MISSES } from './params';
+import {
+  BID_WINDOW_MINUTES, DRIVER_REPLY_DELAY_MAX_MIN, LATE_SHARE_OF_SHOWS, WITHDRAW_SHARE_OF_MISSES,
+} from './params';
 import { centralGreedyPolicy, fcfsPolicy, nearestPolicy, saloPolicy } from './policies';
 import { reliability } from './reliability';
 import { STREAM, intBelow, u01 } from './rng';
@@ -46,6 +48,12 @@ export interface RunOptions {
    * generator's recovered p_show.
    */
   trueShowRate?: Readonly<Record<DriverId, number>>;
+  /**
+   * Driver reply delay after TENTATIVE_ACCEPT: the first driver round comes 1 to this many minutes later,
+   * seeded per lot (decision "Driver reply delay"). 0 means immediate (the pre-delay behaviour).
+   * Defaults to DRIVER_REPLY_DELAY_MAX_MIN.
+   */
+  replyDelayMaxMin?: number;
 }
 
 export interface RunOutput {
@@ -158,6 +166,7 @@ export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): 
   const { params, policy: policyId } = opts;
   const driverRule = opts.driverRule ?? 'earliest_eta';
   const truth = opts.trueShowRate ?? TRUE_SHOW_RATE;
+  const replyDelayMax = opts.replyDelayMaxMin ?? DRIVER_REPLY_DELAY_MAX_MIN;
   const seed = evening.seed;
   const weights: UtilityWeights =
     policyId === 'central_greedy' ? params.centralGreedy.utilityWeights : params.salo.utilityWeights;
@@ -286,7 +295,10 @@ export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): 
     msg({ type: 'TENTATIVE_ACCEPT', lotId: ls.lot.id, atMinute: now, donorId: ls.lot.donorId,
       pantryId: choice.pantryId, shares });
     setState(ls, 'tentative');
-    q.push(now, { kind: 'driverRound', lotId: ls.lot.id });
+    // The first driver round waits 1..replyDelayMax minutes (a seeded draw per lot, same under all
+    // policies), so the lot is visibly TENTATIVE. With 0 the round is in this same minute.
+    const delay = replyDelayMax > 0 ? 1 + intBelow(replyDelayMax, seed, STREAM.driverReply, 0, ls.idx) : 0;
+    q.push(now + delay, { kind: 'driverRound', lotId: ls.lot.id });
   }
 
   function updateReliability(ds: DriverState, showed: boolean) {
@@ -345,6 +357,7 @@ export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): 
         msg({ type: 'FAILURE', lotId: lot.id, atMinute: now, driverId: ds.d.id, reason: 'withdrew_before_commit' });
         updateReliability(ds, false);
         ls.excluded.add(ds.d.id);
+        // Re-announced in the same minute (no reply delay after a failure).
         q.push(now, { kind: 'driverRound', lotId: lot.id });
         return;
       }
@@ -374,6 +387,7 @@ export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): 
     ls.excluded.add(ds.d.id);
     ls.driverId = null;
     // Only the delivery is re-announced; the pantry keeps its tentative award (guide page 14).
+    // Re-announced in this same minute: the reply delay applies only after TENTATIVE_ACCEPT.
     setState(ls, 'tentative');
     q.push(now, { kind: 'driverRound', lotId: ls.lot.id });
   }

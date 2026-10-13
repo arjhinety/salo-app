@@ -76,7 +76,71 @@ The interval does not cross zero, but its upper end is only -0.05 kg. Untuned pa
 - Written: `docs/handoffs/2026-10-13-mobile-data.md` (this file), `$TEMP/delay.json` (raw numbers, kept).
 - Engine files: unchanged. `git status --short src/engine` is empty.
 
-## Open risks
+### Open risks (implementation)
 
 - Whether to add the delay is a product decision. The numbers show a cost in food rescued and stranded awards, and a visible TENTATIVE window that the current code never produces.
 - If the delay is added to the committed engine, the smoke and metrics tests and any frozen-parameter files will need rechecking, because the event order changes.
+
+## Implementation
+
+Date: 2026-10-13. Scope: the approved rule ("Driver reply delay", `docs/decisions.md`) in the real engine. Tuning evenings E01-E10 only. No pilot (E11-E20) or main_sample (E21-E30) evening was run. Nothing was committed. Nothing in `src/app`, `src/components`, `src/theme`, `src/i18n` or `src/donor` was touched.
+
+### Diff summary (`git diff --numstat HEAD`, added/removed lines)
+
+| File | Lines | Change |
+|---|---|---|
+| `src/engine/rng.ts` | +1 / -1 | `STREAM` gains `driverReply: 5`. Existing ids 1-4 unchanged. |
+| `src/engine/params.ts` | +5 / 0 | `DRIVER_REPLY_DELAY_MAX_MIN = 3`, with a comment citing the decision. |
+| `src/engine/simulate.ts` | +16 / -2 | Imports the constant. `RunOptions.replyDelayMaxMin?` (default the constant, 0 = immediate). In `close()`, the first driver round is pushed at `now + delay`, with `delay = 1 + intBelow(max, seed, STREAM.driverReply, 0, ls.idx)` when `max > 0`. Comments on the post-FAILURE re-announcements (both paths) state they stay in the same minute. |
+| `src/engine/__tests__/simulate.smoke.test.ts` | +100 / -1 | Imports widened (`DRIVER_REPLY_DELAY_MAX_MIN`, `STREAM`, `intBelow`). New `describe('driver reply delay ...')` with 4 tests appended. Existing tests unchanged. |
+| `src/engine/__tests__/report.test.ts` | +1 / -1 | Rounding caveat gains one sentence: the counts predate the 1-3 minute reply delay and were not re-counted. |
+| `docs/reports/m1-tuning-snapshot.md` | regenerated | `REPORT=1 npx jest src/engine/__tests__/report.test.ts`. |
+
+Diff of `src/engine/simulate.ts` in the `close()` path (the only functional change in the engine):
+
+```
+-    q.push(now, { kind: 'driverRound', lotId: ls.lot.id });
++    // The first driver round waits 1..replyDelayMax minutes (a seeded draw per lot, same under all
++    // policies), so the lot is visibly TENTATIVE. With 0 the round is in this same minute.
++    const delay = replyDelayMax > 0 ? 1 + intBelow(replyDelayMax, seed, STREAM.driverReply, 0, ls.idx) : 0;
++    q.push(now + delay, { kind: 'driverRound', lotId: ls.lot.id });
+```
+
+`replyDelayMax` is `opts.replyDelayMaxMin ?? DRIVER_REPLY_DELAY_MAX_MIN`, read once per run.
+
+### Tests added (`simulate.smoke.test.ts`, `describe('driver reply delay ...')`)
+
+- (a) Salo, all tuning evenings: every lot that reaches TENTATIVE_ACCEPT has a driver CALL_FOR_PROPOSALS, and its wait is 1 to 3 minutes.
+- (b) All four policies: the observed wait for each lot equals `1 + intBelow(3, evening.seed, STREAM.driverReply, 0, lotIdx)`. Where two policies award the same lot in the same minute, the first driver call is in the same minute. Drawn values {1, 2, 3} all occur.
+- (c) `replyDelayMaxMin: 0`: the first driver call is in the same minute as TENTATIVE_ACCEPT for every awarded lot.
+- Extra: after a driver FAILURE (no-show and withdrawal, `trueShowRate` all 0), the next driver CALL_FOR_PROPOSALS for that lot is in the same minute.
+
+### Equivalence with the pre-change engine (temporary check, deleted afterwards)
+
+`git show HEAD:src/engine/simulate.ts` was copied to a temporary `src/engine/__tests__/zz_headsim.ts` (imports rewritten to `../`), and a temporary `zz_headcheck.test.ts` compared, for all 10 tuning evenings x 4 policies: the new engine with `replyDelayMaxMin: 0` against the HEAD engine, on the JSON log, the JSON result and `driverRuleStats`. Result: PASS, `PAIRS=40 EVENTS=157907`, 1 test passed. Both temporary files were then deleted. The engine files are unchanged from HEAD except as in the table above.
+
+### Commands and real results
+
+- `npx jest src/engine/__tests__/simulate.smoke.test.ts`: `Tests: 14 passed, 14 total` (before the full run).
+- `npx jest` (all suites): `Test Suites: 1 skipped, 5 passed, 5 of 6 total` / `Tests: 1 skipped, 61 passed, 62 total`. The skipped suite is `report.test.ts`, which runs only with `REPORT=1`.
+- `npm run typecheck` (`tsc --noEmit`): exit code 0, no errors. This includes the `src/app` typed-route strings, which were not an issue on this run.
+- `REPORT=1 npx jest src/engine/__tests__/report.test.ts`: `1 passed`. Snapshot regenerated.
+
+### Snapshot (`docs/reports/m1-tuning-snapshot.md`, tuning E01-E10, UNTUNED parameters, delay max 3)
+
+| Policy | Food rescued (kg/evening) | Food wasted (kg) | Stranded awards (mean) |
+|---|---|---|---|
+| salo | 150.2 | 25.5 | 0.8 |
+| fcfs | 132.7 | 43.0 | 1.0 |
+| nearest | 143.4 | 32.3 | 0.4 |
+| central_greedy | 150.8 | 24.9 | 0.7 |
+
+These match the throwaway study at delay 3 (150.18, 132.66, 143.36, 150.80; stranded 0.80, 1.00, 0.40, 0.70).
+
+The driver-rule block now reads "On E01-E10 under Salo (537 driver rounds)" (was 545). The caveat's "68 of 545" and "384 of 545" are unchanged, as instructed, and the new sentence says they predate the delay. Their denominator (545) therefore no longer equals the round count printed above them (537).
+
+### Open risks (implementation)
+
+- The rounding-caveat counts (68/384 of 545) are stale: they come from the pre-delay engine, and the snapshot's round count is now 537. They should be re-counted before anyone quotes them as current. Re-counting was out of scope here.
+- The delay range (1-3 minutes, uniform) is an assumption (decisions.md). Tuning on E01-E10 should be rerun once the frozen parameters exist, since the delay changes event order.
+- Only the tuning evenings were run. Pilot and main_sample evenings are untouched.
