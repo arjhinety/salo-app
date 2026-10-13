@@ -1,0 +1,24 @@
+food_item,food_category,foodkeeper_product_id,foodkeeper_name,match_quality,mapping_reason,room_temp_min,room_temp_max,room_temp_metric,fridge_min,fridge_max,fridge_metric,needs_fridge_if_kept,fridge_fields_source,max_hours_unrefrigerated,max_hours_source
+chicken adobo,cooked_dish,135,Cooked poultry dishes,close,cooked chicken dish,,,,3.0,4.0,Days,True,FOODKEEPER,2,ASSUMPTION
+pork adobo,cooked_dish,173,"Leftovers, with meat, fish, poultry, or egg",close,cooked leftover with meat,,,,3.0,4.0,Days,True,FOODKEEPER,2,ASSUMPTION
+pancit canton,cooked_noodles,177,Cooked pasta,close,cooked noodles ~ cooked pasta,,,,3.0,5.0,Days,True,FOODKEEPER,2,ASSUMPTION
+pancit bihon,cooked_noodles,177,Cooked pasta,close,cooked rice noodles ~ cooked pasta,,,,3.0,5.0,Days,True,FOODKEEPER,2,ASSUMPTION
+menudo,cooked_dish,173,"Leftovers, with meat, fish, poultry, or egg",close,cooked leftover with meat,,,,3.0,4.0,Days,True,FOODKEEPER,2,ASSUMPTION
+chop suey,cooked_vegetables,174,"Leftovers, without meat, fish, poultry, or egg (such as cooked vegitables, rice, or potatoes)",close,"cooked vegetables, no meat assumed",,,,3.0,4.0,Days,True,FOODKEEPER,2,ASSUMPTION
+ginisang monggo,cooked_vegetables,174,"Leftovers, without meat, fish, poultry, or egg (such as cooked vegitables, rice, or potatoes)",close,"cooked legumes/vegetables, no meat assumed",,,,3.0,4.0,Days,True,FOODKEEPER,2,ASSUMPTION
+chicken tinola,cooked_soup,193,"Soup, stews",close,soup/stew,,,,3.0,4.0,Days,True,FOODKEEPER,2,ASSUMPTION
+pork sinigang,cooked_soup,193,"Soup, stews",close,soup/stew,,,,3.0,4.0,Days,True,FOODKEEPER,2,ASSUMPTION
+fried chicken,cooked_dish,135,Cooked poultry dishes,close,cooked chicken dish,,,,3.0,4.0,Days,True,FOODKEEPER,2,ASSUMPTION
+giniling,cooked_dish,173,"Leftovers, with meat, fish, poultry, or egg",close,cooked leftover with meat,,,,3.0,4.0,Days,True,FOODKEEPER,2,ASSUMPTION
+steamed rice,cooked_rice,178,Cooked rice,exact,cooked rice,,,,4.0,6.0,Days,True,FOODKEEPER,2,ASSUMPTION
+lumpiang shanghai,cooked_dish,173,"Leftovers, with meat, fish, poultry, or egg",close,cooked leftover with meat,,,,3.0,4.0,Days,True,FOODKEEPER,2,ASSUMPTION
+pandesal,bread,574,"Bread, homemade",close,"panaderia bread is baked fresh with few preservatives, like homemade bread",3.0,5.0,Days,2.0,3.0,Months,False,FOODKEEPER,72,ASSUMPTION
+ensaymada,bread,574,"Bread, homemade",close,"panaderia pastry baked fresh, like homemade bread",3.0,5.0,Days,2.0,3.0,Months,False,FOODKEEPER,72,ASSUMPTION
+monay,bread,574,"Bread, homemade",close,"panaderia bread baked fresh, like homemade bread",3.0,5.0,Days,2.0,3.0,Months,False,FOODKEEPER,72,ASSUMPTION
+sliced bread,bread,195,"Commercial bread products, including pan breads, flat breads, rolls, and buns",close,packaged white sliced bread is a commercial bread product (461 is whole-wheat only),14.0,18.0,Days,,,,False,FOODKEEPER,72,ASSUMPTION
+eggplant,fresh_vegetables,284,Eggplant,exact,eggplant,1.0,1.0,Days,4.0,7.0,Days,True,FOODKEEPER,24,ASSUMPTION capped by FoodKeeper
+tomatoes,fresh_vegetables,306,Tomatoes,exact,tomatoes,,,When Ripe,,,,False,FOODKEEPER,72,ASSUMPTION
+pechay,leafy_greens,287,Greens,close,leafy greens,,,,1.0,4.0,Days,True,FOODKEEPER,24,ASSUMPTION
+bananas,fruit,251,Bananas,exact,bananas,,,When Ripe,3.0,3.0,Days,False,FOODKEEPER,72,ASSUMPTION
+canned sardines,packaged_shelf_stable,619,"Seafood, canned",close,canned seafood,1.0,1.0,Years,,,,False,FOODKEEPER,8760,ASSUMPTION
+instant noodles,packaged_shelf_stable,335,"Pasta, dry, without eggs",approximate,no instant-noodle entry; nearest is dry pasta,2.0,2.0,Years,,,,False,FOODKEEPER,8760,ASSUMPTION

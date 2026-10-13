@@ -1,0 +1,1437 @@
+lot_id,evening_id,donor_id,food_item,food_item_fil,food_category,quantity,unit,est_kg,load_units,needs_fridge_if_kept,needs_fridge_source,posted_at,pickup_by
+L0001,E01,D40,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:44,18:30
+L0002,E01,D40,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:15,19:00
+L0003,E01,D25,pandesal,pandesal,bread,95,piece,2.85,3,False,FOODKEEPER,17:45,19:15
+L0004,E01,D18,pancit bihon,pancit bihon,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,18:08,19:15
+L0005,E01,D18,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:59,19:00
+L0006,E01,D24,ensaymada,ensaymada,bread,16,piece,1.28,2,False,FOODKEEPER,18:35,19:15
+L0007,E01,D03,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:46,18:45
+L0008,E01,D13,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:34,19:45
+L0009,E01,D23,pechay,pechay,leafy_greens,1,kg,1.0,1,True,FOODKEEPER,18:18,19:30
+L0010,E01,D46,fried chicken,pritong manok,cooked_dish,11,piece,1.65,1,True,FOODKEEPER,18:07,19:00
+L0011,E01,D46,chop suey,chopsuey,cooked_vegetables,2,tray,3.0,2,True,FOODKEEPER,17:50,18:45
+L0012,E01,D20,eggplant,talong,fresh_vegetables,1,kg,1.0,1,True,FOODKEEPER,19:20,20:45
+L0013,E01,D49,pancit canton,pancit canton,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,17:35,18:15
+L0014,E01,D15,ensaymada,ensaymada,bread,16,piece,1.28,2,False,FOODKEEPER,18:34,19:45
+L0015,E01,D27,lumpiang shanghai,lumpiang shanghai,cooked_dish,67,piece,2.01,2,True,FOODKEEPER,19:03,20:15
+L0016,E01,D07,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:42,19:45
+L0017,E01,D12,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:12,18:30
+L0018,E01,D14,eggplant,talong,fresh_vegetables,1,kg,1.0,1,True,FOODKEEPER,19:00,19:45
+L0019,E01,D13,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:22,19:45
+L0020,E01,D45,tomatoes,kamatis,fresh_vegetables,1,kg,1.0,1,False,FOODKEEPER,17:47,19:00
+L0021,E01,D27,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:40,21:00
+L0022,E01,D42,chop suey,chopsuey,cooked_vegetables,1,tray,1.5,1,True,FOODKEEPER,19:08,20:15
+L0023,E01,D13,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:11,19:45
+L0024,E01,D06,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:14,20:30
+L0025,E01,D36,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:36,19:15
+L0026,E01,D12,lumpiang shanghai,lumpiang shanghai,cooked_dish,83,piece,2.49,2,True,FOODKEEPER,17:40,19:15
+L0027,E01,D49,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:20,18:00
+L0028,E01,D29,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:34,20:45
+L0029,E01,D11,lumpiang shanghai,lumpiang shanghai,cooked_dish,43,piece,1.29,1,True,FOODKEEPER,19:07,20:00
+L0030,E01,D34,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:10,18:45
+L0031,E01,D46,fried chicken,pritong manok,cooked_dish,12,piece,1.8,1,True,FOODKEEPER,17:43,19:00
+L0032,E01,D06,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:58,20:15
+L0033,E01,D21,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:08,19:00
+L0034,E01,D08,monay,monay,bread,10,piece,0.6,1,False,FOODKEEPER,18:04,19:30
+L0035,E01,D03,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:34,19:00
+L0036,E01,D09,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:52,19:30
+L0037,E01,D47,pandesal,pandesal,bread,90,piece,2.7,3,False,FOODKEEPER,18:40,20:00
+L0038,E01,D39,pandesal,pandesal,bread,58,piece,1.74,2,False,FOODKEEPER,19:08,20:00
+L0039,E01,D42,fried chicken,pritong manok,cooked_dish,14,piece,2.1,1,True,FOODKEEPER,18:41,19:30
+L0040,E01,D50,pandesal,pandesal,bread,20,piece,0.6,1,False,FOODKEEPER,19:13,20:00
+L0041,E01,D16,monay,monay,bread,40,piece,2.4,3,False,FOODKEEPER,17:59,19:30
+L0042,E01,D03,lumpiang shanghai,lumpiang shanghai,cooked_dish,30,piece,0.9,1,True,FOODKEEPER,17:49,19:00
+L0043,E01,D19,sliced bread,tasty,bread,5,loaf,3.0,2,False,FOODKEEPER,18:39,19:45
+L0044,E01,D31,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:03,20:00
+L0045,E01,D06,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:12,20:00
+L0046,E01,D21,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:59,19:30
+L0047,E01,D15,ensaymada,ensaymada,bread,15,piece,1.2,2,False,FOODKEEPER,18:07,19:30
+L0048,E01,D36,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,18:46,20:00
+L0049,E01,D27,lumpiang shanghai,lumpiang shanghai,cooked_dish,115,piece,3.45,3,True,FOODKEEPER,19:43,21:00
+L0050,E01,D50,monay,monay,bread,10,piece,0.6,1,False,FOODKEEPER,19:03,20:30
+L0051,E01,D25,pandesal,pandesal,bread,58,piece,1.74,2,False,FOODKEEPER,17:27,19:00
+L0052,E01,D29,pancit bihon,pancit bihon,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,19:02,20:30
+L0053,E02,D35,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:05,19:15
+L0054,E02,D40,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:59,19:30
+L0055,E02,D04,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:00,20:15
+L0056,E02,D04,pork sinigang,sinigang na baboy,cooked_soup,1,pot,4.0,1,True,FOODKEEPER,19:14,20:30
+L0057,E02,D14,eggplant,talong,fresh_vegetables,5,kg,5.0,3,True,FOODKEEPER,19:01,19:45
+L0058,E02,D46,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:09,19:15
+L0059,E02,D09,fried chicken,pritong manok,cooked_dish,14,piece,2.1,1,True,FOODKEEPER,18:59,19:45
+L0060,E02,D21,lumpiang shanghai,lumpiang shanghai,cooked_dish,32,piece,0.96,1,True,FOODKEEPER,18:02,18:45
+L0061,E02,D28,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,19:25,21:00
+L0062,E02,D17,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:06,20:00
+L0063,E02,D36,lumpiang shanghai,lumpiang shanghai,cooked_dish,117,piece,3.51,3,True,FOODKEEPER,18:50,20:00
+L0064,E02,D32,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:05,17:45
+L0065,E02,D32,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,17:20,18:00
+L0066,E02,D26,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:14,18:15
+L0067,E02,D18,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:45,18:45
+L0068,E02,D09,ginisang monggo,ginisang monggo,cooked_vegetables,1,pot,3.0,2,True,FOODKEEPER,19:12,20:45
+L0069,E02,D08,sliced bread,tasty,bread,5,loaf,3.0,2,False,FOODKEEPER,17:45,18:45
+L0070,E02,D10,fried chicken,pritong manok,cooked_dish,21,piece,3.15,2,True,FOODKEEPER,17:15,18:30
+L0071,E02,D37,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:29,21:00
+L0072,E02,D46,steamed rice,kanin,cooked_rice,4,kg,4.0,2,True,FOODKEEPER,17:31,18:30
+L0073,E02,D26,pancit bihon,pancit bihon,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,17:01,18:30
+L0074,E02,D17,lumpiang shanghai,lumpiang shanghai,cooked_dish,85,piece,2.55,2,True,FOODKEEPER,19:27,20:15
+L0075,E02,D48,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:50,18:45
+L0076,E02,D50,monay,monay,bread,40,piece,2.4,3,False,FOODKEEPER,19:31,20:15
+L0077,E02,D09,pork sinigang,sinigang na baboy,cooked_soup,2,pot,8.0,3,True,FOODKEEPER,18:49,20:00
+L0078,E02,D21,pancit canton,pancit canton,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,18:05,18:45
+L0079,E02,D01,fried chicken,pritong manok,cooked_dish,12,piece,1.8,1,True,FOODKEEPER,17:29,18:15
+L0080,E02,D38,sliced bread,tasty,bread,2,loaf,1.2,1,False,FOODKEEPER,17:17,18:00
+L0081,E02,D14,bananas,saging,fruit,1,kg,1.0,1,False,FOODKEEPER,19:05,19:45
+L0082,E02,D08,pandesal,pandesal,bread,100,piece,3.0,3,False,FOODKEEPER,18:02,19:15
+L0083,E02,D24,sliced bread,tasty,bread,2,loaf,1.2,1,False,FOODKEEPER,18:02,19:00
+L0084,E02,D32,lumpiang shanghai,lumpiang shanghai,cooked_dish,113,piece,3.39,3,True,FOODKEEPER,17:08,18:15
+L0085,E02,D16,monay,monay,bread,40,piece,2.4,3,False,FOODKEEPER,17:49,18:30
+L0086,E02,D31,pancit bihon,pancit bihon,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,19:11,20:45
+L0087,E02,D15,ensaymada,ensaymada,bread,7,piece,0.56,1,False,FOODKEEPER,18:16,19:30
+L0088,E02,D04,chicken adobo,adobong manok,cooked_dish,3,tray,6.0,2,True,FOODKEEPER,19:43,20:30
+L0089,E02,D39,pandesal,pandesal,bread,91,piece,2.73,3,False,FOODKEEPER,18:51,19:30
+L0090,E02,D30,pork sinigang,sinigang na baboy,cooked_soup,2,pot,8.0,3,True,FOODKEEPER,19:28,20:45
+L0091,E02,D48,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:39,19:00
+L0092,E02,D16,ensaymada,ensaymada,bread,27,piece,2.16,3,False,FOODKEEPER,17:34,18:15
+L0093,E02,D16,pandesal,pandesal,bread,91,piece,2.73,3,False,FOODKEEPER,17:36,18:45
+L0094,E02,D27,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:25,20:30
+L0095,E02,D34,chicken adobo,adobong manok,cooked_dish,3,tray,6.0,2,True,FOODKEEPER,17:45,19:15
+L0096,E02,D11,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:36,19:15
+L0097,E02,D09,chicken adobo,adobong manok,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:45,20:00
+L0098,E02,D14,tomatoes,kamatis,fresh_vegetables,4,kg,4.0,3,False,FOODKEEPER,19:17,20:30
+L0099,E02,D11,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:09,20:30
+L0100,E02,D11,lumpiang shanghai,lumpiang shanghai,cooked_dish,119,piece,3.57,3,True,FOODKEEPER,18:41,20:00
+L0101,E02,D13,pancit canton,pancit canton,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,18:29,19:30
+L0102,E02,D02,monay,monay,bread,10,piece,0.6,1,False,FOODKEEPER,17:53,19:30
+L0103,E02,D37,pancit bihon,pancit bihon,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,19:38,20:45
+L0104,E02,D24,monay,monay,bread,37,piece,2.22,3,False,FOODKEEPER,18:42,19:30
+L0105,E03,D08,monay,monay,bread,40,piece,2.4,3,False,FOODKEEPER,17:48,18:45
+L0106,E03,D37,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:33,20:15
+L0107,E03,D43,eggplant,talong,fresh_vegetables,4,kg,4.0,2,True,FOODKEEPER,19:02,20:30
+L0108,E03,D33,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:02,20:15
+L0109,E03,D49,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,17:17,18:15
+L0110,E03,D09,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:06,19:45
+L0111,E03,D27,ginisang monggo,ginisang monggo,cooked_vegetables,2,pot,6.0,3,True,FOODKEEPER,19:39,21:00
+L0112,E03,D25,monay,monay,bread,10,piece,0.6,1,False,FOODKEEPER,17:36,18:45
+L0113,E03,D22,fried chicken,pritong manok,cooked_dish,22,piece,3.3,2,True,FOODKEEPER,19:02,20:15
+L0114,E03,D28,lumpiang shanghai,lumpiang shanghai,cooked_dish,36,piece,1.08,1,True,FOODKEEPER,19:35,21:00
+L0115,E03,D07,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:08,20:00
+L0116,E03,D09,chop suey,chopsuey,cooked_vegetables,3,tray,4.5,3,True,FOODKEEPER,19:11,20:15
+L0117,E03,D26,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:30,19:00
+L0118,E03,D10,ginisang monggo,ginisang monggo,cooked_vegetables,1,pot,3.0,2,True,FOODKEEPER,17:18,18:15
+L0119,E03,D01,lumpiang shanghai,lumpiang shanghai,cooked_dish,30,piece,0.9,1,True,FOODKEEPER,17:25,19:00
+L0120,E03,D33,fried chicken,pritong manok,cooked_dish,26,piece,3.9,2,True,FOODKEEPER,18:57,20:30
+L0121,E03,D43,bananas,saging,fruit,1,kg,1.0,1,False,FOODKEEPER,19:16,20:45
+L0122,E03,D03,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:07,19:15
+L0123,E03,D33,steamed rice,kanin,cooked_rice,8,kg,8.0,3,True,FOODKEEPER,19:06,19:45
+L0124,E03,D11,chop suey,chopsuey,cooked_vegetables,1,tray,1.5,1,True,FOODKEEPER,19:07,20:15
+L0125,E03,D18,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:14,19:15
+L0126,E03,D02,ensaymada,ensaymada,bread,28,piece,2.24,3,False,FOODKEEPER,18:07,18:45
+L0127,E03,D26,fried chicken,pritong manok,cooked_dish,27,piece,4.05,2,True,FOODKEEPER,17:07,17:45
+L0128,E03,D08,pandesal,pandesal,bread,60,piece,1.8,2,False,FOODKEEPER,18:12,19:45
+L0129,E03,D42,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,19:05,20:30
+L0130,E03,D21,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:54,19:15
+L0131,E03,D22,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:22,20:15
+L0132,E03,D22,pancit bihon,pancit bihon,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,19:16,20:00
+L0133,E03,D39,sliced bread,tasty,bread,6,loaf,3.6,2,False,FOODKEEPER,19:01,20:30
+L0134,E03,D23,tomatoes,kamatis,fresh_vegetables,1,kg,1.0,1,False,FOODKEEPER,18:13,19:30
+L0135,E03,D01,lumpiang shanghai,lumpiang shanghai,cooked_dish,84,piece,2.52,2,True,FOODKEEPER,17:02,18:30
+L0136,E03,D45,tomatoes,kamatis,fresh_vegetables,2,kg,2.0,2,False,FOODKEEPER,17:38,18:45
+L0137,E03,D32,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:18,18:15
+L0138,E03,D09,chop suey,chopsuey,cooked_vegetables,3,tray,4.5,3,True,FOODKEEPER,18:44,20:15
+L0139,E03,D46,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:37,19:00
+L0140,E03,D03,fried chicken,pritong manok,cooked_dish,37,piece,5.55,3,True,FOODKEEPER,18:01,19:15
+L0141,E03,D40,ginisang monggo,ginisang monggo,cooked_vegetables,1,pot,3.0,1,True,FOODKEEPER,17:56,18:45
+L0142,E03,D20,eggplant,talong,fresh_vegetables,1,kg,1.0,1,True,FOODKEEPER,19:26,20:45
+L0143,E03,D21,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:05,19:30
+L0144,E03,D41,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,19:16,20:30
+L0145,E03,D37,ginisang monggo,ginisang monggo,cooked_vegetables,1,pot,3.0,1,True,FOODKEEPER,19:03,20:30
+L0146,E03,D17,chop suey,chopsuey,cooked_vegetables,2,tray,3.0,2,True,FOODKEEPER,19:30,20:45
+L0147,E03,D11,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:07,20:15
+L0148,E03,D23,pechay,pechay,leafy_greens,2,kg,2.0,2,True,FOODKEEPER,18:08,19:45
+L0149,E03,D01,lumpiang shanghai,lumpiang shanghai,cooked_dish,30,piece,0.9,1,True,FOODKEEPER,17:10,18:00
+L0150,E03,D07,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:12,20:15
+L0151,E03,D17,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,19:33,20:15
+L0152,E03,D06,pancit bihon,pancit bihon,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,18:34,19:15
+L0153,E03,D37,pancit bihon,pancit bihon,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,19:22,20:00
+L0154,E03,D16,pandesal,pandesal,bread,100,piece,3.0,3,False,FOODKEEPER,18:15,19:30
+L0155,E03,D33,fried chicken,pritong manok,cooked_dish,29,piece,4.35,2,True,FOODKEEPER,18:53,20:00
+L0156,E03,D40,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:09,19:45
+L0157,E03,D04,steamed rice,kanin,cooked_rice,7,kg,7.0,3,True,FOODKEEPER,19:07,20:15
+L0158,E03,D20,eggplant,talong,fresh_vegetables,3,kg,3.0,2,True,FOODKEEPER,19:03,20:15
+L0159,E03,D15,bananas,saging,fruit,1,kg,1.0,1,False,FOODKEEPER,18:31,20:00
+L0160,E03,D38,pandesal,pandesal,bread,57,piece,1.71,2,False,FOODKEEPER,17:33,18:30
+L0161,E03,D21,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:46,19:00
+L0162,E03,D23,tomatoes,kamatis,fresh_vegetables,4,kg,4.0,3,False,FOODKEEPER,18:14,19:45
+L0163,E03,D47,monay,monay,bread,37,piece,2.22,3,False,FOODKEEPER,18:10,19:45
+L0164,E03,D18,pancit bihon,pancit bihon,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,17:38,19:00
+L0165,E03,D40,steamed rice,kanin,cooked_rice,4,kg,4.0,2,True,FOODKEEPER,17:48,19:15
+L0166,E03,D27,chicken tinola,tinolang manok,cooked_soup,2,pot,8.0,3,True,FOODKEEPER,19:37,20:15
+L0167,E03,D31,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:09,20:00
+L0168,E03,D42,fried chicken,pritong manok,cooked_dish,10,piece,1.5,1,True,FOODKEEPER,18:56,20:30
+L0169,E04,D03,fried chicken,pritong manok,cooked_dish,37,piece,5.55,3,True,FOODKEEPER,17:59,19:00
+L0170,E04,D48,pancit canton,pancit canton,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,17:35,18:30
+L0171,E04,D09,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:55,20:00
+L0172,E04,D12,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:40,18:45
+L0173,E04,D18,chicken adobo,adobong manok,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:58,19:30
+L0174,E04,D36,ginisang monggo,ginisang monggo,cooked_vegetables,2,pot,6.0,3,True,FOODKEEPER,19:10,20:00
+L0175,E04,D22,fried chicken,pritong manok,cooked_dish,39,piece,5.85,3,True,FOODKEEPER,19:34,21:00
+L0176,E04,D36,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:52,19:30
+L0177,E04,D34,lumpiang shanghai,lumpiang shanghai,cooked_dish,62,piece,1.86,2,True,FOODKEEPER,17:37,19:00
+L0178,E04,D29,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:20,20:15
+L0179,E04,D08,ensaymada,ensaymada,bread,10,piece,0.8,1,False,FOODKEEPER,17:30,19:00
+L0180,E04,D40,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:04,19:15
+L0181,E04,D29,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:39,21:00
+L0182,E04,D32,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:32,18:45
+L0183,E04,D47,pandesal,pandesal,bread,100,piece,3.0,3,False,FOODKEEPER,18:18,19:15
+L0184,E04,D02,monay,monay,bread,38,piece,2.28,3,False,FOODKEEPER,18:08,19:15
+L0185,E04,D27,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:35,21:00
+L0186,E04,D16,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,18:03,18:45
+L0187,E04,D11,pancit canton,pancit canton,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,18:34,19:45
+L0188,E04,D48,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:50,19:15
+L0189,E04,D30,fried chicken,pritong manok,cooked_dish,29,piece,4.35,2,True,FOODKEEPER,19:09,20:00
+L0190,E04,D14,eggplant,talong,fresh_vegetables,3,kg,3.0,2,True,FOODKEEPER,19:19,20:15
+L0191,E04,D06,ginisang monggo,ginisang monggo,cooked_vegetables,1,pot,3.0,1,True,FOODKEEPER,18:53,20:00
+L0192,E04,D45,tomatoes,kamatis,fresh_vegetables,3,kg,3.0,2,False,FOODKEEPER,17:56,19:15
+L0193,E04,D14,tomatoes,kamatis,fresh_vegetables,1,kg,1.0,1,False,FOODKEEPER,19:30,20:45
+L0194,E04,D20,pechay,pechay,leafy_greens,2,kg,2.0,2,True,FOODKEEPER,19:19,20:30
+L0195,E04,D24,monay,monay,bread,40,piece,2.4,3,False,FOODKEEPER,18:32,19:45
+L0196,E04,D32,chicken tinola,tinolang manok,cooked_soup,2,pot,8.0,3,True,FOODKEEPER,17:08,18:45
+L0197,E04,D26,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:21,18:30
+L0198,E04,D26,lumpiang shanghai,lumpiang shanghai,cooked_dish,78,piece,2.34,2,True,FOODKEEPER,17:29,18:45
+L0199,E04,D24,monay,monay,bread,14,piece,0.84,1,False,FOODKEEPER,18:20,19:00
+L0200,E04,D21,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:52,19:00
+L0201,E04,D43,bananas,saging,fruit,5,kg,5.0,3,False,FOODKEEPER,19:06,20:30
+L0202,E04,D40,chicken adobo,adobong manok,cooked_dish,3,tray,6.0,2,True,FOODKEEPER,18:10,19:00
+L0203,E04,D32,lumpiang shanghai,lumpiang shanghai,cooked_dish,32,piece,0.96,1,True,FOODKEEPER,17:29,19:00
+L0204,E04,D07,lumpiang shanghai,lumpiang shanghai,cooked_dish,67,piece,2.01,2,True,FOODKEEPER,18:45,20:15
+L0205,E05,D42,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,18:31,20:00
+L0206,E05,D11,chicken adobo,adobong manok,cooked_dish,3,tray,6.0,2,True,FOODKEEPER,19:06,20:15
+L0207,E05,D25,pandesal,pandesal,bread,54,piece,1.62,2,False,FOODKEEPER,17:03,17:45
+L0208,E05,D42,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:09,20:45
+L0209,E05,D42,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:40,19:45
+L0210,E05,D05,monay,monay,bread,23,piece,1.38,2,False,FOODKEEPER,18:13,19:30
+L0211,E05,D01,lumpiang shanghai,lumpiang shanghai,cooked_dish,75,piece,2.25,2,True,FOODKEEPER,17:37,18:30
+L0212,E05,D12,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:39,18:45
+L0213,E05,D39,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,18:33,19:45
+L0214,E05,D33,chicken adobo,adobong manok,cooked_dish,3,tray,6.0,2,True,FOODKEEPER,19:08,20:30
+L0215,E05,D21,steamed rice,kanin,cooked_rice,2,kg,2.0,1,True,FOODKEEPER,17:55,19:30
+L0216,E05,D03,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:41,18:45
+L0217,E05,D19,ensaymada,ensaymada,bread,15,piece,1.2,2,False,FOODKEEPER,18:32,19:15
+L0218,E05,D01,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:42,19:15
+L0219,E05,D40,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:07,18:45
+L0220,E05,D49,fried chicken,pritong manok,cooked_dish,29,piece,4.35,2,True,FOODKEEPER,17:37,18:45
+L0221,E05,D15,sliced bread,tasty,bread,2,loaf,1.2,1,False,FOODKEEPER,18:37,20:00
+L0222,E05,D18,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:33,18:45
+L0223,E05,D08,pandesal,pandesal,bread,100,piece,3.0,3,False,FOODKEEPER,17:45,19:15
+L0224,E05,D50,sliced bread,tasty,bread,5,loaf,3.0,2,False,FOODKEEPER,19:38,21:00
+L0225,E05,D33,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:56,20:30
+L0226,E05,D02,pandesal,pandesal,bread,20,piece,0.6,1,False,FOODKEEPER,17:48,18:30
+L0227,E05,D32,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:03,18:30
+L0228,E05,D31,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:30,19:30
+L0229,E05,D50,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,19:31,20:45
+L0230,E05,D37,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:14,20:00
+L0231,E05,D26,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:22,18:30
+L0232,E05,D11,lumpiang shanghai,lumpiang shanghai,cooked_dish,65,piece,1.95,2,True,FOODKEEPER,19:00,20:00
+L0233,E05,D30,pancit bihon,pancit bihon,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,19:29,20:30
+L0234,E05,D14,tomatoes,kamatis,fresh_vegetables,4,kg,4.0,3,False,FOODKEEPER,19:10,20:00
+L0235,E05,D21,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:47,18:30
+L0236,E05,D10,pork sinigang,sinigang na baboy,cooked_soup,1,pot,4.0,1,True,FOODKEEPER,17:40,18:30
+L0237,E05,D20,tomatoes,kamatis,fresh_vegetables,1,kg,1.0,1,False,FOODKEEPER,19:40,20:30
+L0238,E05,D48,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:50,19:00
+L0239,E05,D35,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:08,19:30
+L0240,E05,D04,chicken adobo,adobong manok,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:06,20:30
+L0241,E05,D26,ginisang monggo,ginisang monggo,cooked_vegetables,2,pot,6.0,3,True,FOODKEEPER,17:28,18:15
+L0242,E05,D12,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:10,18:15
+L0243,E05,D29,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:45,21:00
+L0244,E05,D15,sliced bread,tasty,bread,2,loaf,1.2,1,False,FOODKEEPER,18:37,20:00
+L0245,E05,D32,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:20,18:30
+L0246,E05,D19,monay,monay,bread,10,piece,0.6,1,False,FOODKEEPER,18:20,19:00
+L0247,E05,D46,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:59,19:30
+L0248,E06,D43,bananas,saging,fruit,5,kg,5.0,3,False,FOODKEEPER,19:12,20:15
+L0249,E06,D21,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:52,18:45
+L0250,E06,D06,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:33,19:45
+L0251,E06,D19,pandesal,pandesal,bread,89,piece,2.67,3,False,FOODKEEPER,18:41,20:00
+L0252,E06,D46,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:35,18:30
+L0253,E06,D20,eggplant,talong,fresh_vegetables,4,kg,4.0,3,True,FOODKEEPER,19:43,20:30
+L0254,E06,D47,pandesal,pandesal,bread,100,piece,3.0,3,False,FOODKEEPER,18:07,19:00
+L0255,E06,D30,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,19:20,20:15
+L0256,E06,D02,monay,monay,bread,10,piece,0.6,1,False,FOODKEEPER,17:30,18:45
+L0257,E06,D08,pandesal,pandesal,bread,90,piece,2.7,3,False,FOODKEEPER,17:45,18:30
+L0258,E06,D23,bananas,saging,fruit,5,kg,5.0,3,False,FOODKEEPER,18:15,19:45
+L0259,E06,D35,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:52,18:45
+L0260,E06,D27,pancit canton,pancit canton,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,19:36,20:15
+L0261,E06,D31,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:32,19:30
+L0262,E06,D29,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:22,20:00
+L0263,E06,D17,fried chicken,pritong manok,cooked_dish,38,piece,5.7,3,True,FOODKEEPER,19:26,20:15
+L0264,E06,D24,sliced bread,tasty,bread,4,loaf,2.4,2,False,FOODKEEPER,18:28,19:30
+L0265,E06,D33,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:48,20:00
+L0266,E06,D07,lumpiang shanghai,lumpiang shanghai,cooked_dish,30,piece,0.9,1,True,FOODKEEPER,19:03,20:00
+L0267,E06,D08,monay,monay,bread,12,piece,0.72,1,False,FOODKEEPER,17:58,19:00
+L0268,E06,D28,chicken adobo,adobong manok,cooked_dish,3,tray,6.0,2,True,FOODKEEPER,19:41,20:30
+L0269,E06,D21,chicken adobo,adobong manok,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:54,19:15
+L0270,E06,D22,fried chicken,pritong manok,cooked_dish,12,piece,1.8,1,True,FOODKEEPER,19:00,20:30
+L0271,E06,D33,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,19:01,20:15
+L0272,E06,D26,ginisang monggo,ginisang monggo,cooked_vegetables,1,pot,3.0,1,True,FOODKEEPER,17:23,19:00
+L0273,E06,D11,fried chicken,pritong manok,cooked_dish,10,piece,1.5,1,True,FOODKEEPER,18:34,19:15
+L0274,E06,D32,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:35,18:15
+L0275,E06,D49,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:21,18:45
+L0276,E06,D03,pancit canton,pancit canton,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,17:34,18:30
+L0277,E06,D33,lumpiang shanghai,lumpiang shanghai,cooked_dish,78,piece,2.34,2,True,FOODKEEPER,19:08,20:45
+L0278,E06,D43,bananas,saging,fruit,5,kg,5.0,3,False,FOODKEEPER,19:28,20:30
+L0279,E06,D16,pandesal,pandesal,bread,49,piece,1.47,2,False,FOODKEEPER,17:59,19:00
+L0280,E06,D42,fried chicken,pritong manok,cooked_dish,22,piece,3.3,2,True,FOODKEEPER,18:55,19:45
+L0281,E06,D43,eggplant,talong,fresh_vegetables,5,kg,5.0,3,True,FOODKEEPER,19:20,20:30
+L0282,E06,D02,sliced bread,tasty,bread,5,loaf,3.0,2,False,FOODKEEPER,17:44,18:30
+L0283,E06,D27,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,19:10,20:45
+L0284,E06,D19,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,18:14,19:45
+L0285,E06,D49,fried chicken,pritong manok,cooked_dish,10,piece,1.5,1,True,FOODKEEPER,17:39,19:15
+L0286,E06,D02,pandesal,pandesal,bread,100,piece,3.0,3,False,FOODKEEPER,17:30,19:00
+L0287,E06,D06,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:15,20:00
+L0288,E06,D23,eggplant,talong,fresh_vegetables,3,kg,3.0,2,True,FOODKEEPER,18:42,20:15
+L0289,E06,D42,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,18:42,20:15
+L0290,E06,D49,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:20,18:00
+L0291,E06,D02,sliced bread,tasty,bread,2,loaf,1.2,1,False,FOODKEEPER,17:55,19:15
+L0292,E06,D45,eggplant,talong,fresh_vegetables,2,kg,2.0,2,True,FOODKEEPER,17:41,18:30
+L0293,E06,D25,pandesal,pandesal,bread,22,piece,0.66,1,False,FOODKEEPER,17:25,18:15
+L0294,E07,D10,pancit bihon,pancit bihon,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,17:42,18:45
+L0295,E07,D07,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,19:04,20:00
+L0296,E07,D09,pancit canton,pancit canton,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,18:54,20:30
+L0297,E07,D42,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:56,20:30
+L0298,E07,D26,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:25,19:00
+L0299,E07,D15,ensaymada,ensaymada,bread,30,piece,2.4,3,False,FOODKEEPER,18:23,19:30
+L0300,E07,D05,monay,monay,bread,14,piece,0.84,1,False,FOODKEEPER,18:10,19:30
+L0301,E07,D46,lumpiang shanghai,lumpiang shanghai,cooked_dish,72,piece,2.16,2,True,FOODKEEPER,17:58,18:45
+L0302,E07,D19,monay,monay,bread,25,piece,1.5,2,False,FOODKEEPER,18:36,19:45
+L0303,E07,D02,sliced bread,tasty,bread,5,loaf,3.0,2,False,FOODKEEPER,17:54,18:45
+L0304,E07,D11,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:59,20:15
+L0305,E07,D43,bananas,saging,fruit,1,kg,1.0,1,False,FOODKEEPER,19:35,21:00
+L0306,E07,D22,fried chicken,pritong manok,cooked_dish,37,piece,5.55,3,True,FOODKEEPER,19:31,20:30
+L0307,E07,D11,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:55,20:00
+L0308,E07,D01,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:19,18:30
+L0309,E07,D35,pancit bihon,pancit bihon,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,18:07,19:30
+L0310,E07,D09,fried chicken,pritong manok,cooked_dish,39,piece,5.85,3,True,FOODKEEPER,18:30,20:00
+L0311,E07,D18,pork sinigang,sinigang na baboy,cooked_soup,1,pot,4.0,1,True,FOODKEEPER,17:59,18:45
+L0312,E07,D19,pandesal,pandesal,bread,100,piece,3.0,3,False,FOODKEEPER,18:11,19:30
+L0313,E07,D08,monay,monay,bread,40,piece,2.4,3,False,FOODKEEPER,18:10,19:00
+L0314,E07,D05,sliced bread,tasty,bread,5,loaf,3.0,2,False,FOODKEEPER,18:01,18:45
+L0315,E07,D03,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:02,19:00
+L0316,E07,D03,pancit canton,pancit canton,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,18:08,19:30
+L0317,E07,D42,ginisang monggo,ginisang monggo,cooked_vegetables,1,pot,3.0,2,True,FOODKEEPER,18:30,19:30
+L0318,E07,D16,pandesal,pandesal,bread,21,piece,0.63,1,False,FOODKEEPER,17:49,19:15
+L0319,E07,D32,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:05,18:00
+L0320,E07,D03,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:38,19:15
+L0321,E07,D02,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,17:53,19:30
+L0322,E07,D25,pandesal,pandesal,bread,70,piece,2.1,2,False,FOODKEEPER,17:41,19:15
+L0323,E07,D43,tomatoes,kamatis,fresh_vegetables,4,kg,4.0,3,False,FOODKEEPER,19:03,20:30
+L0324,E07,D12,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:27,18:30
+L0325,E07,D43,tomatoes,kamatis,fresh_vegetables,4,kg,4.0,3,False,FOODKEEPER,19:11,20:00
+L0326,E07,D46,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:03,18:45
+L0327,E07,D04,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:36,21:00
+L0328,E07,D35,ginisang monggo,ginisang monggo,cooked_vegetables,2,pot,6.0,3,True,FOODKEEPER,17:34,18:15
+L0329,E07,D18,chicken tinola,tinolang manok,cooked_soup,2,pot,8.0,3,True,FOODKEEPER,18:04,19:30
+L0330,E07,D36,chicken adobo,adobong manok,cooked_dish,3,tray,6.0,2,True,FOODKEEPER,18:34,19:30
+L0331,E07,D29,pancit canton,pancit canton,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,19:39,21:00
+L0332,E07,D24,pandesal,pandesal,bread,100,piece,3.0,3,False,FOODKEEPER,18:10,19:30
+L0333,E07,D35,fried chicken,pritong manok,cooked_dish,13,piece,1.95,1,True,FOODKEEPER,18:14,19:45
+L0334,E07,D33,steamed rice,kanin,cooked_rice,8,kg,8.0,3,True,FOODKEEPER,19:04,20:15
+L0335,E07,D06,fried chicken,pritong manok,cooked_dish,28,piece,4.2,2,True,FOODKEEPER,18:37,20:00
+L0336,E07,D15,pandesal,pandesal,bread,68,piece,2.04,2,False,FOODKEEPER,18:42,19:45
+L0337,E07,D37,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:04,19:45
+L0338,E07,D22,pancit canton,pancit canton,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,19:32,20:30
+L0339,E07,D11,fried chicken,pritong manok,cooked_dish,24,piece,3.6,2,True,FOODKEEPER,18:54,19:45
+L0340,E07,D17,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:42,21:00
+L0341,E07,D06,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:42,20:00
+L0342,E08,D35,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:45,19:00
+L0343,E08,D16,pandesal,pandesal,bread,24,piece,0.72,1,False,FOODKEEPER,18:09,19:15
+L0344,E08,D33,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:03,20:00
+L0345,E08,D27,pancit bihon,pancit bihon,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,19:26,20:45
+L0346,E08,D03,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:46,19:00
+L0347,E08,D07,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:03,20:15
+L0348,E08,D49,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:10,18:15
+L0349,E08,D28,fried chicken,pritong manok,cooked_dish,26,piece,3.9,2,True,FOODKEEPER,19:21,20:30
+L0350,E08,D05,sliced bread,tasty,bread,3,loaf,1.8,1,False,FOODKEEPER,18:09,19:00
+L0351,E08,D02,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,18:11,19:45
+L0352,E08,D03,fried chicken,pritong manok,cooked_dish,13,piece,1.95,1,True,FOODKEEPER,17:47,18:30
+L0353,E08,D02,ensaymada,ensaymada,bread,6,piece,0.48,1,False,FOODKEEPER,18:01,19:15
+L0354,E08,D18,ginisang monggo,ginisang monggo,cooked_vegetables,2,pot,6.0,3,True,FOODKEEPER,18:03,18:45
+L0355,E08,D37,pork sinigang,sinigang na baboy,cooked_soup,1,pot,4.0,1,True,FOODKEEPER,19:43,20:45
+L0356,E08,D48,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,17:40,19:15
+L0357,E08,D28,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:21,20:00
+L0358,E08,D23,tomatoes,kamatis,fresh_vegetables,3,kg,3.0,2,False,FOODKEEPER,18:09,19:45
+L0359,E08,D09,ginisang monggo,ginisang monggo,cooked_vegetables,2,pot,6.0,3,True,FOODKEEPER,18:42,20:15
+L0360,E08,D19,pandesal,pandesal,bread,100,piece,3.0,3,False,FOODKEEPER,18:24,19:30
+L0361,E08,D34,pork sinigang,sinigang na baboy,cooked_soup,2,pot,8.0,3,True,FOODKEEPER,17:26,18:30
+L0362,E08,D09,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:41,20:15
+L0363,E08,D30,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:41,21:00
+L0364,E08,D33,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:45,19:30
+L0365,E08,D35,pancit bihon,pancit bihon,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,17:53,19:30
+L0366,E08,D20,tomatoes,kamatis,fresh_vegetables,1,kg,1.0,1,False,FOODKEEPER,19:28,21:00
+L0367,E08,D30,steamed rice,kanin,cooked_rice,6,kg,6.0,2,True,FOODKEEPER,19:23,20:45
+L0368,E08,D22,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:14,20:30
+L0369,E08,D30,chicken adobo,adobong manok,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:26,20:45
+L0370,E08,D48,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:30,18:15
+L0371,E08,D27,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:07,19:45
+L0372,E08,D15,bananas,saging,fruit,5,kg,5.0,3,False,FOODKEEPER,18:42,19:45
+L0373,E08,D27,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:40,21:00
+L0374,E08,D14,bananas,saging,fruit,5,kg,5.0,3,False,FOODKEEPER,19:17,20:30
+L0375,E08,D36,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,18:31,19:30
+L0376,E08,D16,pandesal,pandesal,bread,20,piece,0.6,1,False,FOODKEEPER,17:56,19:30
+L0377,E08,D45,tomatoes,kamatis,fresh_vegetables,2,kg,2.0,2,False,FOODKEEPER,17:44,18:45
+L0378,E08,D48,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:08,19:15
+L0379,E08,D04,pancit canton,pancit canton,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,19:07,19:45
+L0380,E08,D50,monay,monay,bread,40,piece,2.4,3,False,FOODKEEPER,19:21,20:15
+L0381,E08,D05,pandesal,pandesal,bread,22,piece,0.66,1,False,FOODKEEPER,17:31,19:00
+L0382,E08,D49,pork sinigang,sinigang na baboy,cooked_soup,1,pot,4.0,2,True,FOODKEEPER,17:02,17:45
+L0383,E08,D39,monay,monay,bread,13,piece,0.78,1,False,FOODKEEPER,19:04,19:45
+L0384,E08,D02,monay,monay,bread,40,piece,2.4,3,False,FOODKEEPER,17:46,18:30
+L0385,E08,D01,ginisang monggo,ginisang monggo,cooked_vegetables,1,pot,3.0,1,True,FOODKEEPER,17:07,18:15
+L0386,E09,D05,pandesal,pandesal,bread,100,piece,3.0,3,False,FOODKEEPER,17:30,18:45
+L0387,E09,D26,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:00,18:00
+L0388,E09,D17,pork sinigang,sinigang na baboy,cooked_soup,2,pot,8.0,2,True,FOODKEEPER,19:25,21:00
+L0389,E09,D25,ensaymada,ensaymada,bread,30,piece,2.4,3,False,FOODKEEPER,17:04,17:45
+L0390,E09,D42,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:10,20:45
+L0391,E09,D26,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:41,18:30
+L0392,E09,D34,pancit canton,pancit canton,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,17:35,18:45
+L0393,E09,D15,sliced bread,tasty,bread,6,loaf,3.6,2,False,FOODKEEPER,18:19,19:00
+L0394,E09,D27,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,19:30,21:00
+L0395,E09,D48,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:00,19:30
+L0396,E09,D36,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,18:35,19:15
+L0397,E09,D37,pancit canton,pancit canton,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,19:18,20:00
+L0398,E09,D10,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:12,18:45
+L0399,E09,D16,pandesal,pandesal,bread,28,piece,0.84,1,False,FOODKEEPER,17:51,18:45
+L0400,E09,D12,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,17:32,18:30
+L0401,E09,D37,chop suey,chopsuey,cooked_vegetables,2,tray,3.0,2,True,FOODKEEPER,19:19,20:15
+L0402,E09,D33,fried chicken,pritong manok,cooked_dish,14,piece,2.1,1,True,FOODKEEPER,18:55,19:45
+L0403,E09,D50,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,19:03,19:45
+L0404,E09,D50,pandesal,pandesal,bread,54,piece,1.62,2,False,FOODKEEPER,19:28,20:15
+L0405,E09,D10,chicken tinola,tinolang manok,cooked_soup,1,pot,4.0,1,True,FOODKEEPER,17:17,18:00
+L0406,E09,D40,chop suey,chopsuey,cooked_vegetables,3,tray,4.5,3,True,FOODKEEPER,17:35,18:45
+L0407,E09,D25,monay,monay,bread,40,piece,2.4,3,False,FOODKEEPER,17:07,17:45
+L0408,E09,D36,fried chicken,pritong manok,cooked_dish,24,piece,3.6,2,True,FOODKEEPER,18:42,19:45
+L0409,E09,D29,steamed rice,kanin,cooked_rice,2,kg,2.0,1,True,FOODKEEPER,19:01,19:45
+L0410,E09,D13,pancit canton,pancit canton,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,18:26,20:00
+L0411,E09,D21,chicken adobo,adobong manok,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:38,18:45
+L0412,E09,D01,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,17:39,19:15
+L0413,E09,D48,chicken adobo,adobong manok,cooked_dish,3,tray,6.0,2,True,FOODKEEPER,17:37,18:45
+L0414,E09,D10,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:13,18:00
+L0415,E09,D01,fried chicken,pritong manok,cooked_dish,27,piece,4.05,2,True,FOODKEEPER,17:42,18:30
+L0416,E09,D28,lumpiang shanghai,lumpiang shanghai,cooked_dish,69,piece,2.07,2,True,FOODKEEPER,19:09,20:30
+L0417,E09,D02,ensaymada,ensaymada,bread,30,piece,2.4,3,False,FOODKEEPER,17:32,18:45
+L0418,E09,D20,eggplant,talong,fresh_vegetables,5,kg,5.0,3,True,FOODKEEPER,19:32,20:15
+L0419,E09,D17,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,19:36,20:45
+L0420,E09,D41,fried chicken,pritong manok,cooked_dish,26,piece,3.9,2,True,FOODKEEPER,19:30,20:30
+L0421,E09,D09,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,18:59,20:15
+L0422,E09,D16,ensaymada,ensaymada,bread,6,piece,0.48,1,False,FOODKEEPER,18:04,18:45
+L0423,E09,D11,lumpiang shanghai,lumpiang shanghai,cooked_dish,68,piece,2.04,2,True,FOODKEEPER,18:37,19:45
+L0424,E09,D39,monay,monay,bread,25,piece,1.5,2,False,FOODKEEPER,18:40,19:30
+L0425,E09,D32,chop suey,chopsuey,cooked_vegetables,2,tray,3.0,2,True,FOODKEEPER,17:41,19:00
+L0426,E09,D05,monay,monay,bread,29,piece,1.74,2,False,FOODKEEPER,17:57,19:15
+L0427,E09,D19,ensaymada,ensaymada,bread,28,piece,2.24,3,False,FOODKEEPER,18:05,19:30
+L0428,E09,D06,chicken adobo,adobong manok,cooked_dish,3,tray,6.0,2,True,FOODKEEPER,18:52,20:00
+L0429,E09,D20,bananas,saging,fruit,5,kg,5.0,3,False,FOODKEEPER,19:06,19:45
+L0430,E09,D08,instant noodles,instant noodles,packaged_shelf_stable,10,pack,0.6,1,False,FOODKEEPER,17:52,19:00
+L0431,E09,D09,lumpiang shanghai,lumpiang shanghai,cooked_dish,66,piece,1.98,2,True,FOODKEEPER,18:40,19:45
+L0432,E09,D34,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:03,17:45
+L0433,E09,D05,monay,monay,bread,40,piece,2.4,3,False,FOODKEEPER,17:46,19:00
+L0434,E10,D31,fried chicken,pritong manok,cooked_dish,25,piece,3.75,2,True,FOODKEEPER,18:33,19:30
+L0435,E10,D44,monay,monay,bread,10,piece,0.6,1,False,FOODKEEPER,19:36,21:00
+L0436,E10,D06,lumpiang shanghai,lumpiang shanghai,cooked_dish,85,piece,2.55,2,True,FOODKEEPER,18:47,20:15
+L0437,E10,D16,sliced bread,tasty,bread,4,loaf,2.4,2,False,FOODKEEPER,18:03,19:15
+L0438,E10,D15,ensaymada,ensaymada,bread,7,piece,0.56,1,False,FOODKEEPER,18:40,20:00
+L0439,E10,D30,chicken adobo,adobong manok,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:02,20:30
+L0440,E10,D48,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:37,18:15
+L0441,E10,D24,pandesal,pandesal,bread,88,piece,2.64,3,False,FOODKEEPER,18:16,19:00
+L0442,E10,D07,ginisang monggo,ginisang monggo,cooked_vegetables,2,pot,6.0,3,True,FOODKEEPER,19:14,20:45
+L0443,E10,D09,pancit canton,pancit canton,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,19:02,20:30
+L0444,E10,D07,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:56,20:00
+L0445,E10,D01,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,17:28,18:15
+L0446,E10,D10,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:27,18:15
+L0447,E10,D17,chop suey,chopsuey,cooked_vegetables,1,tray,1.5,1,True,FOODKEEPER,19:33,21:00
+L0448,E10,D32,ginisang monggo,ginisang monggo,cooked_vegetables,1,pot,3.0,1,True,FOODKEEPER,17:00,18:30
+L0449,E10,D26,chicken adobo,adobong manok,cooked_dish,3,tray,6.0,2,True,FOODKEEPER,17:02,18:15
+L0450,E10,D01,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:09,18:45
+L0451,E10,D10,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:34,18:45
+L0452,E10,D20,eggplant,talong,fresh_vegetables,5,kg,5.0,3,True,FOODKEEPER,19:09,20:15
+L0453,E10,D04,ginisang monggo,ginisang monggo,cooked_vegetables,2,pot,6.0,3,True,FOODKEEPER,19:38,20:30
+L0454,E10,D03,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:11,19:30
+L0455,E10,D34,steamed rice,kanin,cooked_rice,4,kg,4.0,2,True,FOODKEEPER,17:25,18:30
+L0456,E10,D49,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:34,19:00
+L0457,E10,D46,fried chicken,pritong manok,cooked_dish,10,piece,1.5,1,True,FOODKEEPER,18:08,19:15
+L0458,E10,D31,pancit bihon,pancit bihon,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,18:45,19:30
+L0459,E10,D35,chicken tinola,tinolang manok,cooked_soup,2,pot,8.0,2,True,FOODKEEPER,17:59,19:00
+L0460,E10,D06,lumpiang shanghai,lumpiang shanghai,cooked_dish,71,piece,2.13,2,True,FOODKEEPER,19:10,20:00
+L0461,E10,D32,fried chicken,pritong manok,cooked_dish,26,piece,3.9,2,True,FOODKEEPER,17:38,19:15
+L0462,E10,D15,pandesal,pandesal,bread,27,piece,0.81,1,False,FOODKEEPER,18:15,19:15
+L0463,E10,D39,ensaymada,ensaymada,bread,28,piece,2.24,3,False,FOODKEEPER,18:41,19:45
+L0464,E10,D39,pandesal,pandesal,bread,20,piece,0.6,1,False,FOODKEEPER,18:39,19:45
+L0465,E10,D19,pandesal,pandesal,bread,20,piece,0.6,1,False,FOODKEEPER,18:34,19:15
+L0466,E10,D15,ensaymada,ensaymada,bread,6,piece,0.48,1,False,FOODKEEPER,18:15,19:00
+L0467,E10,D10,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,17:31,18:30
+L0468,E10,D40,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:52,18:30
+L0469,E10,D21,chicken adobo,adobong manok,cooked_dish,3,tray,6.0,2,True,FOODKEEPER,17:42,19:00
+L0470,E10,D13,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:45,19:30
+L0471,E10,D29,fried chicken,pritong manok,cooked_dish,26,piece,3.9,2,True,FOODKEEPER,19:15,20:30
+L0472,E10,D41,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:00,19:45
+L0473,E10,D29,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,19:13,20:30
+L0474,E10,D11,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:39,19:45
+L0475,E10,D37,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,19:41,20:30
+L0476,E10,D07,fried chicken,pritong manok,cooked_dish,10,piece,1.5,1,True,FOODKEEPER,19:13,20:45
+L0477,E10,D26,pancit bihon,pancit bihon,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,17:34,18:15
+L0478,E10,D45,bananas,saging,fruit,1,kg,1.0,1,False,FOODKEEPER,17:30,18:15
+L0479,E10,D07,fried chicken,pritong manok,cooked_dish,25,piece,3.75,2,True,FOODKEEPER,18:52,20:15
+L0480,E10,D29,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:29,21:00
+L0481,E10,D49,chicken tinola,tinolang manok,cooked_soup,2,pot,8.0,2,True,FOODKEEPER,17:00,18:15
+L0482,E10,D32,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,17:10,18:45
+L0483,E10,D09,chicken adobo,adobong manok,cooked_dish,3,tray,6.0,2,True,FOODKEEPER,18:32,19:15
+L0484,E10,D37,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,19:08,20:30
+L0485,E11,D26,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:03,17:45
+L0486,E11,D44,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,19:05,20:00
+L0487,E11,D31,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:49,19:30
+L0488,E11,D21,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:54,18:45
+L0489,E11,D16,sliced bread,tasty,bread,7,loaf,4.2,3,False,FOODKEEPER,17:36,19:00
+L0490,E11,D46,pancit canton,pancit canton,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,18:08,19:00
+L0491,E11,D21,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:42,18:30
+L0492,E11,D43,eggplant,talong,fresh_vegetables,5,kg,5.0,3,True,FOODKEEPER,19:44,21:00
+L0493,E11,D05,sliced bread,tasty,bread,6,loaf,3.6,2,False,FOODKEEPER,18:01,19:00
+L0494,E11,D36,chicken adobo,adobong manok,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:53,20:15
+L0495,E11,D42,fried chicken,pritong manok,cooked_dish,22,piece,3.3,2,True,FOODKEEPER,19:07,20:00
+L0496,E11,D08,pandesal,pandesal,bread,89,piece,2.67,3,False,FOODKEEPER,17:48,19:00
+L0497,E11,D02,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,17:55,18:45
+L0498,E11,D36,lumpiang shanghai,lumpiang shanghai,cooked_dish,30,piece,0.9,1,True,FOODKEEPER,18:39,20:00
+L0499,E11,D33,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,18:42,19:45
+L0500,E11,D32,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:34,18:45
+L0501,E11,D08,sliced bread,tasty,bread,5,loaf,3.0,2,False,FOODKEEPER,17:34,18:30
+L0502,E11,D03,ginisang monggo,ginisang monggo,cooked_vegetables,2,pot,6.0,3,True,FOODKEEPER,17:53,19:15
+L0503,E11,D17,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:15,20:00
+L0504,E11,D13,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:31,19:30
+L0505,E11,D28,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,19:01,20:30
+L0506,E11,D43,tomatoes,kamatis,fresh_vegetables,4,kg,4.0,3,False,FOODKEEPER,19:41,21:00
+L0507,E11,D20,eggplant,talong,fresh_vegetables,1,kg,1.0,1,True,FOODKEEPER,19:22,20:00
+L0508,E11,D27,steamed rice,kanin,cooked_rice,7,kg,7.0,3,True,FOODKEEPER,19:27,20:30
+L0509,E11,D36,lumpiang shanghai,lumpiang shanghai,cooked_dish,63,piece,1.89,2,True,FOODKEEPER,18:32,19:45
+L0510,E11,D30,lumpiang shanghai,lumpiang shanghai,cooked_dish,62,piece,1.86,2,True,FOODKEEPER,19:07,20:15
+L0511,E11,D48,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:14,19:15
+L0512,E11,D12,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:01,18:30
+L0513,E11,D07,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:33,19:15
+L0514,E11,D46,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:08,19:00
+L0515,E11,D34,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:09,18:30
+L0516,E11,D16,pandesal,pandesal,bread,20,piece,0.6,1,False,FOODKEEPER,17:36,18:45
+L0517,E11,D14,pechay,pechay,leafy_greens,2,kg,2.0,2,True,FOODKEEPER,19:15,20:15
+L0518,E11,D29,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:35,20:45
+L0519,E11,D21,fried chicken,pritong manok,cooked_dish,28,piece,4.2,2,True,FOODKEEPER,17:43,19:15
+L0520,E11,D09,steamed rice,kanin,cooked_rice,8,kg,8.0,3,True,FOODKEEPER,18:42,19:45
+L0521,E11,D35,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:40,18:45
+L0522,E11,D11,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:45,20:00
+L0523,E11,D17,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:15,20:00
+L0524,E11,D13,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:17,19:45
+L0525,E11,D44,ensaymada,ensaymada,bread,15,piece,1.2,2,False,FOODKEEPER,19:29,20:15
+L0526,E11,D40,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:36,18:45
+L0527,E11,D37,fried chicken,pritong manok,cooked_dish,22,piece,3.3,2,True,FOODKEEPER,19:06,20:30
+L0528,E11,D43,bananas,saging,fruit,1,kg,1.0,1,False,FOODKEEPER,19:08,20:45
+L0529,E11,D21,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:06,18:45
+L0530,E11,D18,lumpiang shanghai,lumpiang shanghai,cooked_dish,68,piece,2.04,2,True,FOODKEEPER,17:56,19:15
+L0531,E11,D40,lumpiang shanghai,lumpiang shanghai,cooked_dish,84,piece,2.52,2,True,FOODKEEPER,17:58,18:45
+L0532,E11,D44,ensaymada,ensaymada,bread,18,piece,1.44,2,False,FOODKEEPER,19:37,20:45
+L0533,E11,D06,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:01,20:30
+L0534,E11,D11,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:50,20:15
+L0535,E11,D36,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:37,20:00
+L0536,E11,D11,lumpiang shanghai,lumpiang shanghai,cooked_dish,67,piece,2.01,2,True,FOODKEEPER,18:56,20:15
+L0537,E11,D36,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:41,20:15
+L0538,E12,D29,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,19:21,20:15
+L0539,E12,D05,ensaymada,ensaymada,bread,30,piece,2.4,3,False,FOODKEEPER,18:04,18:45
+L0540,E12,D28,pancit canton,pancit canton,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,19:22,20:45
+L0541,E12,D27,lumpiang shanghai,lumpiang shanghai,cooked_dish,84,piece,2.52,2,True,FOODKEEPER,19:10,20:00
+L0542,E12,D11,lumpiang shanghai,lumpiang shanghai,cooked_dish,34,piece,1.02,1,True,FOODKEEPER,18:47,19:45
+L0543,E12,D33,lumpiang shanghai,lumpiang shanghai,cooked_dish,63,piece,1.89,2,True,FOODKEEPER,18:34,19:15
+L0544,E12,D15,instant noodles,instant noodles,packaged_shelf_stable,25,pack,1.5,2,False,FOODKEEPER,18:17,19:00
+L0545,E12,D28,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,19:16,20:15
+L0546,E12,D23,bananas,saging,fruit,3,kg,3.0,2,False,FOODKEEPER,18:24,20:00
+L0547,E12,D17,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:41,20:30
+L0548,E12,D40,fried chicken,pritong manok,cooked_dish,22,piece,3.3,2,True,FOODKEEPER,18:01,19:15
+L0549,E12,D46,steamed rice,kanin,cooked_rice,5,kg,5.0,2,True,FOODKEEPER,18:09,19:15
+L0550,E12,D41,fried chicken,pritong manok,cooked_dish,10,piece,1.5,1,True,FOODKEEPER,19:04,20:30
+L0551,E12,D41,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:14,20:30
+L0552,E12,D39,sliced bread,tasty,bread,2,loaf,1.2,1,False,FOODKEEPER,18:59,19:45
+L0553,E12,D21,chicken tinola,tinolang manok,cooked_soup,2,pot,8.0,2,True,FOODKEEPER,18:10,19:45
+L0554,E12,D08,pandesal,pandesal,bread,21,piece,0.63,1,False,FOODKEEPER,17:37,19:00
+L0555,E12,D28,lumpiang shanghai,lumpiang shanghai,cooked_dish,78,piece,2.34,2,True,FOODKEEPER,19:30,21:00
+L0556,E12,D28,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:30,21:00
+L0557,E12,D10,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:21,18:45
+L0558,E12,D50,ensaymada,ensaymada,bread,15,piece,1.2,2,False,FOODKEEPER,19:35,20:30
+L0559,E12,D03,lumpiang shanghai,lumpiang shanghai,cooked_dish,116,piece,3.48,3,True,FOODKEEPER,17:53,19:15
+L0560,E12,D39,sliced bread,tasty,bread,5,loaf,3.0,2,False,FOODKEEPER,18:40,20:00
+L0561,E12,D27,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:38,21:00
+L0562,E12,D35,pancit canton,pancit canton,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,17:46,18:30
+L0563,E12,D46,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:46,18:45
+L0564,E12,D43,pechay,pechay,leafy_greens,2,kg,2.0,2,True,FOODKEEPER,19:28,20:30
+L0565,E12,D18,pork sinigang,sinigang na baboy,cooked_soup,2,pot,8.0,3,True,FOODKEEPER,17:33,18:15
+L0566,E12,D18,lumpiang shanghai,lumpiang shanghai,cooked_dish,38,piece,1.14,1,True,FOODKEEPER,17:30,18:15
+L0567,E12,D40,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:57,19:15
+L0568,E12,D10,fried chicken,pritong manok,cooked_dish,22,piece,3.3,2,True,FOODKEEPER,17:25,18:15
+L0569,E12,D35,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:49,18:30
+L0570,E12,D25,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,17:13,18:00
+L0571,E12,D26,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:39,18:30
+L0572,E12,D15,monay,monay,bread,36,piece,2.16,3,False,FOODKEEPER,18:23,19:30
+L0573,E12,D35,fried chicken,pritong manok,cooked_dish,21,piece,3.15,2,True,FOODKEEPER,17:55,18:45
+L0574,E12,D45,eggplant,talong,fresh_vegetables,1,kg,1.0,1,True,FOODKEEPER,18:09,19:00
+L0575,E12,D48,pancit bihon,pancit bihon,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,17:44,18:30
+L0576,E12,D47,ensaymada,ensaymada,bread,17,piece,1.36,2,False,FOODKEEPER,18:29,19:45
+L0577,E12,D34,ginisang monggo,ginisang monggo,cooked_vegetables,2,pot,6.0,2,True,FOODKEEPER,17:12,18:30
+L0578,E12,D43,tomatoes,kamatis,fresh_vegetables,4,kg,4.0,3,False,FOODKEEPER,19:02,20:15
+L0579,E12,D42,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,18:37,20:00
+L0580,E12,D29,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:39,20:30
+L0581,E12,D21,chop suey,chopsuey,cooked_vegetables,1,tray,1.5,1,True,FOODKEEPER,17:54,19:15
+L0582,E12,D17,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:20,20:45
+L0583,E12,D15,sliced bread,tasty,bread,6,loaf,3.6,2,False,FOODKEEPER,18:28,20:00
+L0584,E12,D12,fried chicken,pritong manok,cooked_dish,10,piece,1.5,1,True,FOODKEEPER,17:32,18:45
+L0585,E13,D07,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,18:34,19:30
+L0586,E13,D20,tomatoes,kamatis,fresh_vegetables,4,kg,4.0,3,False,FOODKEEPER,19:32,20:30
+L0587,E13,D37,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:11,20:45
+L0588,E13,D40,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:00,19:00
+L0589,E13,D44,ensaymada,ensaymada,bread,18,piece,1.44,2,False,FOODKEEPER,19:29,20:30
+L0590,E13,D20,tomatoes,kamatis,fresh_vegetables,3,kg,3.0,2,False,FOODKEEPER,19:35,20:15
+L0591,E13,D17,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:10,20:30
+L0592,E13,D35,lumpiang shanghai,lumpiang shanghai,cooked_dish,77,piece,2.31,2,True,FOODKEEPER,17:45,18:30
+L0593,E13,D33,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:52,19:45
+L0594,E13,D39,pandesal,pandesal,bread,100,piece,3.0,3,False,FOODKEEPER,19:11,20:15
+L0595,E13,D32,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:38,18:30
+L0596,E13,D19,pandesal,pandesal,bread,100,piece,3.0,3,False,FOODKEEPER,18:00,19:15
+L0597,E13,D05,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,18:12,19:00
+L0598,E13,D16,pandesal,pandesal,bread,20,piece,0.6,1,False,FOODKEEPER,17:50,19:15
+L0599,E13,D20,tomatoes,kamatis,fresh_vegetables,1,kg,1.0,1,False,FOODKEEPER,19:09,20:15
+L0600,E13,D21,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:10,19:30
+L0601,E13,D12,fried chicken,pritong manok,cooked_dish,26,piece,3.9,2,True,FOODKEEPER,17:35,18:15
+L0602,E13,D34,fried chicken,pritong manok,cooked_dish,12,piece,1.8,1,True,FOODKEEPER,17:13,18:30
+L0603,E13,D15,pandesal,pandesal,bread,97,piece,2.91,3,False,FOODKEEPER,18:43,20:15
+L0604,E13,D39,pandesal,pandesal,bread,20,piece,0.6,1,False,FOODKEEPER,18:31,20:00
+L0605,E13,D16,ensaymada,ensaymada,bread,19,piece,1.52,2,False,FOODKEEPER,18:05,19:15
+L0606,E13,D48,pork sinigang,sinigang na baboy,cooked_soup,2,pot,8.0,3,True,FOODKEEPER,17:59,19:00
+L0607,E13,D21,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:58,19:15
+L0608,E13,D48,pancit bihon,pancit bihon,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,18:14,19:45
+L0609,E13,D38,ensaymada,ensaymada,bread,6,piece,0.48,1,False,FOODKEEPER,17:09,18:15
+L0610,E13,D07,chicken tinola,tinolang manok,cooked_soup,1,pot,4.0,2,True,FOODKEEPER,18:57,20:00
+L0611,E13,D45,eggplant,talong,fresh_vegetables,1,kg,1.0,1,True,FOODKEEPER,18:07,19:15
+L0612,E13,D23,tomatoes,kamatis,fresh_vegetables,1,kg,1.0,1,False,FOODKEEPER,18:35,20:00
+L0613,E13,D21,pork sinigang,sinigang na baboy,cooked_soup,2,pot,8.0,3,True,FOODKEEPER,17:41,19:15
+L0614,E13,D05,pandesal,pandesal,bread,30,piece,0.9,1,False,FOODKEEPER,18:08,19:45
+L0615,E13,D22,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:32,21:00
+L0616,E13,D04,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:10,20:00
+L0617,E13,D50,monay,monay,bread,40,piece,2.4,3,False,FOODKEEPER,19:05,20:30
+L0618,E13,D02,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,18:05,19:30
+L0619,E13,D20,bananas,saging,fruit,1,kg,1.0,1,False,FOODKEEPER,19:24,21:00
+L0620,E13,D09,lumpiang shanghai,lumpiang shanghai,cooked_dish,42,piece,1.26,1,True,FOODKEEPER,19:10,20:00
+L0621,E13,D19,ensaymada,ensaymada,bread,6,piece,0.48,1,False,FOODKEEPER,18:35,20:00
+L0622,E13,D32,fried chicken,pritong manok,cooked_dish,26,piece,3.9,2,True,FOODKEEPER,17:15,18:15
+L0623,E13,D24,monay,monay,bread,10,piece,0.6,1,False,FOODKEEPER,18:17,19:15
+L0624,E13,D16,monay,monay,bread,25,piece,1.5,2,False,FOODKEEPER,18:12,19:15
+L0625,E13,D23,tomatoes,kamatis,fresh_vegetables,1,kg,1.0,1,False,FOODKEEPER,18:20,19:15
+L0626,E13,D07,pork sinigang,sinigang na baboy,cooked_soup,2,pot,8.0,2,True,FOODKEEPER,18:35,20:00
+L0627,E13,D07,fried chicken,pritong manok,cooked_dish,28,piece,4.2,2,True,FOODKEEPER,19:10,20:00
+L0628,E13,D48,steamed rice,kanin,cooked_rice,5,kg,5.0,2,True,FOODKEEPER,18:09,19:45
+L0629,E13,D23,eggplant,talong,fresh_vegetables,1,kg,1.0,1,True,FOODKEEPER,18:34,19:45
+L0630,E13,D09,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:55,19:45
+L0631,E13,D34,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:39,19:15
+L0632,E13,D31,chicken adobo,adobong manok,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:39,20:00
+L0633,E13,D28,lumpiang shanghai,lumpiang shanghai,cooked_dish,39,piece,1.17,1,True,FOODKEEPER,19:32,20:45
+L0634,E13,D44,pandesal,pandesal,bread,20,piece,0.6,1,False,FOODKEEPER,19:44,21:00
+L0635,E13,D17,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:16,20:15
+L0636,E14,D46,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:40,18:45
+L0637,E14,D47,pandesal,pandesal,bread,21,piece,0.63,1,False,FOODKEEPER,18:32,19:15
+L0638,E14,D03,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:31,18:30
+L0639,E14,D11,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:44,19:30
+L0640,E14,D36,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:59,20:15
+L0641,E14,D19,pandesal,pandesal,bread,69,piece,2.07,2,False,FOODKEEPER,18:34,19:15
+L0642,E14,D08,pandesal,pandesal,bread,24,piece,0.72,1,False,FOODKEEPER,18:05,19:15
+L0643,E14,D10,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:22,18:45
+L0644,E14,D06,chop suey,chopsuey,cooked_vegetables,3,tray,4.5,3,True,FOODKEEPER,18:55,20:30
+L0645,E14,D40,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:55,18:45
+L0646,E14,D02,ensaymada,ensaymada,bread,8,piece,0.64,1,False,FOODKEEPER,18:13,19:45
+L0647,E14,D22,pork sinigang,sinigang na baboy,cooked_soup,2,pot,8.0,3,True,FOODKEEPER,19:10,20:15
+L0648,E14,D22,chicken adobo,adobong manok,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:44,20:30
+L0649,E14,D21,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,18:13,19:30
+L0650,E14,D43,bananas,saging,fruit,1,kg,1.0,1,False,FOODKEEPER,19:09,20:00
+L0651,E14,D10,chicken tinola,tinolang manok,cooked_soup,1,pot,4.0,1,True,FOODKEEPER,17:04,18:15
+L0652,E14,D29,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:01,19:45
+L0653,E14,D48,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:49,18:45
+L0654,E14,D44,monay,monay,bread,29,piece,1.74,2,False,FOODKEEPER,19:34,20:45
+L0655,E14,D48,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,17:54,19:30
+L0656,E14,D48,lumpiang shanghai,lumpiang shanghai,cooked_dish,111,piece,3.33,3,True,FOODKEEPER,17:32,18:45
+L0657,E14,D20,pechay,pechay,leafy_greens,2,kg,2.0,2,True,FOODKEEPER,19:10,20:00
+L0658,E14,D30,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:34,20:30
+L0659,E14,D49,lumpiang shanghai,lumpiang shanghai,cooked_dish,30,piece,0.9,1,True,FOODKEEPER,17:43,19:15
+L0660,E14,D09,pancit canton,pancit canton,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,18:51,20:15
+L0661,E14,D01,fried chicken,pritong manok,cooked_dish,21,piece,3.15,2,True,FOODKEEPER,17:05,18:15
+L0662,E14,D43,bananas,saging,fruit,1,kg,1.0,1,False,FOODKEEPER,19:29,20:45
+L0663,E14,D35,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:42,19:15
+L0664,E14,D21,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:35,18:15
+L0665,E14,D44,monay,monay,bread,27,piece,1.62,2,False,FOODKEEPER,19:33,21:00
+L0666,E14,D43,tomatoes,kamatis,fresh_vegetables,1,kg,1.0,1,False,FOODKEEPER,19:20,20:15
+L0667,E14,D08,instant noodles,instant noodles,packaged_shelf_stable,37,pack,2.22,3,False,FOODKEEPER,17:55,19:15
+L0668,E14,D10,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:12,18:30
+L0669,E14,D11,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:52,19:30
+L0670,E14,D06,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:56,20:15
+L0671,E14,D26,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:07,18:00
+L0672,E14,D37,lumpiang shanghai,lumpiang shanghai,cooked_dish,31,piece,0.93,1,True,FOODKEEPER,19:17,20:15
+L0673,E14,D01,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:28,18:15
+L0674,E14,D13,steamed rice,kanin,cooked_rice,5,kg,5.0,2,True,FOODKEEPER,18:35,20:00
+L0675,E14,D17,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:06,20:30
+L0676,E14,D47,ensaymada,ensaymada,bread,20,piece,1.6,2,False,FOODKEEPER,18:22,19:30
+L0677,E14,D34,ginisang monggo,ginisang monggo,cooked_vegetables,2,pot,6.0,3,True,FOODKEEPER,17:12,18:30
+L0678,E14,D22,chicken adobo,adobong manok,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:43,20:45
+L0679,E14,D12,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:35,18:15
+L0680,E14,D05,pandesal,pandesal,bread,20,piece,0.6,1,False,FOODKEEPER,17:35,18:15
+L0681,E14,D49,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:45,18:30
+L0682,E14,D24,monay,monay,bread,40,piece,2.4,3,False,FOODKEEPER,18:17,19:15
+L0683,E14,D42,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:49,20:00
+L0684,E14,D04,fried chicken,pritong manok,cooked_dish,28,piece,4.2,2,True,FOODKEEPER,19:20,20:15
+L0685,E14,D01,lumpiang shanghai,lumpiang shanghai,cooked_dish,68,piece,2.04,2,True,FOODKEEPER,17:24,18:30
+L0686,E14,D48,pancit canton,pancit canton,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,17:39,18:45
+L0687,E14,D28,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:05,20:30
+L0688,E14,D30,lumpiang shanghai,lumpiang shanghai,cooked_dish,107,piece,3.21,3,True,FOODKEEPER,19:03,20:15
+L0689,E15,D13,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:43,19:30
+L0690,E15,D49,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:35,18:45
+L0691,E15,D01,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:37,18:30
+L0692,E15,D33,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,18:38,20:15
+L0693,E15,D37,ginisang monggo,ginisang monggo,cooked_vegetables,2,pot,6.0,3,True,FOODKEEPER,19:05,20:30
+L0694,E15,D25,sliced bread,tasty,bread,2,loaf,1.2,1,False,FOODKEEPER,17:10,18:45
+L0695,E15,D43,bananas,saging,fruit,5,kg,5.0,3,False,FOODKEEPER,19:19,20:45
+L0696,E15,D50,pandesal,pandesal,bread,20,piece,0.6,1,False,FOODKEEPER,19:23,21:00
+L0697,E15,D18,pancit canton,pancit canton,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,18:10,19:00
+L0698,E15,D12,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:13,18:30
+L0699,E15,D08,monay,monay,bread,28,piece,1.68,2,False,FOODKEEPER,17:50,19:00
+L0700,E15,D29,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:16,20:30
+L0701,E15,D26,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:26,19:00
+L0702,E15,D07,lumpiang shanghai,lumpiang shanghai,cooked_dish,30,piece,0.9,1,True,FOODKEEPER,18:55,19:45
+L0703,E15,D49,steamed rice,kanin,cooked_rice,5,kg,5.0,2,True,FOODKEEPER,17:21,18:45
+L0704,E15,D26,pancit canton,pancit canton,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,17:28,18:45
+L0705,E15,D36,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:00,19:45
+L0706,E15,D10,lumpiang shanghai,lumpiang shanghai,cooked_dish,65,piece,1.95,2,True,FOODKEEPER,17:21,18:00
+L0707,E15,D23,tomatoes,kamatis,fresh_vegetables,1,kg,1.0,1,False,FOODKEEPER,18:39,20:00
+L0708,E15,D48,pancit bihon,pancit bihon,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,17:47,18:30
+L0709,E15,D16,ensaymada,ensaymada,bread,16,piece,1.28,2,False,FOODKEEPER,17:56,19:00
+L0710,E15,D02,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,18:06,19:30
+L0711,E15,D02,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,18:04,19:30
+L0712,E15,D15,monay,monay,bread,10,piece,0.6,1,False,FOODKEEPER,18:24,19:45
+L0713,E15,D02,ensaymada,ensaymada,bread,30,piece,2.4,3,False,FOODKEEPER,18:06,19:00
+L0714,E15,D16,ensaymada,ensaymada,bread,16,piece,1.28,2,False,FOODKEEPER,17:36,19:00
+L0715,E15,D16,monay,monay,bread,22,piece,1.32,2,False,FOODKEEPER,18:01,18:45
+L0716,E15,D11,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:11,20:45
+L0717,E15,D45,eggplant,talong,fresh_vegetables,1,kg,1.0,1,True,FOODKEEPER,17:35,18:30
+L0718,E15,D49,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,17:13,18:00
+L0719,E15,D18,steamed rice,kanin,cooked_rice,7,kg,7.0,3,True,FOODKEEPER,18:10,19:30
+L0720,E15,D20,eggplant,talong,fresh_vegetables,5,kg,5.0,3,True,FOODKEEPER,19:28,21:00
+L0721,E15,D47,sliced bread,tasty,bread,3,loaf,1.8,1,False,FOODKEEPER,18:17,19:45
+L0722,E15,D33,fried chicken,pritong manok,cooked_dish,10,piece,1.5,1,True,FOODKEEPER,19:02,19:45
+L0723,E15,D34,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,17:17,18:30
+L0724,E15,D33,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:01,20:30
+L0725,E15,D09,chicken adobo,adobong manok,cooked_dish,3,tray,6.0,2,True,FOODKEEPER,18:34,20:00
+L0726,E15,D49,pancit bihon,pancit bihon,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,17:42,19:00
+L0727,E15,D34,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:32,19:00
+L0728,E15,D14,tomatoes,kamatis,fresh_vegetables,1,kg,1.0,1,False,FOODKEEPER,19:15,20:15
+L0729,E15,D35,pancit canton,pancit canton,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,17:52,19:15
+L0730,E15,D34,fried chicken,pritong manok,cooked_dish,37,piece,5.55,3,True,FOODKEEPER,17:21,18:00
+L0731,E15,D19,sliced bread,tasty,bread,5,loaf,3.0,2,False,FOODKEEPER,18:08,19:30
+L0732,E15,D49,fried chicken,pritong manok,cooked_dish,24,piece,3.6,2,True,FOODKEEPER,17:37,18:30
+L0733,E15,D02,ensaymada,ensaymada,bread,6,piece,0.48,1,False,FOODKEEPER,17:50,18:30
+L0734,E15,D47,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,18:30,19:45
+L0735,E15,D33,pancit canton,pancit canton,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,18:43,20:15
+L0736,E15,D33,steamed rice,kanin,cooked_rice,2,kg,2.0,1,True,FOODKEEPER,19:12,20:00
+L0737,E15,D38,ensaymada,ensaymada,bread,9,piece,0.72,1,False,FOODKEEPER,17:19,18:00
+L0738,E15,D31,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:50,20:00
+L0739,E15,D13,lumpiang shanghai,lumpiang shanghai,cooked_dish,30,piece,0.9,1,True,FOODKEEPER,18:28,19:15
+L0740,E15,D43,eggplant,talong,fresh_vegetables,5,kg,5.0,3,True,FOODKEEPER,19:01,20:30
+L0741,E15,D22,fried chicken,pritong manok,cooked_dish,10,piece,1.5,1,True,FOODKEEPER,19:35,20:30
+L0742,E15,D32,ginisang monggo,ginisang monggo,cooked_vegetables,1,pot,3.0,2,True,FOODKEEPER,17:26,18:45
+L0743,E15,D07,fried chicken,pritong manok,cooked_dish,10,piece,1.5,1,True,FOODKEEPER,18:57,20:15
+L0744,E16,D05,ensaymada,ensaymada,bread,17,piece,1.36,2,False,FOODKEEPER,17:35,18:30
+L0745,E16,D41,chicken adobo,adobong manok,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:44,21:00
+L0746,E16,D25,pandesal,pandesal,bread,54,piece,1.62,2,False,FOODKEEPER,17:28,18:45
+L0747,E16,D04,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:21,20:00
+L0748,E16,D04,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:09,20:45
+L0749,E16,D42,steamed rice,kanin,cooked_rice,5,kg,5.0,2,True,FOODKEEPER,18:53,20:00
+L0750,E16,D09,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:09,20:30
+L0751,E16,D32,lumpiang shanghai,lumpiang shanghai,cooked_dish,42,piece,1.26,1,True,FOODKEEPER,17:16,18:45
+L0752,E16,D41,steamed rice,kanin,cooked_rice,2,kg,2.0,1,True,FOODKEEPER,19:30,20:30
+L0753,E16,D15,pandesal,pandesal,bread,100,piece,3.0,3,False,FOODKEEPER,18:40,20:15
+L0754,E16,D18,chicken adobo,adobong manok,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:49,18:45
+L0755,E16,D49,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:41,19:15
+L0756,E16,D19,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,18:12,19:45
+L0757,E16,D32,pancit bihon,pancit bihon,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,17:34,18:30
+L0758,E16,D28,chop suey,chopsuey,cooked_vegetables,3,tray,4.5,3,True,FOODKEEPER,19:06,20:00
+L0759,E16,D45,tomatoes,kamatis,fresh_vegetables,2,kg,2.0,2,False,FOODKEEPER,17:31,18:45
+L0760,E16,D39,pandesal,pandesal,bread,62,piece,1.86,2,False,FOODKEEPER,19:00,20:30
+L0761,E16,D13,fried chicken,pritong manok,cooked_dish,21,piece,3.15,2,True,FOODKEEPER,18:15,19:30
+L0762,E16,D40,chop suey,chopsuey,cooked_vegetables,3,tray,4.5,3,True,FOODKEEPER,17:30,19:00
+L0763,E16,D44,pandesal,pandesal,bread,100,piece,3.0,3,False,FOODKEEPER,19:45,21:00
+L0764,E16,D38,sliced bread,tasty,bread,2,loaf,1.2,1,False,FOODKEEPER,17:07,18:15
+L0765,E16,D20,tomatoes,kamatis,fresh_vegetables,4,kg,4.0,3,False,FOODKEEPER,19:06,19:45
+L0766,E16,D18,steamed rice,kanin,cooked_rice,6,kg,6.0,2,True,FOODKEEPER,17:53,19:30
+L0767,E16,D04,pork sinigang,sinigang na baboy,cooked_soup,2,pot,8.0,3,True,FOODKEEPER,19:44,21:00
+L0768,E16,D35,lumpiang shanghai,lumpiang shanghai,cooked_dish,30,piece,0.9,1,True,FOODKEEPER,18:03,19:00
+L0769,E16,D03,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:33,18:30
+L0770,E16,D18,pancit bihon,pancit bihon,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,18:01,19:30
+L0771,E16,D02,ensaymada,ensaymada,bread,30,piece,2.4,3,False,FOODKEEPER,18:12,19:45
+L0772,E16,D26,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:40,18:45
+L0773,E16,D22,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,19:20,20:15
+L0774,E16,D03,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,17:47,18:45
+L0775,E16,D14,tomatoes,kamatis,fresh_vegetables,3,kg,3.0,2,False,FOODKEEPER,19:41,21:00
+L0776,E16,D07,chop suey,chopsuey,cooked_vegetables,3,tray,4.5,3,True,FOODKEEPER,19:05,20:30
+L0777,E16,D13,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:01,19:00
+L0778,E16,D43,tomatoes,kamatis,fresh_vegetables,4,kg,4.0,3,False,FOODKEEPER,19:06,20:15
+L0779,E16,D04,chicken tinola,tinolang manok,cooked_soup,2,pot,8.0,3,True,FOODKEEPER,19:06,19:45
+L0780,E16,D44,sliced bread,tasty,bread,2,loaf,1.2,1,False,FOODKEEPER,19:45,20:45
+L0781,E16,D40,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:37,18:15
+L0782,E17,D25,sliced bread,tasty,bread,2,loaf,1.2,1,False,FOODKEEPER,17:05,18:30
+L0783,E17,D25,sliced bread,tasty,bread,5,loaf,3.0,2,False,FOODKEEPER,17:22,18:30
+L0784,E17,D35,pancit canton,pancit canton,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,18:15,19:30
+L0785,E17,D11,lumpiang shanghai,lumpiang shanghai,cooked_dish,30,piece,0.9,1,True,FOODKEEPER,18:36,19:45
+L0786,E17,D42,lumpiang shanghai,lumpiang shanghai,cooked_dish,111,piece,3.33,3,True,FOODKEEPER,18:36,19:30
+L0787,E17,D33,fried chicken,pritong manok,cooked_dish,29,piece,4.35,2,True,FOODKEEPER,19:09,20:00
+L0788,E17,D37,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:00,20:15
+L0789,E17,D47,ensaymada,ensaymada,bread,6,piece,0.48,1,False,FOODKEEPER,18:17,19:30
+L0790,E17,D01,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:05,17:45
+L0791,E17,D11,lumpiang shanghai,lumpiang shanghai,cooked_dish,118,piece,3.54,3,True,FOODKEEPER,19:10,20:15
+L0792,E17,D13,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:40,20:15
+L0793,E17,D14,tomatoes,kamatis,fresh_vegetables,1,kg,1.0,1,False,FOODKEEPER,19:11,20:30
+L0794,E17,D48,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:05,18:45
+L0795,E17,D46,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:08,19:00
+L0796,E17,D15,monay,monay,bread,40,piece,2.4,3,False,FOODKEEPER,18:31,19:30
+L0797,E17,D46,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:15,19:30
+L0798,E17,D31,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:57,20:30
+L0799,E17,D27,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:24,20:30
+L0800,E17,D18,lumpiang shanghai,lumpiang shanghai,cooked_dish,119,piece,3.57,3,True,FOODKEEPER,18:09,19:45
+L0801,E17,D03,lumpiang shanghai,lumpiang shanghai,cooked_dish,62,piece,1.86,2,True,FOODKEEPER,17:59,18:45
+L0802,E17,D11,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:47,20:15
+L0803,E17,D07,fried chicken,pritong manok,cooked_dish,10,piece,1.5,1,True,FOODKEEPER,18:43,20:00
+L0804,E17,D01,pancit bihon,pancit bihon,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,17:28,18:45
+L0805,E17,D16,monay,monay,bread,10,piece,0.6,1,False,FOODKEEPER,18:07,18:45
+L0806,E17,D50,pandesal,pandesal,bread,58,piece,1.74,2,False,FOODKEEPER,19:06,20:15
+L0807,E17,D01,chicken adobo,adobong manok,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:13,18:45
+L0808,E17,D13,pancit canton,pancit canton,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,18:43,19:30
+L0809,E17,D27,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,19:44,20:45
+L0810,E17,D13,chicken adobo,adobong manok,cooked_dish,3,tray,6.0,2,True,FOODKEEPER,18:01,19:15
+L0811,E17,D16,sliced bread,tasty,bread,2,loaf,1.2,1,False,FOODKEEPER,17:53,19:15
+L0812,E17,D42,lumpiang shanghai,lumpiang shanghai,cooked_dish,35,piece,1.05,1,True,FOODKEEPER,18:34,19:30
+L0813,E17,D12,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:29,18:30
+L0814,E17,D24,monay,monay,bread,23,piece,1.38,2,False,FOODKEEPER,18:41,20:00
+L0815,E17,D48,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:30,18:15
+L0816,E17,D48,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:33,18:30
+L0817,E17,D38,sliced bread,tasty,bread,2,loaf,1.2,1,False,FOODKEEPER,17:41,19:00
+L0818,E17,D37,fried chicken,pritong manok,cooked_dish,10,piece,1.5,1,True,FOODKEEPER,19:10,20:15
+L0819,E17,D16,pandesal,pandesal,bread,20,piece,0.6,1,False,FOODKEEPER,17:42,19:15
+L0820,E17,D22,lumpiang shanghai,lumpiang shanghai,cooked_dish,109,piece,3.27,3,True,FOODKEEPER,19:41,20:45
+L0821,E17,D23,tomatoes,kamatis,fresh_vegetables,4,kg,4.0,3,False,FOODKEEPER,18:40,19:30
+L0822,E17,D22,ginisang monggo,ginisang monggo,cooked_vegetables,1,pot,3.0,1,True,FOODKEEPER,19:22,20:00
+L0823,E17,D15,canned sardines,de lata na sardinas,packaged_shelf_stable,16,can,2.48,2,False,FOODKEEPER,18:27,20:00
+L0824,E17,D12,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:31,19:00
+L0825,E17,D22,lumpiang shanghai,lumpiang shanghai,cooked_dish,40,piece,1.2,1,True,FOODKEEPER,19:05,20:30
+L0826,E17,D17,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:27,20:15
+L0827,E17,D40,pancit bihon,pancit bihon,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,17:48,18:45
+L0828,E17,D33,chop suey,chopsuey,cooked_vegetables,3,tray,4.5,3,True,FOODKEEPER,18:32,19:30
+L0829,E17,D33,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:03,20:30
+L0830,E17,D02,ensaymada,ensaymada,bread,8,piece,0.64,1,False,FOODKEEPER,17:55,19:15
+L0831,E17,D25,pandesal,pandesal,bread,61,piece,1.83,2,False,FOODKEEPER,17:15,18:30
+L0832,E17,D15,ensaymada,ensaymada,bread,28,piece,2.24,3,False,FOODKEEPER,18:43,19:30
+L0833,E17,D23,tomatoes,kamatis,fresh_vegetables,1,kg,1.0,1,False,FOODKEEPER,18:01,19:00
+L0834,E17,D26,fried chicken,pritong manok,cooked_dish,28,piece,4.2,2,True,FOODKEEPER,17:09,18:15
+L0835,E17,D08,pandesal,pandesal,bread,59,piece,1.77,2,False,FOODKEEPER,17:45,19:15
+L0836,E17,D23,tomatoes,kamatis,fresh_vegetables,4,kg,4.0,3,False,FOODKEEPER,18:33,19:15
+L0837,E17,D28,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:30,20:30
+L0838,E17,D35,pancit bihon,pancit bihon,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,17:34,18:15
+L0839,E17,D05,pandesal,pandesal,bread,20,piece,0.6,1,False,FOODKEEPER,17:32,18:15
+L0840,E17,D28,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,19:15,20:15
+L0841,E17,D15,pandesal,pandesal,bread,71,piece,2.13,2,False,FOODKEEPER,18:38,19:30
+L0842,E17,D14,tomatoes,kamatis,fresh_vegetables,2,kg,2.0,2,False,FOODKEEPER,19:22,20:00
+L0843,E17,D43,bananas,saging,fruit,5,kg,5.0,3,False,FOODKEEPER,19:06,20:00
+L0844,E17,D48,ginisang monggo,ginisang monggo,cooked_vegetables,2,pot,6.0,3,True,FOODKEEPER,17:47,18:45
+L0845,E17,D38,monay,monay,bread,40,piece,2.4,3,False,FOODKEEPER,17:27,19:00
+L0846,E17,D41,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:06,20:15
+L0847,E17,D13,chop suey,chopsuey,cooked_vegetables,3,tray,4.5,3,True,FOODKEEPER,18:45,19:45
+L0848,E17,D36,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:38,20:15
+L0849,E17,D22,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:40,20:45
+L0850,E17,D03,steamed rice,kanin,cooked_rice,5,kg,5.0,2,True,FOODKEEPER,17:36,18:30
+L0851,E17,D05,pandesal,pandesal,bread,20,piece,0.6,1,False,FOODKEEPER,17:31,18:30
+L0852,E18,D21,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:15,19:45
+L0853,E18,D48,chop suey,chopsuey,cooked_vegetables,3,tray,4.5,3,True,FOODKEEPER,17:51,19:15
+L0854,E18,D48,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:14,19:45
+L0855,E18,D27,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:09,20:30
+L0856,E18,D46,lumpiang shanghai,lumpiang shanghai,cooked_dish,115,piece,3.45,3,True,FOODKEEPER,17:42,18:30
+L0857,E18,D41,pancit canton,pancit canton,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,19:37,20:15
+L0858,E18,D11,fried chicken,pritong manok,cooked_dish,36,piece,5.4,3,True,FOODKEEPER,19:03,20:15
+L0859,E18,D18,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:53,19:15
+L0860,E18,D13,pork sinigang,sinigang na baboy,cooked_soup,2,pot,8.0,3,True,FOODKEEPER,18:07,19:15
+L0861,E18,D31,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:15,20:00
+L0862,E18,D09,fried chicken,pritong manok,cooked_dish,39,piece,5.85,3,True,FOODKEEPER,18:51,19:45
+L0863,E18,D17,pork sinigang,sinigang na baboy,cooked_soup,2,pot,8.0,2,True,FOODKEEPER,19:30,20:15
+L0864,E18,D32,pancit canton,pancit canton,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,17:32,18:15
+L0865,E18,D13,chicken adobo,adobong manok,cooked_dish,3,tray,6.0,2,True,FOODKEEPER,18:33,20:00
+L0866,E18,D25,pandesal,pandesal,bread,58,piece,1.74,2,False,FOODKEEPER,17:03,17:45
+L0867,E18,D30,lumpiang shanghai,lumpiang shanghai,cooked_dish,36,piece,1.08,1,True,FOODKEEPER,19:42,21:00
+L0868,E18,D06,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:30,19:15
+L0869,E18,D36,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:01,19:45
+L0870,E18,D12,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:23,18:45
+L0871,E18,D23,pechay,pechay,leafy_greens,2,kg,2.0,2,True,FOODKEEPER,18:03,18:45
+L0872,E18,D45,eggplant,talong,fresh_vegetables,2,kg,2.0,1,True,FOODKEEPER,18:11,19:15
+L0873,E18,D08,pandesal,pandesal,bread,88,piece,2.64,3,False,FOODKEEPER,17:51,18:45
+L0874,E18,D24,pandesal,pandesal,bread,22,piece,0.66,1,False,FOODKEEPER,18:41,20:15
+L0875,E18,D40,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,17:55,19:30
+L0876,E18,D35,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:53,19:30
+L0877,E18,D40,chicken adobo,adobong manok,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:09,19:00
+L0878,E18,D17,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,19:15,20:30
+L0879,E18,D42,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,19:12,20:15
+L0880,E18,D21,lumpiang shanghai,lumpiang shanghai,cooked_dish,69,piece,2.07,2,True,FOODKEEPER,17:48,18:45
+L0881,E18,D36,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:36,20:00
+L0882,E18,D47,monay,monay,bread,10,piece,0.6,1,False,FOODKEEPER,18:10,19:30
+L0883,E19,D13,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,18:43,20:15
+L0884,E19,D23,tomatoes,kamatis,fresh_vegetables,3,kg,3.0,2,False,FOODKEEPER,18:28,19:30
+L0885,E19,D28,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:45,20:45
+L0886,E19,D31,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:40,20:00
+L0887,E19,D35,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:56,19:15
+L0888,E19,D42,pancit canton,pancit canton,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,18:48,19:30
+L0889,E19,D15,monay,monay,bread,24,piece,1.44,2,False,FOODKEEPER,18:31,19:15
+L0890,E19,D01,lumpiang shanghai,lumpiang shanghai,cooked_dish,75,piece,2.25,2,True,FOODKEEPER,17:18,18:30
+L0891,E19,D33,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:35,19:30
+L0892,E19,D08,sliced bread,tasty,bread,2,loaf,1.2,1,False,FOODKEEPER,17:48,18:30
+L0893,E19,D19,sliced bread,tasty,bread,5,loaf,3.0,2,False,FOODKEEPER,18:31,19:30
+L0894,E19,D29,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:12,20:30
+L0895,E19,D07,pancit bihon,pancit bihon,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,18:37,19:45
+L0896,E19,D10,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:05,18:15
+L0897,E19,D24,instant noodles,instant noodles,packaged_shelf_stable,21,pack,1.26,2,False,FOODKEEPER,18:03,19:30
+L0898,E19,D22,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,19:12,20:15
+L0899,E19,D39,monay,monay,bread,28,piece,1.68,2,False,FOODKEEPER,18:42,19:45
+L0900,E19,D12,chicken adobo,adobong manok,cooked_dish,3,tray,6.0,2,True,FOODKEEPER,17:44,18:30
+L0901,E19,D37,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,19:02,20:15
+L0902,E19,D49,chicken adobo,adobong manok,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:12,18:00
+L0903,E19,D38,pandesal,pandesal,bread,54,piece,1.62,2,False,FOODKEEPER,17:26,18:45
+L0904,E19,D11,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:00,20:15
+L0905,E19,D01,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:35,19:00
+L0906,E19,D38,monay,monay,bread,23,piece,1.38,2,False,FOODKEEPER,17:10,18:15
+L0907,E19,D14,tomatoes,kamatis,fresh_vegetables,4,kg,4.0,3,False,FOODKEEPER,19:26,20:30
+L0908,E19,D06,chicken adobo,adobong manok,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:52,19:30
+L0909,E19,D09,chicken adobo,adobong manok,cooked_dish,3,tray,6.0,2,True,FOODKEEPER,18:53,20:30
+L0910,E19,D44,pandesal,pandesal,bread,52,piece,1.56,2,False,FOODKEEPER,19:14,20:00
+L0911,E19,D13,lumpiang shanghai,lumpiang shanghai,cooked_dish,43,piece,1.29,1,True,FOODKEEPER,18:15,19:00
+L0912,E19,D24,pandesal,pandesal,bread,20,piece,0.6,1,False,FOODKEEPER,18:01,19:15
+L0913,E19,D38,ensaymada,ensaymada,bread,30,piece,2.4,3,False,FOODKEEPER,17:29,18:15
+L0914,E19,D20,pechay,pechay,leafy_greens,3,kg,3.0,3,True,FOODKEEPER,19:11,20:00
+L0915,E19,D35,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:13,19:30
+L0916,E19,D02,ensaymada,ensaymada,bread,29,piece,2.32,3,False,FOODKEEPER,17:35,18:15
+L0917,E19,D06,steamed rice,kanin,cooked_rice,6,kg,6.0,2,True,FOODKEEPER,19:03,20:00
+L0918,E19,D46,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:45,18:45
+L0919,E19,D37,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:09,20:00
+L0920,E19,D40,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:09,19:15
+L0921,E19,D45,pechay,pechay,leafy_greens,1,kg,1.0,1,True,FOODKEEPER,18:05,19:30
+L0922,E19,D46,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:14,19:15
+L0923,E19,D33,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:52,20:15
+L0924,E20,D32,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:41,19:15
+L0925,E20,D23,bananas,saging,fruit,3,kg,3.0,2,False,FOODKEEPER,18:04,19:30
+L0926,E20,D35,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:35,18:15
+L0927,E20,D50,pandesal,pandesal,bread,100,piece,3.0,3,False,FOODKEEPER,19:15,20:15
+L0928,E20,D13,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:42,19:30
+L0929,E20,D20,eggplant,talong,fresh_vegetables,3,kg,3.0,2,True,FOODKEEPER,19:32,20:15
+L0930,E20,D21,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:10,19:45
+L0931,E20,D47,pandesal,pandesal,bread,98,piece,2.94,3,False,FOODKEEPER,18:19,19:45
+L0932,E20,D40,pancit canton,pancit canton,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,17:34,19:00
+L0933,E20,D29,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,19:31,21:00
+L0934,E20,D38,monay,monay,bread,36,piece,2.16,3,False,FOODKEEPER,17:04,18:15
+L0935,E20,D32,ginisang monggo,ginisang monggo,cooked_vegetables,2,pot,6.0,3,True,FOODKEEPER,17:19,18:45
+L0936,E20,D41,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:31,20:15
+L0937,E20,D01,chicken adobo,adobong manok,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:36,18:30
+L0938,E20,D47,ensaymada,ensaymada,bread,21,piece,1.68,2,False,FOODKEEPER,18:37,19:30
+L0939,E20,D33,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:39,19:30
+L0940,E20,D30,ginisang monggo,ginisang monggo,cooked_vegetables,2,pot,6.0,3,True,FOODKEEPER,19:29,20:15
+L0941,E20,D11,pancit bihon,pancit bihon,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,19:02,20:30
+L0942,E20,D18,fried chicken,pritong manok,cooked_dish,11,piece,1.65,1,True,FOODKEEPER,18:09,19:30
+L0943,E20,D17,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:03,19:45
+L0944,E20,D50,monay,monay,bread,36,piece,2.16,3,False,FOODKEEPER,19:21,20:00
+L0945,E20,D16,ensaymada,ensaymada,bread,27,piece,2.16,3,False,FOODKEEPER,17:33,18:45
+L0946,E20,D28,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:38,21:00
+L0947,E20,D06,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:10,20:00
+L0948,E20,D49,pancit bihon,pancit bihon,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,17:23,18:15
+L0949,E20,D30,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:42,21:00
+L0950,E20,D31,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:32,19:45
+L0951,E20,D35,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:57,19:15
+L0952,E20,D43,tomatoes,kamatis,fresh_vegetables,4,kg,4.0,3,False,FOODKEEPER,19:45,20:30
+L0953,E20,D35,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:48,19:15
+L0954,E20,D14,tomatoes,kamatis,fresh_vegetables,2,kg,2.0,2,False,FOODKEEPER,19:37,21:00
+L0955,E20,D17,ginisang monggo,ginisang monggo,cooked_vegetables,2,pot,6.0,3,True,FOODKEEPER,19:15,20:00
+L0956,E20,D10,pork sinigang,sinigang na baboy,cooked_soup,2,pot,8.0,3,True,FOODKEEPER,17:19,18:30
+L0957,E20,D30,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:03,20:00
+L0958,E20,D42,chop suey,chopsuey,cooked_vegetables,3,tray,4.5,3,True,FOODKEEPER,19:00,20:15
+L0959,E20,D06,pancit canton,pancit canton,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,18:51,19:30
+L0960,E21,D28,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:42,20:30
+L0961,E21,D45,eggplant,talong,fresh_vegetables,1,kg,1.0,1,True,FOODKEEPER,18:09,19:15
+L0962,E21,D02,sliced bread,tasty,bread,2,loaf,1.2,1,False,FOODKEEPER,18:04,18:45
+L0963,E21,D11,fried chicken,pritong manok,cooked_dish,10,piece,1.5,1,True,FOODKEEPER,18:32,19:45
+L0964,E21,D24,monay,monay,bread,40,piece,2.4,3,False,FOODKEEPER,18:21,19:30
+L0965,E21,D43,eggplant,talong,fresh_vegetables,5,kg,5.0,3,True,FOODKEEPER,19:42,21:00
+L0966,E21,D44,pandesal,pandesal,bread,20,piece,0.6,1,False,FOODKEEPER,19:04,20:30
+L0967,E21,D34,chop suey,chopsuey,cooked_vegetables,1,tray,1.5,1,True,FOODKEEPER,17:37,18:45
+L0968,E21,D32,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:34,19:00
+L0969,E21,D01,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:08,18:45
+L0970,E21,D05,pandesal,pandesal,bread,49,piece,1.47,2,False,FOODKEEPER,17:48,18:45
+L0971,E21,D06,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:51,20:15
+L0972,E21,D48,chop suey,chopsuey,cooked_vegetables,2,tray,3.0,2,True,FOODKEEPER,18:11,19:00
+L0973,E21,D09,fried chicken,pritong manok,cooked_dish,25,piece,3.75,2,True,FOODKEEPER,18:39,19:30
+L0974,E21,D23,tomatoes,kamatis,fresh_vegetables,4,kg,4.0,3,False,FOODKEEPER,18:26,19:15
+L0975,E21,D06,lumpiang shanghai,lumpiang shanghai,cooked_dish,33,piece,0.99,1,True,FOODKEEPER,18:56,20:00
+L0976,E21,D33,pancit canton,pancit canton,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,18:33,20:00
+L0977,E21,D16,monay,monay,bread,25,piece,1.5,2,False,FOODKEEPER,18:05,18:45
+L0978,E21,D16,monay,monay,bread,25,piece,1.5,2,False,FOODKEEPER,17:47,18:30
+L0979,E21,D15,monay,monay,bread,10,piece,0.6,1,False,FOODKEEPER,18:24,19:15
+L0980,E21,D50,sliced bread,tasty,bread,4,loaf,2.4,2,False,FOODKEEPER,19:31,21:00
+L0981,E21,D06,ginisang monggo,ginisang monggo,cooked_vegetables,1,pot,3.0,1,True,FOODKEEPER,19:04,20:15
+L0982,E21,D36,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:46,19:30
+L0983,E21,D20,eggplant,talong,fresh_vegetables,1,kg,1.0,1,True,FOODKEEPER,19:44,20:45
+L0984,E21,D37,ginisang monggo,ginisang monggo,cooked_vegetables,1,pot,3.0,1,True,FOODKEEPER,19:40,21:00
+L0985,E21,D47,pandesal,pandesal,bread,100,piece,3.0,3,False,FOODKEEPER,18:25,19:30
+L0986,E21,D31,pancit bihon,pancit bihon,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,19:03,20:00
+L0987,E21,D47,monay,monay,bread,36,piece,2.16,3,False,FOODKEEPER,18:40,20:00
+L0988,E21,D24,bananas,saging,fruit,5,kg,5.0,3,False,FOODKEEPER,18:13,19:45
+L0989,E21,D50,pandesal,pandesal,bread,63,piece,1.89,2,False,FOODKEEPER,19:45,20:30
+L0990,E21,D22,chop suey,chopsuey,cooked_vegetables,3,tray,4.5,3,True,FOODKEEPER,19:09,20:30
+L0991,E21,D41,fried chicken,pritong manok,cooked_dish,22,piece,3.3,2,True,FOODKEEPER,19:04,20:15
+L0992,E21,D39,pandesal,pandesal,bread,20,piece,0.6,1,False,FOODKEEPER,19:11,20:15
+L0993,E21,D36,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:52,19:45
+L0994,E21,D31,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:53,20:15
+L0995,E21,D27,pancit canton,pancit canton,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,19:36,20:30
+L0996,E21,D37,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,19:37,20:30
+L0997,E21,D34,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,17:02,18:00
+L0998,E21,D39,pandesal,pandesal,bread,100,piece,3.0,3,False,FOODKEEPER,18:48,20:00
+L0999,E21,D34,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:33,18:30
+L1000,E21,D33,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:58,20:15
+L1001,E21,D40,pancit bihon,pancit bihon,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,17:37,18:30
+L1002,E21,D18,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:47,18:45
+L1003,E21,D47,monay,monay,bread,10,piece,0.6,1,False,FOODKEEPER,18:38,20:15
+L1004,E21,D30,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:15,20:00
+L1005,E21,D40,fried chicken,pritong manok,cooked_dish,39,piece,5.85,3,True,FOODKEEPER,17:30,18:15
+L1006,E21,D50,ensaymada,ensaymada,bread,8,piece,0.64,1,False,FOODKEEPER,19:44,20:30
+L1007,E21,D44,instant noodles,instant noodles,packaged_shelf_stable,36,pack,2.16,3,False,FOODKEEPER,19:05,20:15
+L1008,E22,D32,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:07,18:00
+L1009,E22,D32,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:41,19:15
+L1010,E22,D42,pancit bihon,pancit bihon,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,19:01,20:00
+L1011,E22,D43,eggplant,talong,fresh_vegetables,1,kg,1.0,1,True,FOODKEEPER,19:27,21:00
+L1012,E22,D14,bananas,saging,fruit,5,kg,5.0,3,False,FOODKEEPER,19:31,20:30
+L1013,E22,D07,pancit canton,pancit canton,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,18:47,20:15
+L1014,E22,D33,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,19:13,20:00
+L1015,E22,D13,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:11,19:00
+L1016,E22,D36,fried chicken,pritong manok,cooked_dish,36,piece,5.4,3,True,FOODKEEPER,18:42,19:45
+L1017,E22,D46,steamed rice,kanin,cooked_rice,2,kg,2.0,1,True,FOODKEEPER,18:04,19:15
+L1018,E22,D39,sliced bread,tasty,bread,2,loaf,1.2,1,False,FOODKEEPER,18:51,20:00
+L1019,E22,D31,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:08,20:00
+L1020,E22,D30,fried chicken,pritong manok,cooked_dish,13,piece,1.95,1,True,FOODKEEPER,19:34,20:15
+L1021,E22,D35,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,17:46,19:00
+L1022,E22,D24,monay,monay,bread,21,piece,1.26,2,False,FOODKEEPER,18:16,19:15
+L1023,E22,D27,pancit bihon,pancit bihon,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,19:19,20:30
+L1024,E22,D18,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,18:08,19:45
+L1025,E22,D08,ensaymada,ensaymada,bread,18,piece,1.44,2,False,FOODKEEPER,17:45,19:15
+L1026,E22,D07,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:00,20:00
+L1027,E22,D50,monay,monay,bread,10,piece,0.6,1,False,FOODKEEPER,19:43,21:00
+L1028,E22,D33,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:10,20:15
+L1029,E22,D11,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:09,20:45
+L1030,E22,D26,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:20,18:45
+L1031,E22,D49,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:14,18:00
+L1032,E22,D47,pandesal,pandesal,bread,28,piece,0.84,1,False,FOODKEEPER,18:20,19:45
+L1033,E22,D04,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,19:41,20:45
+L1034,E22,D23,pechay,pechay,leafy_greens,3,kg,3.0,3,True,FOODKEEPER,18:04,19:00
+L1035,E22,D05,monay,monay,bread,27,piece,1.62,2,False,FOODKEEPER,17:53,18:45
+L1036,E22,D32,chicken adobo,adobong manok,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:16,18:00
+L1037,E22,D49,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:20,18:00
+L1038,E22,D49,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:04,18:15
+L1039,E22,D26,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:17,18:15
+L1040,E22,D08,ensaymada,ensaymada,bread,9,piece,0.72,1,False,FOODKEEPER,18:10,19:15
+L1041,E22,D13,pancit canton,pancit canton,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,18:07,19:15
+L1042,E22,D19,monay,monay,bread,10,piece,0.6,1,False,FOODKEEPER,18:24,19:15
+L1043,E22,D33,lumpiang shanghai,lumpiang shanghai,cooked_dish,39,piece,1.17,1,True,FOODKEEPER,19:06,19:45
+L1044,E22,D10,pancit bihon,pancit bihon,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,17:35,18:30
+L1045,E22,D39,monay,monay,bread,13,piece,0.78,1,False,FOODKEEPER,19:00,20:30
+L1046,E22,D42,pancit bihon,pancit bihon,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,19:10,20:00
+L1047,E22,D17,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:12,20:45
+L1048,E22,D48,lumpiang shanghai,lumpiang shanghai,cooked_dish,30,piece,0.9,1,True,FOODKEEPER,17:42,19:15
+L1049,E22,D25,sliced bread,tasty,bread,3,loaf,1.8,1,False,FOODKEEPER,17:29,18:15
+L1050,E22,D24,pandesal,pandesal,bread,20,piece,0.6,1,False,FOODKEEPER,18:15,19:30
+L1051,E22,D22,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,19:41,20:45
+L1052,E22,D25,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,17:09,18:30
+L1053,E22,D48,fried chicken,pritong manok,cooked_dish,26,piece,3.9,2,True,FOODKEEPER,17:52,19:15
+L1054,E22,D41,lumpiang shanghai,lumpiang shanghai,cooked_dish,75,piece,2.25,2,True,FOODKEEPER,19:10,20:15
+L1055,E22,D34,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:34,18:15
+L1056,E22,D33,ginisang monggo,ginisang monggo,cooked_vegetables,2,pot,6.0,2,True,FOODKEEPER,18:40,19:30
+L1057,E22,D42,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:49,19:45
+L1058,E22,D37,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:19,20:45
+L1059,E22,D18,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:41,19:15
+L1060,E22,D18,chicken adobo,adobong manok,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:00,19:00
+L1061,E22,D35,pancit canton,pancit canton,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,17:50,19:00
+L1062,E22,D37,pancit canton,pancit canton,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,19:08,20:00
+L1063,E22,D38,pandesal,pandesal,bread,93,piece,2.79,3,False,FOODKEEPER,17:44,19:00
+L1064,E23,D26,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,17:45,19:15
+L1065,E23,D04,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:02,20:15
+L1066,E23,D41,ginisang monggo,ginisang monggo,cooked_vegetables,2,pot,6.0,3,True,FOODKEEPER,19:25,20:15
+L1067,E23,D20,tomatoes,kamatis,fresh_vegetables,3,kg,3.0,2,False,FOODKEEPER,19:35,20:15
+L1068,E23,D35,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:15,19:15
+L1069,E23,D24,pandesal,pandesal,bread,48,piece,1.44,2,False,FOODKEEPER,18:02,18:45
+L1070,E23,D27,pancit canton,pancit canton,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,19:02,20:30
+L1071,E23,D41,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:06,20:30
+L1072,E23,D03,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,18:00,18:45
+L1073,E23,D43,eggplant,talong,fresh_vegetables,4,kg,4.0,3,True,FOODKEEPER,19:25,21:00
+L1074,E23,D14,eggplant,talong,fresh_vegetables,5,kg,5.0,3,True,FOODKEEPER,19:28,20:15
+L1075,E23,D46,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:47,19:00
+L1076,E23,D18,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:50,19:15
+L1077,E23,D10,fried chicken,pritong manok,cooked_dish,22,piece,3.3,2,True,FOODKEEPER,17:38,18:45
+L1078,E23,D09,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,18:33,19:45
+L1079,E23,D31,lumpiang shanghai,lumpiang shanghai,cooked_dish,41,piece,1.23,1,True,FOODKEEPER,18:55,20:00
+L1080,E23,D13,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:19,19:00
+L1081,E23,D18,pancit bihon,pancit bihon,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,18:14,19:30
+L1082,E23,D33,pancit bihon,pancit bihon,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,18:37,19:30
+L1083,E23,D46,pancit canton,pancit canton,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,17:53,19:00
+L1084,E23,D44,ensaymada,ensaymada,bread,30,piece,2.4,3,False,FOODKEEPER,19:38,21:00
+L1085,E23,D43,tomatoes,kamatis,fresh_vegetables,3,kg,3.0,2,False,FOODKEEPER,19:32,20:30
+L1086,E23,D48,pancit bihon,pancit bihon,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,17:54,19:30
+L1087,E23,D13,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,18:03,18:45
+L1088,E23,D35,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,17:41,19:15
+L1089,E23,D23,eggplant,talong,fresh_vegetables,5,kg,5.0,3,True,FOODKEEPER,18:22,19:30
+L1090,E23,D14,bananas,saging,fruit,2,kg,2.0,2,False,FOODKEEPER,19:05,20:30
+L1091,E23,D12,pancit canton,pancit canton,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,17:23,18:15
+L1092,E23,D01,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:35,18:15
+L1093,E23,D49,chop suey,chopsuey,cooked_vegetables,3,tray,4.5,3,True,FOODKEEPER,17:35,19:00
+L1094,E23,D29,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,19:37,20:30
+L1095,E23,D44,canned sardines,de lata na sardinas,packaged_shelf_stable,12,can,1.86,2,False,FOODKEEPER,19:44,21:00
+L1096,E23,D15,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,18:39,19:30
+L1097,E23,D26,pancit bihon,pancit bihon,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,17:04,18:15
+L1098,E23,D26,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:01,18:30
+L1099,E23,D20,eggplant,talong,fresh_vegetables,3,kg,3.0,2,True,FOODKEEPER,19:20,20:00
+L1100,E23,D49,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:16,18:15
+L1101,E23,D07,fried chicken,pritong manok,cooked_dish,10,piece,1.5,1,True,FOODKEEPER,18:55,20:15
+L1102,E24,D47,ensaymada,ensaymada,bread,20,piece,1.6,2,False,FOODKEEPER,18:23,20:00
+L1103,E24,D14,bananas,saging,fruit,1,kg,1.0,1,False,FOODKEEPER,19:33,20:15
+L1104,E24,D14,tomatoes,kamatis,fresh_vegetables,1,kg,1.0,1,False,FOODKEEPER,19:10,20:15
+L1105,E24,D35,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:44,18:30
+L1106,E24,D15,canned sardines,de lata na sardinas,packaged_shelf_stable,15,can,2.33,2,False,FOODKEEPER,18:22,19:15
+L1107,E24,D32,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:40,18:45
+L1108,E24,D23,eggplant,talong,fresh_vegetables,1,kg,1.0,1,True,FOODKEEPER,18:26,20:00
+L1109,E24,D03,chicken tinola,tinolang manok,cooked_soup,2,pot,8.0,3,True,FOODKEEPER,17:48,18:30
+L1110,E24,D22,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:36,21:00
+L1111,E24,D39,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,18:42,19:30
+L1112,E24,D06,ginisang monggo,ginisang monggo,cooked_vegetables,2,pot,6.0,2,True,FOODKEEPER,19:14,20:30
+L1113,E24,D21,pancit bihon,pancit bihon,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,17:59,19:30
+L1114,E24,D26,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:40,18:30
+L1115,E24,D11,pancit bihon,pancit bihon,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,18:43,19:30
+L1116,E24,D47,ensaymada,ensaymada,bread,7,piece,0.56,1,False,FOODKEEPER,18:01,19:15
+L1117,E24,D50,sliced bread,tasty,bread,4,loaf,2.4,2,False,FOODKEEPER,19:41,21:00
+L1118,E24,D49,lumpiang shanghai,lumpiang shanghai,cooked_dish,72,piece,2.16,2,True,FOODKEEPER,17:42,19:15
+L1119,E24,D09,chicken adobo,adobong manok,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:10,20:00
+L1120,E24,D35,lumpiang shanghai,lumpiang shanghai,cooked_dish,65,piece,1.95,2,True,FOODKEEPER,18:14,19:15
+L1121,E24,D13,pancit canton,pancit canton,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,18:38,20:00
+L1122,E24,D33,fried chicken,pritong manok,cooked_dish,29,piece,4.35,2,True,FOODKEEPER,18:41,19:30
+L1123,E24,D20,tomatoes,kamatis,fresh_vegetables,1,kg,1.0,1,False,FOODKEEPER,19:36,20:30
+L1124,E24,D38,monay,monay,bread,10,piece,0.6,1,False,FOODKEEPER,17:09,18:45
+L1125,E24,D24,ensaymada,ensaymada,bread,7,piece,0.56,1,False,FOODKEEPER,18:16,19:45
+L1126,E24,D03,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,17:41,18:30
+L1127,E24,D14,tomatoes,kamatis,fresh_vegetables,4,kg,4.0,3,False,FOODKEEPER,19:44,21:00
+L1128,E24,D05,sliced bread,tasty,bread,3,loaf,1.8,1,False,FOODKEEPER,17:54,19:15
+L1129,E24,D21,ginisang monggo,ginisang monggo,cooked_vegetables,2,pot,6.0,3,True,FOODKEEPER,17:43,19:15
+L1130,E24,D44,monay,monay,bread,10,piece,0.6,1,False,FOODKEEPER,19:09,20:30
+L1131,E24,D41,lumpiang shanghai,lumpiang shanghai,cooked_dish,30,piece,0.9,1,True,FOODKEEPER,19:00,20:00
+L1132,E24,D22,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:25,20:30
+L1133,E24,D48,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:38,18:45
+L1134,E24,D26,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,17:31,18:30
+L1135,E24,D23,tomatoes,kamatis,fresh_vegetables,3,kg,3.0,2,False,FOODKEEPER,18:38,20:15
+L1136,E24,D36,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:00,20:00
+L1137,E24,D43,bananas,saging,fruit,5,kg,5.0,3,False,FOODKEEPER,19:03,20:00
+L1138,E24,D14,bananas,saging,fruit,2,kg,2.0,2,False,FOODKEEPER,19:14,20:00
+L1139,E24,D10,pork sinigang,sinigang na baboy,cooked_soup,1,pot,4.0,1,True,FOODKEEPER,17:21,18:15
+L1140,E24,D12,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:40,18:30
+L1141,E24,D08,pandesal,pandesal,bread,20,piece,0.6,1,False,FOODKEEPER,17:49,19:15
+L1142,E24,D39,pandesal,pandesal,bread,100,piece,3.0,3,False,FOODKEEPER,19:01,20:30
+L1143,E24,D49,pancit bihon,pancit bihon,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,17:20,18:00
+L1144,E24,D28,chop suey,chopsuey,cooked_vegetables,3,tray,4.5,3,True,FOODKEEPER,19:14,20:00
+L1145,E24,D14,eggplant,talong,fresh_vegetables,3,kg,3.0,2,True,FOODKEEPER,19:24,21:00
+L1146,E24,D24,pandesal,pandesal,bread,95,piece,2.85,3,False,FOODKEEPER,18:16,19:15
+L1147,E24,D18,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:33,18:30
+L1148,E24,D13,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:45,20:15
+L1149,E24,D26,lumpiang shanghai,lumpiang shanghai,cooked_dish,62,piece,1.86,2,True,FOODKEEPER,17:31,19:00
+L1150,E24,D38,sliced bread,tasty,bread,2,loaf,1.2,1,False,FOODKEEPER,17:04,18:15
+L1151,E24,D13,lumpiang shanghai,lumpiang shanghai,cooked_dish,30,piece,0.9,1,True,FOODKEEPER,18:18,19:15
+L1152,E24,D17,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:31,21:00
+L1153,E25,D34,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:13,18:15
+L1154,E25,D49,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:41,18:45
+L1155,E25,D21,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:03,19:30
+L1156,E25,D05,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,17:44,19:15
+L1157,E25,D45,tomatoes,kamatis,fresh_vegetables,1,kg,1.0,1,False,FOODKEEPER,17:44,19:15
+L1158,E25,D02,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,17:52,18:45
+L1159,E25,D17,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:36,21:00
+L1160,E25,D25,pandesal,pandesal,bread,22,piece,0.66,1,False,FOODKEEPER,17:40,19:15
+L1161,E25,D39,ensaymada,ensaymada,bread,6,piece,0.48,1,False,FOODKEEPER,18:30,19:15
+L1162,E25,D24,pandesal,pandesal,bread,23,piece,0.69,1,False,FOODKEEPER,18:44,20:00
+L1163,E25,D43,eggplant,talong,fresh_vegetables,5,kg,5.0,3,True,FOODKEEPER,19:45,21:00
+L1164,E25,D39,monay,monay,bread,10,piece,0.6,1,False,FOODKEEPER,19:07,19:45
+L1165,E25,D38,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,17:07,18:00
+L1166,E25,D05,ensaymada,ensaymada,bread,27,piece,2.16,3,False,FOODKEEPER,18:15,19:15
+L1167,E25,D31,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:01,20:30
+L1168,E25,D09,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,18:51,20:00
+L1169,E25,D20,eggplant,talong,fresh_vegetables,1,kg,1.0,1,True,FOODKEEPER,19:37,20:15
+L1170,E25,D47,ensaymada,ensaymada,bread,6,piece,0.48,1,False,FOODKEEPER,18:08,19:15
+L1171,E25,D19,ensaymada,ensaymada,bread,30,piece,2.4,3,False,FOODKEEPER,18:10,19:45
+L1172,E25,D31,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,18:59,20:00
+L1173,E25,D34,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:03,18:15
+L1174,E25,D21,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,18:13,19:45
+L1175,E25,D44,sliced bread,tasty,bread,7,loaf,4.2,3,False,FOODKEEPER,19:37,20:45
+L1176,E25,D07,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,18:45,19:30
+L1177,E25,D02,pandesal,pandesal,bread,51,piece,1.53,2,False,FOODKEEPER,18:12,19:45
+L1178,E25,D15,canned sardines,de lata na sardinas,packaged_shelf_stable,14,can,2.17,2,False,FOODKEEPER,18:43,19:30
+L1179,E25,D42,lumpiang shanghai,lumpiang shanghai,cooked_dish,84,piece,2.52,2,True,FOODKEEPER,19:06,20:15
+L1180,E25,D32,fried chicken,pritong manok,cooked_dish,23,piece,3.45,2,True,FOODKEEPER,17:13,18:15
+L1181,E25,D10,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:23,18:30
+L1182,E25,D41,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,19:25,20:30
+L1183,E25,D35,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:34,18:30
+L1184,E25,D50,pandesal,pandesal,bread,89,piece,2.67,3,False,FOODKEEPER,19:24,20:45
+L1185,E25,D13,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:02,19:00
+L1186,E25,D12,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,17:17,18:45
+L1187,E25,D32,chicken adobo,adobong manok,cooked_dish,3,tray,6.0,2,True,FOODKEEPER,17:27,18:45
+L1188,E25,D34,fried chicken,pritong manok,cooked_dish,29,piece,4.35,2,True,FOODKEEPER,17:22,18:30
+L1189,E25,D50,monay,monay,bread,10,piece,0.6,1,False,FOODKEEPER,19:27,20:45
+L1190,E25,D33,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:38,19:45
+L1191,E25,D13,pancit bihon,pancit bihon,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,18:30,19:45
+L1192,E25,D38,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,17:39,19:15
+L1193,E25,D37,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:29,20:15
+L1194,E25,D15,sliced bread,tasty,bread,7,loaf,4.2,3,False,FOODKEEPER,18:21,19:00
+L1195,E25,D15,ensaymada,ensaymada,bread,6,piece,0.48,1,False,FOODKEEPER,18:14,19:45
+L1196,E25,D08,monay,monay,bread,40,piece,2.4,3,False,FOODKEEPER,17:41,18:45
+L1197,E25,D35,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,17:49,18:45
+L1198,E25,D06,fried chicken,pritong manok,cooked_dish,26,piece,3.9,2,True,FOODKEEPER,18:47,20:15
+L1199,E26,D38,monay,monay,bread,22,piece,1.32,2,False,FOODKEEPER,17:33,19:00
+L1200,E26,D13,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,18:24,20:00
+L1201,E26,D41,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:18,20:00
+L1202,E26,D11,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:39,20:00
+L1203,E26,D17,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:23,21:00
+L1204,E26,D40,pancit bihon,pancit bihon,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,18:05,18:45
+L1205,E26,D33,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:04,20:15
+L1206,E26,D31,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:05,20:30
+L1207,E26,D16,pandesal,pandesal,bread,51,piece,1.53,2,False,FOODKEEPER,17:59,19:30
+L1208,E26,D30,fried chicken,pritong manok,cooked_dish,22,piece,3.3,2,True,FOODKEEPER,19:19,20:30
+L1209,E26,D18,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:51,18:30
+L1210,E26,D12,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:09,18:15
+L1211,E26,D06,lumpiang shanghai,lumpiang shanghai,cooked_dish,30,piece,0.9,1,True,FOODKEEPER,18:45,20:00
+L1212,E26,D29,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:16,20:45
+L1213,E26,D24,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,18:21,19:45
+L1214,E26,D03,pork sinigang,sinigang na baboy,cooked_soup,2,pot,8.0,3,True,FOODKEEPER,17:42,19:15
+L1215,E26,D27,lumpiang shanghai,lumpiang shanghai,cooked_dish,35,piece,1.05,1,True,FOODKEEPER,19:06,20:30
+L1216,E26,D04,pork sinigang,sinigang na baboy,cooked_soup,2,pot,8.0,2,True,FOODKEEPER,19:33,20:45
+L1217,E26,D49,fried chicken,pritong manok,cooked_dish,26,piece,3.9,2,True,FOODKEEPER,17:00,18:15
+L1218,E26,D30,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:25,20:45
+L1219,E26,D32,ginisang monggo,ginisang monggo,cooked_vegetables,1,pot,3.0,1,True,FOODKEEPER,17:17,18:15
+L1220,E26,D39,monay,monay,bread,28,piece,1.68,2,False,FOODKEEPER,19:15,20:45
+L1221,E26,D24,pandesal,pandesal,bread,56,piece,1.68,2,False,FOODKEEPER,18:01,19:15
+L1222,E26,D18,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,18:10,19:45
+L1223,E26,D25,ensaymada,ensaymada,bread,30,piece,2.4,3,False,FOODKEEPER,17:26,18:30
+L1224,E26,D49,fried chicken,pritong manok,cooked_dish,22,piece,3.3,2,True,FOODKEEPER,17:12,18:15
+L1225,E26,D44,bananas,saging,fruit,5,kg,5.0,3,False,FOODKEEPER,19:45,20:30
+L1226,E26,D33,pancit bihon,pancit bihon,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,18:39,20:15
+L1227,E26,D44,canned sardines,de lata na sardinas,packaged_shelf_stable,23,can,3.56,3,False,FOODKEEPER,19:29,20:45
+L1228,E26,D42,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:55,20:30
+L1229,E26,D27,chop suey,chopsuey,cooked_vegetables,2,tray,3.0,2,True,FOODKEEPER,19:10,20:00
+L1230,E26,D07,chicken adobo,adobong manok,cooked_dish,3,tray,6.0,2,True,FOODKEEPER,18:58,20:15
+L1231,E26,D30,pancit canton,pancit canton,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,19:06,20:30
+L1232,E26,D15,pandesal,pandesal,bread,20,piece,0.6,1,False,FOODKEEPER,18:14,19:45
+L1233,E26,D22,lumpiang shanghai,lumpiang shanghai,cooked_dish,84,piece,2.52,2,True,FOODKEEPER,19:29,20:15
+L1234,E26,D17,lumpiang shanghai,lumpiang shanghai,cooked_dish,33,piece,0.99,1,True,FOODKEEPER,19:45,20:45
+L1235,E26,D39,pandesal,pandesal,bread,63,piece,1.89,2,False,FOODKEEPER,18:51,19:45
+L1236,E26,D41,chop suey,chopsuey,cooked_vegetables,3,tray,4.5,3,True,FOODKEEPER,19:40,20:45
+L1237,E26,D08,monay,monay,bread,10,piece,0.6,1,False,FOODKEEPER,17:56,19:00
+L1238,E26,D22,pancit canton,pancit canton,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,19:15,20:45
+L1239,E26,D45,tomatoes,kamatis,fresh_vegetables,4,kg,4.0,3,False,FOODKEEPER,17:49,18:30
+L1240,E26,D25,ensaymada,ensaymada,bread,21,piece,1.68,2,False,FOODKEEPER,17:16,18:30
+L1241,E26,D36,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:58,20:30
+L1242,E27,D13,steamed rice,kanin,cooked_rice,8,kg,8.0,3,True,FOODKEEPER,18:12,19:30
+L1243,E27,D22,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:41,20:30
+L1244,E27,D02,sliced bread,tasty,bread,2,loaf,1.2,1,False,FOODKEEPER,18:11,19:30
+L1245,E27,D06,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:50,20:15
+L1246,E27,D23,bananas,saging,fruit,1,kg,1.0,1,False,FOODKEEPER,18:31,19:45
+L1247,E27,D36,steamed rice,kanin,cooked_rice,2,kg,2.0,1,True,FOODKEEPER,19:13,20:15
+L1248,E27,D47,sliced bread,tasty,bread,2,loaf,1.2,1,False,FOODKEEPER,18:12,19:45
+L1249,E27,D02,sliced bread,tasty,bread,2,loaf,1.2,1,False,FOODKEEPER,17:50,18:30
+L1250,E27,D19,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,18:07,19:15
+L1251,E27,D11,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:02,20:30
+L1252,E27,D09,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,18:57,20:00
+L1253,E27,D38,pandesal,pandesal,bread,72,piece,2.16,2,False,FOODKEEPER,17:42,18:45
+L1254,E27,D10,lumpiang shanghai,lumpiang shanghai,cooked_dish,112,piece,3.36,3,True,FOODKEEPER,17:13,18:30
+L1255,E27,D36,chop suey,chopsuey,cooked_vegetables,3,tray,4.5,3,True,FOODKEEPER,19:00,19:45
+L1256,E27,D34,pancit bihon,pancit bihon,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,17:19,18:30
+L1257,E27,D49,pancit bihon,pancit bihon,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,17:12,18:00
+L1258,E27,D14,eggplant,talong,fresh_vegetables,5,kg,5.0,3,True,FOODKEEPER,19:32,20:15
+L1259,E27,D09,chicken tinola,tinolang manok,cooked_soup,2,pot,8.0,3,True,FOODKEEPER,19:12,20:15
+L1260,E27,D15,ensaymada,ensaymada,bread,6,piece,0.48,1,False,FOODKEEPER,18:25,19:30
+L1261,E27,D50,ensaymada,ensaymada,bread,6,piece,0.48,1,False,FOODKEEPER,19:20,20:00
+L1262,E27,D24,pandesal,pandesal,bread,100,piece,3.0,3,False,FOODKEEPER,18:25,19:15
+L1263,E27,D42,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:57,20:30
+L1264,E27,D20,tomatoes,kamatis,fresh_vegetables,1,kg,1.0,1,False,FOODKEEPER,19:45,20:45
+L1265,E27,D18,chop suey,chopsuey,cooked_vegetables,3,tray,4.5,3,True,FOODKEEPER,18:01,18:45
+L1266,E27,D43,bananas,saging,fruit,3,kg,3.0,2,False,FOODKEEPER,19:05,20:00
+L1267,E27,D34,ginisang monggo,ginisang monggo,cooked_vegetables,2,pot,6.0,3,True,FOODKEEPER,17:34,18:30
+L1268,E27,D36,pancit bihon,pancit bihon,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,19:05,20:00
+L1269,E27,D49,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,17:24,19:00
+L1270,E27,D05,pandesal,pandesal,bread,61,piece,1.83,2,False,FOODKEEPER,17:37,18:15
+L1271,E27,D24,pandesal,pandesal,bread,31,piece,0.93,1,False,FOODKEEPER,18:21,19:15
+L1272,E27,D01,pancit canton,pancit canton,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,17:36,18:30
+L1273,E27,D24,instant noodles,instant noodles,packaged_shelf_stable,26,pack,1.56,2,False,FOODKEEPER,18:44,19:30
+L1274,E27,D19,pandesal,pandesal,bread,100,piece,3.0,3,False,FOODKEEPER,18:40,20:00
+L1275,E27,D19,sliced bread,tasty,bread,6,loaf,3.6,2,False,FOODKEEPER,18:41,20:00
+L1276,E27,D40,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:49,19:15
+L1277,E27,D30,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:05,20:30
+L1278,E27,D39,ensaymada,ensaymada,bread,16,piece,1.28,2,False,FOODKEEPER,18:58,20:15
+L1279,E27,D29,fried chicken,pritong manok,cooked_dish,26,piece,3.9,2,True,FOODKEEPER,19:26,20:45
+L1280,E28,D15,instant noodles,instant noodles,packaged_shelf_stable,22,pack,1.32,2,False,FOODKEEPER,18:41,19:30
+L1281,E28,D45,eggplant,talong,fresh_vegetables,4,kg,4.0,2,True,FOODKEEPER,17:45,18:30
+L1282,E28,D07,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:03,20:00
+L1283,E28,D13,chicken tinola,tinolang manok,cooked_soup,2,pot,8.0,3,True,FOODKEEPER,18:29,19:30
+L1284,E28,D28,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,19:41,20:30
+L1285,E28,D38,pandesal,pandesal,bread,32,piece,0.96,1,False,FOODKEEPER,17:13,18:30
+L1286,E28,D36,pancit bihon,pancit bihon,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,19:10,20:45
+L1287,E28,D26,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:35,18:15
+L1288,E28,D36,fried chicken,pritong manok,cooked_dish,10,piece,1.5,1,True,FOODKEEPER,18:53,20:15
+L1289,E28,D27,pancit canton,pancit canton,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,19:13,20:15
+L1290,E28,D43,pechay,pechay,leafy_greens,3,kg,3.0,3,True,FOODKEEPER,19:02,20:15
+L1291,E28,D31,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:05,20:00
+L1292,E28,D12,lumpiang shanghai,lumpiang shanghai,cooked_dish,39,piece,1.17,1,True,FOODKEEPER,17:08,18:00
+L1293,E28,D49,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:34,18:15
+L1294,E28,D33,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:14,20:00
+L1295,E28,D42,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:54,20:30
+L1296,E28,D36,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:51,20:00
+L1297,E28,D37,chicken adobo,adobong manok,cooked_dish,3,tray,6.0,2,True,FOODKEEPER,19:00,20:00
+L1298,E28,D33,ginisang monggo,ginisang monggo,cooked_vegetables,2,pot,6.0,3,True,FOODKEEPER,18:40,19:30
+L1299,E28,D01,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:21,18:00
+L1300,E28,D43,bananas,saging,fruit,5,kg,5.0,3,False,FOODKEEPER,19:41,21:00
+L1301,E28,D22,steamed rice,kanin,cooked_rice,2,kg,2.0,1,True,FOODKEEPER,19:20,20:30
+L1302,E28,D29,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:15,20:00
+L1303,E28,D25,monay,monay,bread,26,piece,1.56,2,False,FOODKEEPER,17:05,17:45
+L1304,E28,D45,tomatoes,kamatis,fresh_vegetables,3,kg,3.0,2,False,FOODKEEPER,17:41,19:00
+L1305,E28,D26,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:34,18:45
+L1306,E28,D22,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:13,20:45
+L1307,E28,D43,eggplant,talong,fresh_vegetables,5,kg,5.0,3,True,FOODKEEPER,19:44,21:00
+L1308,E28,D02,sliced bread,tasty,bread,5,loaf,3.0,2,False,FOODKEEPER,17:57,18:45
+L1309,E28,D14,eggplant,talong,fresh_vegetables,5,kg,5.0,3,True,FOODKEEPER,19:41,20:45
+L1310,E28,D11,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:00,19:45
+L1311,E28,D25,ensaymada,ensaymada,bread,29,piece,2.32,3,False,FOODKEEPER,17:04,18:30
+L1312,E28,D09,lumpiang shanghai,lumpiang shanghai,cooked_dish,31,piece,0.93,1,True,FOODKEEPER,19:00,20:00
+L1313,E28,D47,monay,monay,bread,25,piece,1.5,2,False,FOODKEEPER,18:43,20:00
+L1314,E28,D16,pandesal,pandesal,bread,65,piece,1.95,2,False,FOODKEEPER,18:03,19:15
+L1315,E28,D11,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:52,19:30
+L1316,E28,D06,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:41,20:15
+L1317,E28,D12,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:28,18:15
+L1318,E28,D10,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:28,18:30
+L1319,E28,D27,lumpiang shanghai,lumpiang shanghai,cooked_dish,30,piece,0.9,1,True,FOODKEEPER,19:34,21:00
+L1320,E28,D23,tomatoes,kamatis,fresh_vegetables,4,kg,4.0,3,False,FOODKEEPER,18:41,20:15
+L1321,E28,D45,eggplant,talong,fresh_vegetables,3,kg,3.0,2,True,FOODKEEPER,17:45,19:00
+L1322,E28,D20,eggplant,talong,fresh_vegetables,5,kg,5.0,3,True,FOODKEEPER,19:00,19:45
+L1323,E28,D44,monay,monay,bread,40,piece,2.4,3,False,FOODKEEPER,19:16,20:45
+L1324,E28,D04,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,19:12,20:00
+L1325,E28,D44,sliced bread,tasty,bread,2,loaf,1.2,1,False,FOODKEEPER,19:23,21:00
+L1326,E28,D37,fried chicken,pritong manok,cooked_dish,36,piece,5.4,3,True,FOODKEEPER,19:06,20:15
+L1327,E28,D25,monay,monay,bread,40,piece,2.4,3,False,FOODKEEPER,17:16,18:45
+L1328,E28,D27,chicken tinola,tinolang manok,cooked_soup,2,pot,8.0,2,True,FOODKEEPER,19:21,20:00
+L1329,E29,D49,chicken adobo,adobong manok,cooked_dish,3,tray,6.0,2,True,FOODKEEPER,17:43,18:30
+L1330,E29,D33,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:40,19:45
+L1331,E29,D37,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:31,21:00
+L1332,E29,D02,pandesal,pandesal,bread,89,piece,2.67,3,False,FOODKEEPER,17:33,18:30
+L1333,E29,D45,eggplant,talong,fresh_vegetables,5,kg,5.0,3,True,FOODKEEPER,17:51,18:30
+L1334,E29,D10,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:16,18:30
+L1335,E29,D16,pandesal,pandesal,bread,56,piece,1.68,2,False,FOODKEEPER,18:10,19:45
+L1336,E29,D02,ensaymada,ensaymada,bread,30,piece,2.4,3,False,FOODKEEPER,17:55,19:30
+L1337,E29,D12,lumpiang shanghai,lumpiang shanghai,cooked_dish,117,piece,3.51,3,True,FOODKEEPER,17:22,18:30
+L1338,E29,D02,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,18:06,18:45
+L1339,E29,D32,steamed rice,kanin,cooked_rice,8,kg,8.0,3,True,FOODKEEPER,17:05,17:45
+L1340,E29,D31,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:04,20:30
+L1341,E29,D15,canned sardines,de lata na sardinas,packaged_shelf_stable,6,can,0.93,1,False,FOODKEEPER,18:32,19:45
+L1342,E29,D04,chicken tinola,tinolang manok,cooked_soup,1,pot,4.0,1,True,FOODKEEPER,19:17,20:15
+L1343,E29,D33,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:59,19:45
+L1344,E29,D11,chop suey,chopsuey,cooked_vegetables,3,tray,4.5,3,True,FOODKEEPER,18:32,19:15
+L1345,E29,D30,lumpiang shanghai,lumpiang shanghai,cooked_dish,112,piece,3.36,3,True,FOODKEEPER,19:22,20:45
+L1346,E29,D36,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:54,20:30
+L1347,E29,D44,monay,monay,bread,28,piece,1.68,2,False,FOODKEEPER,19:16,20:30
+L1348,E29,D19,pandesal,pandesal,bread,20,piece,0.6,1,False,FOODKEEPER,18:06,19:30
+L1349,E29,D40,steamed rice,kanin,cooked_rice,8,kg,8.0,3,True,FOODKEEPER,18:05,19:00
+L1350,E29,D38,monay,monay,bread,40,piece,2.4,3,False,FOODKEEPER,17:03,18:15
+L1351,E29,D42,chicken adobo,adobong manok,cooked_dish,3,tray,6.0,2,True,FOODKEEPER,19:07,19:45
+L1352,E29,D23,bananas,saging,fruit,5,kg,5.0,3,False,FOODKEEPER,18:17,19:15
+L1353,E29,D07,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:30,20:00
+L1354,E29,D06,steamed rice,kanin,cooked_rice,4,kg,4.0,2,True,FOODKEEPER,19:13,20:00
+L1355,E29,D24,ensaymada,ensaymada,bread,27,piece,2.16,3,False,FOODKEEPER,18:32,19:30
+L1356,E29,D17,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,19:31,20:15
+L1357,E29,D02,sliced bread,tasty,bread,5,loaf,3.0,2,False,FOODKEEPER,18:04,18:45
+L1358,E29,D41,pancit canton,pancit canton,cooked_noodles,1,bilao,2.5,1,True,FOODKEEPER,19:00,20:00
+L1359,E29,D37,chop suey,chopsuey,cooked_vegetables,2,tray,3.0,2,True,FOODKEEPER,19:33,21:00
+L1360,E29,D07,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:11,20:30
+L1361,E29,D31,lumpiang shanghai,lumpiang shanghai,cooked_dish,76,piece,2.28,2,True,FOODKEEPER,18:35,19:45
+L1362,E29,D47,pandesal,pandesal,bread,89,piece,2.67,3,False,FOODKEEPER,18:13,19:30
+L1363,E29,D45,eggplant,talong,fresh_vegetables,5,kg,5.0,3,True,FOODKEEPER,18:11,19:30
+L1364,E29,D33,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,18:40,19:45
+L1365,E29,D17,fried chicken,pritong manok,cooked_dish,24,piece,3.6,2,True,FOODKEEPER,19:30,20:15
+L1366,E29,D04,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:23,20:30
+L1367,E29,D28,ginisang monggo,ginisang monggo,cooked_vegetables,1,pot,3.0,1,True,FOODKEEPER,19:02,19:45
+L1368,E29,D13,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:01,19:15
+L1369,E29,D44,ensaymada,ensaymada,bread,18,piece,1.44,2,False,FOODKEEPER,19:23,21:00
+L1370,E29,D35,ginisang monggo,ginisang monggo,cooked_vegetables,2,pot,6.0,2,True,FOODKEEPER,17:32,19:00
+L1371,E29,D21,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,17:58,18:45
+L1372,E29,D19,sliced bread,tasty,bread,5,loaf,3.0,2,False,FOODKEEPER,18:20,19:00
+L1373,E29,D21,lumpiang shanghai,lumpiang shanghai,cooked_dish,78,piece,2.34,2,True,FOODKEEPER,17:40,18:45
+L1374,E29,D28,menudo,menudo,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:41,20:30
+L1375,E29,D03,pancit canton,pancit canton,cooked_noodles,3,bilao,7.5,3,True,FOODKEEPER,17:37,18:30
+L1376,E29,D13,lumpiang shanghai,lumpiang shanghai,cooked_dish,30,piece,0.9,1,True,FOODKEEPER,18:35,19:30
+L1377,E29,D50,ensaymada,ensaymada,bread,30,piece,2.4,3,False,FOODKEEPER,19:22,20:15
+L1378,E29,D13,pancit bihon,pancit bihon,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,18:45,19:45
+L1379,E29,D22,fried chicken,pritong manok,cooked_dish,10,piece,1.5,1,True,FOODKEEPER,19:01,20:00
+L1380,E29,D41,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:33,20:30
+L1381,E29,D21,lumpiang shanghai,lumpiang shanghai,cooked_dish,30,piece,0.9,1,True,FOODKEEPER,18:07,19:00
+L1382,E29,D05,pandesal,pandesal,bread,95,piece,2.85,3,False,FOODKEEPER,18:10,19:15
+L1383,E29,D43,eggplant,talong,fresh_vegetables,1,kg,1.0,1,True,FOODKEEPER,19:32,21:00
+L1384,E29,D26,lumpiang shanghai,lumpiang shanghai,cooked_dish,39,piece,1.17,1,True,FOODKEEPER,17:06,18:00
+L1385,E29,D07,lumpiang shanghai,lumpiang shanghai,cooked_dish,115,piece,3.45,3,True,FOODKEEPER,18:51,20:00
+L1386,E29,D30,chicken adobo,adobong manok,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:22,20:15
+L1387,E29,D35,pancit bihon,pancit bihon,cooked_noodles,2,bilao,5.0,2,True,FOODKEEPER,18:04,19:00
+L1388,E29,D11,lumpiang shanghai,lumpiang shanghai,cooked_dish,43,piece,1.29,1,True,FOODKEEPER,19:13,20:30
+L1389,E29,D36,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:05,20:15
+L1390,E30,D38,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,17:02,18:15
+L1391,E30,D26,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:17,18:00
+L1392,E30,D35,fried chicken,pritong manok,cooked_dish,10,piece,1.5,1,True,FOODKEEPER,18:09,19:30
+L1393,E30,D23,bananas,saging,fruit,3,kg,3.0,2,False,FOODKEEPER,18:34,19:30
+L1394,E30,D15,pandesal,pandesal,bread,68,piece,2.04,2,False,FOODKEEPER,18:11,19:45
+L1395,E30,D08,canned sardines,de lata na sardinas,packaged_shelf_stable,24,can,3.72,3,False,FOODKEEPER,17:47,19:00
+L1396,E30,D44,sliced bread,tasty,bread,5,loaf,3.0,2,False,FOODKEEPER,19:38,21:00
+L1397,E30,D46,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:33,19:00
+L1398,E30,D13,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:25,20:00
+L1399,E30,D12,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:40,19:15
+L1400,E30,D19,sliced bread,tasty,bread,5,loaf,3.0,2,False,FOODKEEPER,18:04,19:30
+L1401,E30,D15,ensaymada,ensaymada,bread,19,piece,1.52,2,False,FOODKEEPER,18:36,19:45
+L1402,E30,D03,fried chicken,pritong manok,cooked_dish,27,piece,4.05,2,True,FOODKEEPER,18:00,19:15
+L1403,E30,D24,pandesal,pandesal,bread,20,piece,0.6,1,False,FOODKEEPER,18:28,19:45
+L1404,E30,D09,ginisang monggo,ginisang monggo,cooked_vegetables,1,pot,3.0,2,True,FOODKEEPER,19:04,20:30
+L1405,E30,D26,menudo,menudo,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:43,19:15
+L1406,E30,D12,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:25,18:45
+L1407,E30,D17,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:39,20:45
+L1408,E30,D29,lumpiang shanghai,lumpiang shanghai,cooked_dish,30,piece,0.9,1,True,FOODKEEPER,19:02,20:15
+L1409,E30,D03,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:54,19:30
+L1410,E30,D46,fried chicken,pritong manok,cooked_dish,40,piece,6.0,3,True,FOODKEEPER,17:59,19:15
+L1411,E30,D45,eggplant,talong,fresh_vegetables,1,kg,1.0,1,True,FOODKEEPER,17:51,19:00
+L1412,E30,D36,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,19:15,20:30
+L1413,E30,D01,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:34,18:15
+L1414,E30,D48,chicken adobo,adobong manok,cooked_dish,4,tray,8.0,3,True,FOODKEEPER,17:41,18:30
+L1415,E30,D09,chicken adobo,adobong manok,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:33,20:00
+L1416,E30,D35,giniling,giniling,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,17:42,18:45
+L1417,E30,D11,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:31,19:15
+L1418,E30,D12,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,17:19,18:15
+L1419,E30,D13,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:13,19:00
+L1420,E30,D47,monay,monay,bread,40,piece,2.4,3,False,FOODKEEPER,18:24,20:00
+L1421,E30,D17,pork adobo,adobong baboy,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:33,20:15
+L1422,E30,D47,sliced bread,tasty,bread,8,loaf,4.8,3,False,FOODKEEPER,18:34,20:00
+L1423,E30,D09,giniling,giniling,cooked_dish,2,tray,4.0,2,True,FOODKEEPER,19:01,20:15
+L1424,E30,D16,pandesal,pandesal,bread,100,piece,3.0,3,False,FOODKEEPER,17:43,18:30
+L1425,E30,D46,lumpiang shanghai,lumpiang shanghai,cooked_dish,120,piece,3.6,3,True,FOODKEEPER,17:33,18:30
+L1426,E30,D31,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,19:04,20:30
+L1427,E30,D26,giniling,giniling,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:20,18:45
+L1428,E30,D14,tomatoes,kamatis,fresh_vegetables,1,kg,1.0,1,False,FOODKEEPER,19:12,20:15
+L1429,E30,D09,menudo,menudo,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:51,19:30
+L1430,E30,D40,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,17:33,18:15
+L1431,E30,D11,pork adobo,adobong baboy,cooked_dish,1,tray,2.0,1,True,FOODKEEPER,18:30,19:15
+L1432,E30,D25,pandesal,pandesal,bread,20,piece,0.6,1,False,FOODKEEPER,17:24,18:45
+L1433,E30,D31,pork adobo,adobong baboy,cooked_dish,3,tray,6.0,3,True,FOODKEEPER,18:34,20:00
+L1434,E30,D22,fried chicken,pritong manok,cooked_dish,26,piece,3.9,2,True,FOODKEEPER,19:05,20:15
+L1435,E30,D03,lumpiang shanghai,lumpiang shanghai,cooked_dish,35,piece,1.05,1,True,FOODKEEPER,17:54,19:00
+L1436,E30,D07,chicken tinola,tinolang manok,cooked_soup,2,pot,8.0,3,True,FOODKEEPER,18:46,20:00

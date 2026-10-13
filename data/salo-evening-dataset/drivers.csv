@@ -1,0 +1,41 @@
+driver_id,display_name,vehicle,capacity_load_units,street,home_lat,home_lon,available_from,available_to,anchor,tuning_runs,tuning_shows,reliability_estimate_frozen
+V01,R. Dizon,motorcycle,5,K-F Street,14.629239,121.045226,17:00,21:00,True,11,10,0.85
+V02,J. Ramos,car,4,President Marcos Street,14.625488,121.075959,18:00,22:00,True,0,0,0.5
+V03,T. Santos,tricycle,3,Malaya Street,14.635195,121.056747,16:00,20:00,False,8,3,0.4
+V04,D. Reyes,motorcycle,4,C. Benitez Street,14.619269,121.049009,18:00,22:00,False,19,17,0.86
+V05,Y. Cruz,tricycle,3,Milkyway Drive,14.618218,121.075777,18:00,22:00,False,4,3,0.67
+V06,K. Bautista,motorcycle,3,Road 3,14.627572,121.072924,18:00,22:00,False,4,2,0.5
+V07,J. Garcia,bicycle,2,19th Avenue,14.620304,121.06249,16:00,20:00,False,13,13,0.93
+V08,L. Mendoza,motorcycle,4,Mayor I. S. Diaz Street,14.615638,121.04822,18:00,22:00,False,16,15,0.89
+V09,X. Torres,motorcycle,5,19th Avenue,14.617093,121.064054,18:00,22:00,False,10,10,0.92
+V10,H. Flores,motorcycle,3,West Point Street,14.627868,121.050261,17:00,21:00,False,7,6,0.78
+V11,D. Navarro,car,6,Interior A. Luna Street,14.624574,121.072155,18:00,22:00,False,11,10,0.85
+V12,H. Aquino,motorcycle,3,General Lizardo Street,14.619702,121.065056,16:00,20:00,False,5,3,0.57
+V13,D. Villanueva,motorcycle,3,Dao Street,14.629148,121.063317,17:00,21:00,False,19,15,0.76
+V14,Y. Castro,bicycle,4,K-10th Street,14.634983,121.061,16:00,20:00,False,10,10,0.92
+V15,L. Rivera,motorcycle,4,Langka Street,14.632769,121.063588,16:00,20:00,False,15,14,0.88
+V16,O. Domingo,motorcycle,4,Maliksi Street,14.632853,121.049516,16:00,20:00,False,6,6,0.88
+V17,E. Salazar,motorcycle,3,Maginoo Street,14.636566,121.053856,17:00,21:00,False,4,4,0.83
+V18,F. Mercado,motorcycle,3,Miguel Malvar Extension,14.624214,121.064583,16:00,20:00,False,6,6,0.88
+V19,Q. Pascual,motorcycle,5,C. Benitez Street,14.615277,121.047142,17:00,21:00,False,6,6,0.88
+V20,W. Soriano,motorcycle,5,Mirasol Street,14.623932,121.061324,18:00,22:00,False,2,1,0.5
+V21,R. Fernandez,bicycle,3,P. Tecson Street,14.616527,121.06864,17:00,21:00,False,14,14,0.94
+V22,W. Lopez,motorcycle,4,Ermin Garcia Street,14.62724,121.047131,16:00,20:00,False,15,12,0.76
+V23,P. Gonzales,motorcycle,3,Yakal Street,14.632225,121.068083,18:00,22:00,False,18,15,0.8
+V24,L. Morales,tricycle,3,Maamo Street,14.636914,121.060761,17:00,21:00,False,9,9,0.91
+V25,G. Valdez,motorcycle,3,Matipuno Street,14.632844,121.046558,18:00,22:00,False,15,14,0.88
+V26,R. Ramirez,motorcycle,3,Cliff Drive,14.622563,121.074651,17:00,21:00,False,12,11,0.86
+V27,F. Aguilar,motorcycle,5,Tomas Mascardo Street,14.619535,121.069443,17:00,21:00,False,7,4,0.56
+V28,V. De Leon,motorcycle,3,E. Evangelista Street,14.622482,121.064635,16:00,20:00,False,8,5,0.6
+V29,U. Manalo,motorcycle,4,General MacArthur Avenue,14.61991,121.054787,18:00,22:00,False,7,7,0.89
+V30,M. Sison,bicycle,2,Ermin Garcia Street,14.629194,121.054407,16:00,20:00,False,12,11,0.86
+V31,N. Lim,motorcycle,3,Times Square Avenue,14.623254,121.05392,18:00,22:00,False,6,5,0.75
+V32,Z. Tan,motorcycle,5,J. Perez Street,14.617399,121.066846,18:00,22:00,False,19,19,0.95
+V33,Y. Ocampo,motorcycle,5,K-JJ Street,14.630275,121.056429,16:00,20:00,False,6,6,0.88
+V34,I. Del Rosario,motorcycle,5,Mayor I. S. Diaz Street,14.617336,121.04534,17:00,21:00,False,6,6,0.88
+V35,L. Lacson,motorcycle,3,General MacArthur Avenue,14.620288,121.055762,17:00,21:00,False,2,2,0.75
+V36,W. Robles,motorcycle,4,Kamias Street Extension,14.63548,121.061882,17:00,21:00,False,20,17,0.82
+V37,H. Jimenez,motorcycle,3,F. Collantes Street,14.633586,121.070481,16:00,20:00,False,17,16,0.89
+V38,G. Panganiban,car,5,Irid Street,14.619088,121.050244,18:00,22:00,False,17,14,0.79
+V39,V. Estrada,car,4,Mayor I. S. Diaz Street,14.617942,121.051566,18:00,22:00,False,16,16,0.94
+V40,Y. Marquez,motorcycle,3,Cristobal Street,14.616602,121.046546,18:00,22:00,False,4,4,0.83

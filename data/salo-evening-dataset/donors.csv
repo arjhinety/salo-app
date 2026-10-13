@@ -1,0 +1,51 @@
+donor_id,donor_name,donor_type,street,lat,lon,osm_node_id,closing_time,posts_per_week,anchor
+D01,Karinderya ni Aling Oning,karinderya,Aurora Boulevard,14.621697,121.050233,523962960,17:30,2,True
+D02,Panaderia Kiko,panaderia,Molave Street,14.628667,121.063393,13817628933,18:00,3,False
+D03,Karinderya ni Mang Celso,karinderya,P. Tuazon Boulevard,14.620677,121.061367,13895006223,18:00,1,False
+D04,Karinderya ni Aling Pacing,karinderya,Anislag Street,14.631645,121.065396,11481252770,19:30,3,False
+D05,Panaderia Gorio,panaderia,Aurora Boulevard,14.628357,121.067084,1162980157,18:00,1,False
+D06,Ising's Canteen,carinderia-canteen,Katipunan Avenue,14.615871,121.070823,5513650110,19:00,2,False
+D07,Karinderya ni Aling Charing,karinderya,Mayor I. S. Diaz Street,14.617374,121.050732,4470950391,19:00,1,False
+D08,Tindahan ni Aling Baby,small grocery stall,Aguho Street,14.633653,121.064825,1347571997,18:00,2,False
+D09,Karinderya ni Aling Lorna,karinderya,Denver Street,14.626434,121.04686,7187521392,19:00,1,False
+D10,Karinderya ni Mang Berto,karinderya,Katipunan Avenue,14.628078,121.074314,832708685,17:30,1,False
+D11,Pido's Canteen,carinderia-canteen,Major S. Dizon Street,14.623904,121.075254,6878808886,19:00,4,False
+D12,Loleng Home Catering,catering kitchen,Padre Burgos Street,14.629869,121.070533,32618943,17:30,1,False
+D13,Karinderya ni Mang Andoy,karinderya,Colonel Bonny Serrano Avenue,14.615556,121.073487,806501110,18:30,3,False
+D14,Gulayan ni Mang Islaw,fruit & vegetable stall,New York Avenue,14.626912,121.051025,9946526082,19:30,3,False
+D15,Tindahan ni Aling Tessie,small grocery stall,P. Pelaez Street,14.615425,121.069029,60092109,18:30,5,False
+D16,Panaderia Dolor,panaderia,Dagohoy Street,14.628019,121.071016,1162929008,18:00,5,False
+D17,Karinderya ni Mang Ben,karinderya,Road 3,14.627482,121.072637,315017547,19:30,2,False
+D18,Karinderya ni Mang Nanding,karinderya,Aurora Boulevard,14.631055,121.072654,6565591287,18:00,1,False
+D19,Panaderia Nena,panaderia,Monte de Piedad Street,14.623391,121.049013,5729130345,18:30,2,False
+D20,Gulayan ni Mang Tonio,fruit & vegetable stall,18th Avenue,14.617537,121.062648,11482352441,19:30,3,False
+D21,Karinderya ni Mang Islaw,karinderya,EDSA,14.625299,121.048523,12128313402,18:00,5,False
+D22,Karinderya ni Aling Ising,karinderya,Xavierville Avenue,14.635737,121.063944,30917449,19:30,3,False
+D23,Gulayan ni Mang Kiko,fruit & vegetable stall,P. A. Bernardo Avenue,14.619689,121.047689,5427060838,18:30,3,False
+D24,Tindahan ni Aling Loleng,small grocery stall,Pajo Street,14.62969,121.060562,32618934,18:30,4,False
+D25,Panaderia Lorna,panaderia,14th Avenue,14.615416,121.060744,13128358780,17:30,3,False
+D26,Karinderya ni Mang Ambo,karinderya,Colonel Bonny Serrano Avenue,14.616191,121.07545,10156195217,17:30,1,False
+D27,Karinderya ni Aling Nena,karinderya,EDSA,14.628964,121.046491,5285949906,19:30,4,False
+D28,Kiko's Canteen,carinderia-canteen,Cambridge Street,14.628578,121.05136,14089137892,19:30,5,False
+D29,Karinderya ni Mang Teban,karinderya,Molave Street,14.628934,121.064875,8636766056,19:30,4,False
+D30,Karinderya ni Mang Dado,karinderya,A. Luna Street,14.624594,121.06689,60090987,19:30,4,False
+D31,Andoy Home Catering,catering kitchen,Aurora Boulevard,14.622933,121.053248,8437170695,19:00,4,False
+D32,Karinderya ni Mang Pepe,karinderya,C. Benitez Street,14.615573,121.047332,246782895,17:30,3,False
+D33,Loleng's Canteen,carinderia-canteen,Magat Salamat Street,14.623103,121.068903,595910722,19:00,1,False
+D34,Karinderya ni Aling Loleng,karinderya,Twin Peaks Drive,14.61659,121.074301,5432851536,17:30,2,False
+D35,Karinderya ni Mang Kulas,karinderya,13th Avenue,14.618322,121.058309,13128380601,18:00,2,False
+D36,Nena's Canteen,carinderia-canteen,V. Luna Road,14.635628,121.058515,25629569,19:00,2,False
+D37,Karinderya ni Aling Petra,karinderya,Purdue Street,14.627516,121.05245,32088854,19:30,3,False
+D38,Panaderia Loleng,panaderia,General Roxas Avenue,14.620742,121.051468,10678257557,17:30,2,False
+D39,Panaderia Charing,panaderia,Belarmino Street,14.620006,121.069136,7510756039,19:00,2,False
+D40,Oning's Canteen,carinderia-canteen,P. Tecson Street,14.617284,121.068981,11987819962,18:00,3,False
+D41,Karinderya ni Aling Caring,karinderya,Palosapis Alley 2,14.633156,121.066229,8317553865,19:30,2,False
+D42,Karinderya ni Mang Kiko,karinderya,General Romulo Avenue,14.620639,121.056926,7979950627,19:00,3,False
+D43,Gulayan ni Mang Berto,fruit & vegetable stall,La Salle Street,14.626989,121.059042,13121514764,19:30,2,False
+D44,Tindahan ni Aling Charing,small grocery stall,General MacArthur Avenue,14.616863,121.052523,8671046179,19:30,3,False
+D45,Gulayan ni Aling Caring,fruit & vegetable stall,11th Avenue,14.615485,121.058061,60093462,18:00,3,False
+D46,Lorna's Canteen,carinderia-canteen,7th Avenue,14.617043,121.054635,11780473083,18:00,5,False
+D47,Panaderia Andoy,panaderia,Times Square Avenue,14.621633,121.055086,7400321001,18:30,2,False
+D48,Karinderya ni Mang Isko,karinderya,Aurora Boulevard,14.620146,121.046622,13136104954,18:00,2,False
+D49,Karinderya ni Aling Senyang,karinderya,Cambridge Street,14.629531,121.050781,589555465,17:30,1,False
+D50,Panaderia Petra,panaderia,Maliksi Street,14.634708,121.049921,10198604147,19:30,3,False

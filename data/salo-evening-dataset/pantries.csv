@@ -1,0 +1,31 @@
+pantry_id,pantry_name,pantry_type,street,lat,lon,osm_node_id,catchment_households,households_served,households_served_source,has_fridge,fridge_capacity_kg,dry_storage_kg,opens,closes,anchor
+P01,Bukal Community Kitchen,feeding program,15th Avenue,14.622694,121.058242,8635554600,200,60,"ASSUMPTION (FNRI planned, not obtained)",True,30,30,16:30,19:30,True
+P02,Socorro Street Pantry,parish kitchen,Columbia Street,14.625076,121.052313,32089044,117,35,"ASSUMPTION (FNRI planned, not obtained)",False,0,30,17:00,21:00,True
+P03,Anonas Feeding Program,feeding program,Anonas Street,14.633147,121.059372,7509184586,203,61,"ASSUMPTION (FNRI planned, not obtained)",True,30,60,17:00,19:00,True
+P04,Kalinga Food Shelf,feeding program,Ermin Garcia Street,14.629007,121.050333,1352605519,354,106,"ASSUMPTION (FNRI planned, not obtained)",False,0,60,16:30,21:00,False
+P05,Pag-asa Kusina,community pantry,Narra Street,14.632491,121.068762,11961310603,121,36,"ASSUMPTION (FNRI planned, not obtained)",False,0,30,16:00,21:00,False
+P06,Bayanihan Pantry,feeding program,Don A. Egea Avenue,14.627692,121.04583,962951322,156,47,"ASSUMPTION (FNRI planned, not obtained)",False,0,60,16:30,19:00,False
+P07,Sinag Community Kitchen,community pantry,General Araneta Avenue,14.620538,121.052513,616144372,187,56,"ASSUMPTION (FNRI planned, not obtained)",True,25,20,17:00,21:00,False
+P08,Ugnayan Food Bank Corner,feeding program,Guijo Street,14.631391,121.065971,33005912,344,103,"ASSUMPTION (FNRI planned, not obtained)",True,20,30,16:30,20:30,False
+P09,Tahanan Feeding Center,feeding program,Annapolis Street,14.626158,121.049778,13121232253,313,94,"ASSUMPTION (FNRI planned, not obtained)",False,0,30,16:30,20:00,False
+P10,Liwanag Pantry,parish kitchen,Magat Salamat Extension,14.623189,121.064758,315017959,159,48,"ASSUMPTION (FNRI planned, not obtained)",False,0,40,16:30,19:00,False
+P11,Kapitbahay Kitchen,community pantry,5th Avenue,14.615868,121.054158,332204555,128,38,"ASSUMPTION (FNRI planned, not obtained)",False,0,60,16:00,21:00,False
+P12,Busog Bata Program,feeding program,Garcia Street,14.636817,121.067831,13155951733,220,66,"ASSUMPTION (FNRI planned, not obtained)",True,20,30,17:00,20:30,False
+P13,Silong Community Pantry,feeding program,P. Zamora Street,14.619951,121.061592,246782861,377,113,"ASSUMPTION (FNRI planned, not obtained)",False,0,60,16:00,20:30,False
+P14,Agapay Kusina,feeding program,Cliff Drive,14.621612,121.074823,2074453496,400,120,"ASSUMPTION (FNRI planned, not obtained)",False,0,60,16:00,19:00,False
+P15,Himig Feeding Program,feeding program,P. Ocampo Street,14.625872,121.069323,60091327,260,78,"ASSUMPTION (FNRI planned, not obtained)",True,25,30,16:30,21:00,False
+P16,Daluyan Food Shelf,barangay kitchen,Starline Road,14.6189,121.076346,60096349,152,46,"ASSUMPTION (FNRI planned, not obtained)",False,0,60,16:30,20:30,False
+P17,Malasakit Pantry,barangay kitchen,P. Ladia Street,14.623605,121.068265,595910691,311,93,"ASSUMPTION (FNRI planned, not obtained)",True,30,20,16:00,20:30,False
+P18,Sandigan Kitchen,community pantry,Matapat Street,14.63661,121.052614,245864936,126,38,"ASSUMPTION (FNRI planned, not obtained)",True,20,40,16:30,19:30,False
+P19,Lingap Feeding Center,feeding program,C. Benitez Street,14.617231,121.04851,1423652157,249,75,"ASSUMPTION (FNRI planned, not obtained)",True,10,20,17:00,19:00,False
+P20,Talaba Street Pantry,barangay kitchen,Molave Street,14.630219,121.068963,8317544783,149,45,"ASSUMPTION (FNRI planned, not obtained)",False,0,40,17:00,20:30,False
+P21,Tanglaw Community Kitchen,barangay kitchen,K-10th Street,14.630813,121.054178,5395982504,368,110,"ASSUMPTION (FNRI planned, not obtained)",True,15,40,17:00,19:30,False
+P22,Pugad Food Shelf,parish kitchen,Milkyway Drive,14.616876,121.075268,9976663266,290,87,"ASSUMPTION (FNRI planned, not obtained)",True,15,60,17:00,19:30,False
+P23,Sibol Feeding Program,feeding program,H. Unrubia Street,14.626108,121.072086,1162929049,299,90,"ASSUMPTION (FNRI planned, not obtained)",False,0,40,17:00,20:00,False
+P24,Alalay Pantry,parish kitchen,Ermin Garcia Street,14.628756,121.056034,11970049958,392,118,"ASSUMPTION (FNRI planned, not obtained)",True,10,20,17:00,19:30,False
+P25,Kanlungan Kusina,parish kitchen,Kaimito Street,14.629453,121.061402,5395982470,194,58,"ASSUMPTION (FNRI planned, not obtained)",False,0,30,17:00,19:00,False
+P26,Hiraya Community Pantry,barangay kitchen,General Roxas Avenue,14.622203,121.054686,5575045459,371,111,"ASSUMPTION (FNRI planned, not obtained)",True,20,60,16:00,20:30,False
+P27,Dagitab Kitchen,barangay kitchen,Callejon,14.615393,121.067021,1162929016,207,62,"ASSUMPTION (FNRI planned, not obtained)",False,0,60,16:30,20:30,False
+P28,Batis Food Shelf,parish kitchen,Matahimik Street,14.634555,121.055121,8312576094,168,50,"ASSUMPTION (FNRI planned, not obtained)",False,0,20,16:00,21:00,False
+P29,Kaagapay Feeding Center,feeding program,J. P. Rizal Street,14.615367,121.069565,1162928952,186,56,"ASSUMPTION (FNRI planned, not obtained)",True,30,20,17:00,20:00,False
+P30,Ligaya Pantry,parish kitchen,A. Luna Street,14.625801,121.06586,1162928986,353,106,"ASSUMPTION (FNRI planned, not obtained)",False,0,60,16:30,19:30,False

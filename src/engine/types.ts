@@ -57,7 +57,7 @@ export type PantryType =
   | 'community pantry'
   | 'barangay kitchen';
 
-/** drivers.csv `vehicle`. Only motorcycle and car have travel times in road_distances.csv (open issue O-2). */
+/** drivers.csv `vehicle`. Dataset v1.2 has travel times for all four (decision D-Q8). */
 export type VehicleKind = 'motorcycle' | 'car' | 'tricycle' | 'bicycle';
 
 export type FoodCategory =
@@ -85,19 +85,24 @@ export interface Donor {
   id: DonorId;
   name: string;
   type: DonorType;
+  street: string;
   /** closing_time from donors.csv. A lot cannot be posted after closing (live path). */
   closingMinute: Minute;
+  /** Hand-placed row reproducing a study-guide example. */
+  anchor: boolean;
 }
 
 export interface Pantry {
   id: PantryId;
   name: string;
   type: PantryType;
+  street: string;
   opensMinute: Minute;
   closesMinute: Minute;
   hasFridge: boolean;
   fridgeCapacityKg: number;
   dryStorageKg: number;
+  anchor: boolean;
 }
 
 export interface Driver {
@@ -105,6 +110,7 @@ export interface Driver {
   name: string;
   vehicle: VehicleKind;
   capacityLoadUnits: number;
+  street: string;
   availableFromMinute: Minute;
   availableToMinute: Minute;
   /**
@@ -117,18 +123,26 @@ export interface Driver {
   tuningShows: number;
   /** reliability_estimate_frozen from drivers.csv. Kept only to check the formula in tests. */
   frozenReliability: number;
+  anchor: boolean;
 }
 
 /**
- * One donor-to-pantry road leg from road_distances.csv.
- * `minutes` is partial on purpose: the dataset has motorcycle and car times only.
- * A missing vehicle entry must be resolved explicitly, never silently treated as zero (O-2).
+ * One donor-to-pantry road leg from road_distances.csv. Roads are two-way in the dataset, so the
+ * same leg also gives pantry-to-donor (a driver going from one delivery to the next pickup).
  */
 export interface RoadLeg {
   donorId: DonorId;
   pantryId: PantryId;
   roadKm: number;
-  minutes: Partial<Record<VehicleKind, number>>;
+  minutes: Record<VehicleKind, number>;
+}
+
+/** driver_distances.csv (v1.2): a driver's home to a donor, in the driver's own vehicle. */
+export interface DriverLeg {
+  driverId: DriverId;
+  donorId: DonorId;
+  roadKm: number;
+  minutes: number;
 }
 
 /** Everything that does not change between evenings. Built once from the bundled dataset. */
@@ -137,6 +151,9 @@ export interface World {
   pantries: readonly Pantry[];
   drivers: readonly Driver[];
   roads: readonly RoadLeg[];
+  driverLegs: readonly DriverLeg[];
+  /** D-b: minutes late, sampled from the tuning runs' completed_late values. */
+  lateMinutes: readonly number[];
 }
 
 // ---------------------------------------------------------------------------
@@ -145,6 +162,8 @@ export interface World {
 
 export interface LotItem {
   foodItem: string;
+  /** food_item_fil, shown on Filipino-first screens. */
+  foodItemFil: string;
   foodCategory: FoodCategory;
   quantity: number;
   unit: FoodUnit;
@@ -186,6 +205,8 @@ export interface Evening {
   /** evenings.csv seed. Reduce with `>>> 0` before use as a 32-bit RNG key. */
   seed: number;
   split: Split;
+  /** ISO date from evenings.csv. */
+  date: string;
   needs: readonly PantryNeed[];
   /** Dataset lots in posting order. */
   lots: readonly Lot[];
@@ -403,8 +424,8 @@ export interface SaloParams {
   /** 40 per pantry per evening. Fixed, not tuned (guide page 12). */
   shareBudgetPerEvening: number;
   /**
-   * How a value becomes a share bid. The functional form is an open decision (O-3).
-   * `linear` is the first candidate to tune; it is not agreed.
+   * How a value becomes a share bid (decision D-Q2): shares = min(shares left, round(scale x value)).
+   * `scale` is tuned on tuning evenings only, then frozen. Only winning bids spend shares (D-Q4).
    */
   shareBid: { kind: 'linear'; scale: number };
 }
@@ -434,7 +455,7 @@ export interface EveningResult {
   split: Split;
   /** Per pantry: on-time kg received, capped at seeded need, summed over pantries (guide page 14). */
   foodRescuedKg: number;
-  /** Posted kg that no pantry received on time (definition under review, O-5). */
+  /** Posted kg minus foodRescuedKg (decision D-Q3). Food beyond a pantry's need counts as wasted. */
   foodWastedKg: number;
   /**
    * Min over pantries with need > 0 of min(1, on-time kg / need).
