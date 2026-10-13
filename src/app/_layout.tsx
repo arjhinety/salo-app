@@ -7,12 +7,15 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useLiveTicker } from '../live/useLive';
 import { ThemeProvider, useTheme } from '../theme/theme';
 
 SplashScreen.preventAutoHideAsync();
 
 function Shell() {
   const { c } = useTheme();
+  // The simulated evening keeps its clock across screens, so the ticker lives here, not on one screen.
+  useLiveTicker();
   return (
     <>
       <StatusBar style="light" />

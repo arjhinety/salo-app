@@ -144,3 +144,8 @@ Untuned starting weights for development: need 0.4, storage 0.3, distance 0.15, 
 - **Problem:** simulated drivers answered in the same minute the pantry won, so a lot was never visibly TENTATIVE ("held until a driver commits") in a simulated evening. Instant replies are also unrealistic.
 - **Decision:** after a TENTATIVE_ACCEPT, the first driver round happens 1–3 minutes later (uniform whole minutes, a counter-based seeded draw per lot on its own RNG stream, identical under all four policies). Re-announcements after a driver FAILURE keep their current timing. The delay range is an assumption; there is no measured data on real volunteers' reply times.
 - **Evidence** (mobile-data study, tuning evenings E01–E10, untuned, throwaway engine copy proven identical at delay 0 on all 40 evening/policy pairs; `docs/handoffs/2026-10-13-mobile-data.md`): for Salo, max delay 3 changes food rescued by −0.07 kg per evening (150.25 → 150.18), stranded awards go from 0.3 to 0.8 per evening, and TENTATIVE lasts 1.9 minutes on average. Max delay 5 would cost 2.2 kg per evening (95% interval [−5.41, −0.05]).
+
+## Small live-demo defaults (2026-10-13, orchestrator; change on request)
+
+- **Live posts are not checked against the donor's closing time.** The dataset generator posts lots up to 15 minutes after a donor's listed closing time (for example, D01 closes at 17:30 but posts L0211 at 17:37), so a closing-time check would reject lots the dataset itself contains. The other live checks stay: the donor exists, pickup-by is later than the clock, and there is at least one item.
+- **The play/pause simulation control stays in demo builds.** It is labelled as simulation and drives only the simulated clock.

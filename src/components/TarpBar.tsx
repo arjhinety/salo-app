@@ -1,11 +1,15 @@
+import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { S } from '../i18n/strings';
 import { useTheme } from '../theme/theme';
 import { SPACE, TYPE } from '../theme/tokens';
 
-/** The tarp canopy over the stall: wordmark, the simulated clock, and the simulated-data label. */
-export function TarpBar({ clock, subtitle }: { clock: string; subtitle?: string }) {
+/**
+ * The tarp canopy over the stall: wordmark, the simulated clock, and the simulated-data label.
+ * `children` sit under the subtitle, on the tarp (the demo's play control uses this).
+ */
+export function TarpBar({ clock, subtitle, children }: { clock: string; subtitle?: string; children?: ReactNode }) {
   const { c } = useTheme();
   const insets = useSafeAreaInsets();
   return (
@@ -28,6 +32,7 @@ export function TarpBar({ clock, subtitle }: { clock: string; subtitle?: string 
         </View>
       </View>
       {subtitle ? <Text style={[TYPE.small, { color: c.onTarp, opacity: 0.92 }]}>{subtitle}</Text> : null}
+      {children}
       {/* the tarp's hem */}
       <View style={[styles.hem, { backgroundColor: c.onTarp }]} />
     </View>

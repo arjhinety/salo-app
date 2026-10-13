@@ -2,6 +2,10 @@
  * All user-facing copy. Donor, pantry and driver screens are Filipino-first with a small English
  * subtitle (PRODUCT.md). Written by Claude; Codex reviews the Filipino before the demo (decision log).
  */
+
+/** English count line: "1 lot", "2 lots". The Filipino word "lot" never changes. */
+export const lotCountEn = (n: number): string => (n === 1 ? '1 lot' : `${n} lots`);
+
 export const S = {
   appName: 'Salo',
   simulated: { fil: 'Simulasyon', en: 'Simulated data' },

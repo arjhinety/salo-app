@@ -1,25 +1,26 @@
 import { router } from 'expo-router';
 import { ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { PostFab } from '../../components/PostFab';
+import { SimControl } from '../../components/SimControl';
 import { StallString } from '../../components/StallString';
 import { Tag } from '../../components/Tag';
 import { TarpBar } from '../../components/TarpBar';
 import { WORLD } from '../../data/dataset';
-import { donorTonight, hhmm } from '../../donor/tonight';
-import { S } from '../../i18n/strings';
+import { hhmm } from '../../donor/tonight';
+import { liveEvening, useLiveSnapshot, useLotViews } from '../../live/useLive';
+import { lotCountEn, S } from '../../i18n/strings';
 import { useTheme } from '../../theme/theme';
 import { SPACE, TYPE } from '../../theme/tokens';
 
-/** M2: the engine's simulated evening E05 at 17:45, seen by Karinderya ni Aling Oning (D01). M3 makes it live. */
-const EVENING = 'E05';
+/** The stall on this phone: Karinderya ni Aling Oning (D01). Its lots come from the live simulated evening. */
 const DONOR = 'D01';
-const CLOCK = 17 * 60 + 45;
 
 export default function DonorHome() {
   const { c } = useTheme();
   const { width, fontScale } = useWindowDimensions();
+  const sim = useLiveSnapshot();
+  const lots = useLotViews(DONOR);
   const donor = WORLD.donors.find((d) => d.id === DONOR)!;
-  const lots = donorTonight(EVENING, DONOR, CLOCK);
   // Two tags per row; one when the screen is narrow or the text is enlarged (up to 200% font scale).
   const perRow = width / fontScale < 360 ? 1 : 2;
   const rows: (typeof lots)[] = [];
@@ -27,14 +28,20 @@ export default function DonorHome() {
 
   return (
     <View style={{ flex: 1, backgroundColor: c.ground }}>
-      <TarpBar clock={hhmm(CLOCK)} subtitle={`${donor.name} · ${donor.street}`} />
+      <TarpBar clock={hhmm(sim.minute)} subtitle={`${donor.name} · ${donor.street}`}>
+        <SimControl
+          running={sim.running}
+          ended={sim.ended}
+          onPress={() => (sim.running ? liveEvening.pause() : liveEvening.start())}
+        />
+      </TarpBar>
       <ScrollView contentContainerStyle={styles.body}>
         <View style={styles.heading}>
           <Text style={[TYPE.title, { color: c.text }]} accessibilityRole="header">
             {S.tonight.fil}
           </Text>
           <Text style={[TYPE.small, { color: c.textMuted }]}>
-            {S.tonight.en} · {lots.length} lot
+            {S.tonight.en} · {lotCountEn(lots.length)}
           </Text>
         </View>
         {lots.length === 0 ? (
