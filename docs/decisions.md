@@ -39,3 +39,22 @@ These decisions were made by Arjhine on 2026-10-13, from the open questions in `
 
 - Deadline: early January 2027 (end of the 1st semester, S.Y. 2026–2027).
 - The study guide is edited to match D-Q2, D-Q3 and D-Q4 (p.12 and p.14), after Arjhine reviews the exact sentences.
+
+## Scoring definitions (PROPOSED in M1; to be confirmed by Arjhine before tuning freezes the weights)
+
+The guide gives the four parts of a pantry's value only as an example (p.11). The engine needs exact
+formulas. Each raw score is in [0, 1], and the value is the weighted sum (`src/engine/utility.ts`).
+
+| Part | Raw score | Why |
+|---|---|---|
+| Need | remaining need ÷ tonight's need | A pantry that has already been promised food scores lower, which spreads food around |
+| Storage | 1, or 0.2 if the lot needs a fridge if kept and the pantry has none | It can still serve tonight, so not 0 (the guide's Socorro example) |
+| Distance | 1 − road km ÷ the longest donor-to-pantry road in the dataset | Closer scores higher |
+| Freshness | 1 − minutes to the earliest arrival ÷ 60 | Food that arrives sooner is fresher |
+
+Refusals (the reflex step, guide p.11), checked in this order:
+1. Closed tonight, or the earliest possible arrival is after closing time (this also covers "no driver could reach it").
+2. The lot is bigger than the pantry's dry storage plus fridge capacity.
+3. No remaining need.
+
+Untuned starting weights for development: need 0.4, storage 0.3, distance 0.15, freshness 0.15. The share-bid scale starts at 17. Tuning on E01–E10 replaces them.
