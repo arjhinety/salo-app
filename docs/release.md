@@ -26,8 +26,8 @@ Environment: `scripts/android-env.sh` sets the Android Studio JDK and the user S
 ## Artifact
 
 - Path: `android/app/build/outputs/apk/release/app-release.apk`
-- Size: 110,935,113 bytes (about 110.9 MB; the bundled JS is `assets/index.android.bundle`, 2,722,696 bytes). This is the M3 post-flow build (2026-10-13, 17:03); the earlier M3e build was 110,913,577 bytes.
-- SHA-256: `8a0d4323fef167308b5562255828ddf21b0c322c9295e582734c74f2f25ff648` (replaces `57556a99...` from the M3e build).
+- Size: 110,935,241 bytes. This is the **current build to install**: commit d7b269c (post-flow fix batch: pickup chips capped at 21:00, Codex copy fixes, gesture-bar inset), built 2026-10-13 17:38 by the orchestrator with the same command. Checked: the bundle contains the new heading and lot-ID line and not the old heading; the APK installs and opens on vel_phone. Earlier builds: post flow 110,935,113 bytes (`8a0d4323...`), M3e 110,913,577 bytes (`57556a99...`). The offline run below was done on the post-flow build; the fix batch changed only copy, chip times and padding.
+- SHA-256: `0b9f0c7dd43c6286e8173292a8993d2f5be905a60ef03e58a12066c3695c8fc9`
 - Package: `com.arjhinety.salo`
 - Contains the milestone strings: `WALANG TUMANGGAP`, `maghahatid; darating`, `I-pause ang simulasyon.` (checked by grepping the extracted bundle).
 
