@@ -200,3 +200,7 @@ Git: `server/.env` does not exist. `git check-ignore` shows `server/.env` ignore
 - Decide whether to accept the 21-pair canonical list (point 2) or widen it, which would need the hard rule relaxed.
 - Approve one real `/parse` call (a fraction of a cent) to check the output shape against the real model before the app depends on it.
 - M5: pairing before the proxy is used on a shared network.
+
+## In-sample note (orchestrator, 2026-10-20)
+
+The prompt quotes tuning messages M0001, M0008 and M0025 with their answers, and the canonical list comes from the gold labels of all 170 tuning messages. Any Claude-path score on the tuning set is therefore in-sample and must never be quoted as expected accuracy. It is reported on all 170 and on the 167 without the three examples; the 167 figure is still in-sample because of the food list. See docs/decisions.md, parser rule of 2026-10-20.
