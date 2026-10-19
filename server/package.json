@@ -1,0 +1,19 @@
+{
+  "name": "salo-llm-proxy",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Laptop LLM proxy for the Salo app (POST /parse, GET /health). Not for the public internet.",
+  "type": "module",
+  "engines": {
+    "node": ">=20.6"
+  },
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.135.0",
+    "zod": "4.6.7"
+  }
+}
