@@ -8,7 +8,7 @@
  */
 import { mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { evaluate, readPassFiles, renderClaudeReport, type Pricing } from '../eval/claudeTuning';
+import { evaluate, readPassDir, renderClaudeReport, type Pricing } from '../eval/claudeTuning';
 import { loadTuningRows } from './tuningCorpus';
 
 const run = process.env.EVAL_CLAUDE === '1' ? describe : describe.skip;
@@ -21,9 +21,12 @@ const PRICING_PATH = join(REPO, 'server', 'eval', 'pricing.json');
 run('parser tuning evaluation, Claude path (EVAL_CLAUDE=1)', () => {
   it('scores the saved pass files and writes the report', () => {
     const pricing = JSON.parse(readFileSync(PRICING_PATH, 'utf8')) as Pricing;
-    const ev = evaluate(loadTuningRows(), readPassFiles(PASS_DIR));
+    const dir = readPassDir(PASS_DIR);
+    const ev = evaluate(loadTuningRows(), dir.files, dir.ignored);
     mkdirSync(REPORTS, { recursive: true });
     writeFileSync(REPORT_PATH, renderClaudeReport(ev, pricing));
-    expect(ev.passes).toHaveLength(3);
+    // One entry per pass number from 1 to the highest pass file present.
+    expect(ev.passes.map((p) => p.pass)).toEqual(Array.from({ length: ev.passes.length }, (_, i) => i + 1));
+    expect(ev.passes.length).toBe(Math.max(...dir.files.map((f) => f.pass)));
   });
 });

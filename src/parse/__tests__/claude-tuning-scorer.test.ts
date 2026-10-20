@@ -174,8 +174,10 @@ describe('claude-tuning scorer: the report', () => {
     expect(text).toContain('Scores are computed on the raw ParseResponse (src/parse output), before any catalog mapping.');
     expect(text).toContain("In-sample score: the proxy's prompt quotes tuning messages M0001, M0008 and M0025 with their answers, and its food list comes from the gold labels of all 170 tuning messages. This score is in-sample and must never be quoted as expected accuracy.");
   });
-  it('says only 2 of 3 passes are completed and lists the excluded pass with its reason', () => {
-    expect(text).toContain('**Only 2 of 3 passes are completed** (pass 1, pass 3).');
+  it('top note: 2 completed passes against the plan of 3, group A 1 short, and pass 2 listed as not completed with its reason', () => {
+    expect(text).toContain('**Completed passes: 2 (pass numbers 1, 3), against a plan of 3 completed passes per request config.**');
+    expect(text).toContain('group A: 2 completed (pass numbers 1, 3), 1 short of the plan of 3.');
+    expect(text).toContain('Not completed, so in no mean or spread (listed in section 4): pass 2 stopped (auth).');
     expect(text).toContain('### Pass 2: stopped');
     expect(text).toContain('- Reason: auth.');
     expect(text).toContain('- Not-sent ids (150): M0021,');
@@ -231,10 +233,6 @@ describe('claude-tuning scorer: integrity guards', () => {
       mkdirSync(tmp, { recursive: true });
       writeFileSync(join(tmp, 'pass-1.jsonl'), readFileSync(join(FIXTURE_DIR, 'pass-3.jsonl'), 'utf8'));
       expect(() => readPassFiles(tmp)).toThrow(/pass 3 in a pass 1 file/);
-      rmSync(join(tmp, 'pass-1.jsonl'));
-      writeFileSync(join(tmp, 'notes.txt'), 'x');
-      writeFileSync(join(tmp, 'pass-9.jsonl'), '');
-      expect(() => readPassFiles(tmp)).toThrow(/pass-9\.jsonl: file names must be/);
     } finally {
       rmSync(tmp, { recursive: true, force: true });
     }

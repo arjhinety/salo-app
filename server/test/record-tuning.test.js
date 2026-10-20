@@ -339,13 +339,19 @@ test("a dry run sends nothing and reads no network", async () => {
   assert.match(text, /169 gaps x 2\.1 s = 354\.9 s/);
   assert.match(text, /backoff|wait 2, 4, 8, 16 s/);
   assert.match(text, /3 passes \(510 calls\)/);
+  assert.match(text, /pass: 3 \(any whole number from 1; the plan is 3 completed passes per request config\)/);
+  assert.doesNotMatch(text, / of 3\b/);
   assert.match(text, /Estimate leaves out thinking tokens \(Haiku 5\.5 runs adaptive thinking; they are billed as output\)\. Real spend is measured from the logged usage\./);
 });
 
-test("arguments: --pass must be 1..3, --pass=N works, unknown flags are refused", () => {
+test("arguments: --pass is any whole number from 1 (4 and 12 accepted), --pass=N works, unknown flags are refused", () => {
   assert.throws(() => parseArgs([]), /--pass <n> is required/);
-  assert.throws(() => parseArgs(["--pass", "4"]), /--pass must be 1, 2 or 3/);
-  assert.throws(() => parseArgs(["--pass", "0"]), /--pass must be 1, 2 or 3/);
+  assert.equal(parseArgs(["--pass", "4"]).pass, 4);
+  assert.equal(parseArgs(["--pass", "12"]).pass, 12);
+  assert.match(parseArgs(["--pass", "4"]).outDir, /docs[\\/]reports[\\/]claude-tuning$/);
+  for (const bad of ["0", "-1", "2.5", "x", "", "01", "1e3", " 2"]) {
+    assert.throws(() => parseArgs(["--pass", bad]), /--pass must be a whole number from 1/, `rejected: "${bad}"`);
+  }
   assert.throws(() => parseArgs(["--pass", "1", "--bogus"]), /unknown argument/);
   assert.throws(() => parseArgs(["--pass", "1", "--base-url"]), /needs a value/);
   const o = parseArgs(["--pass=2", "--base-url", "http://10.0.0.5:8787/", "--dry-run"]);

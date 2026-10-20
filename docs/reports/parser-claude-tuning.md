@@ -8,7 +8,9 @@ In-sample score: the proxy's prompt quotes tuning messages M0001, M0008 and M002
 
 Model id(s) seen: claude-haiku-5-5.
 
-**Only 2 of 3 passes are completed** (pass 1, pass 3). The means and spreads below are over the completed passes of each group only (group A: 2 passes). Passes that are not completed are listed in section 4 and are not in any mean or spread.
+**Completed passes: 2 (pass numbers 1, 3), against a plan of 3 completed passes per request config.** group A: 2 completed (pass numbers 1, 3), 1 short of the plan of 3. The means and spreads in section 3 use the completed passes of each group only.
+
+Not completed, so in no mean or spread (listed in section 4): pass 2 stopped (no_usable_response_x5).
 
 ## 1. Pass status and counts
 
@@ -29,6 +31,8 @@ Not sent: no attempt line at all. Unanswered: attempts exist, but none is usable
 ## 3. Scores by request-config group
 
 ### Group A: request config 2aa58cdc2dec…, prompt 4d96cbac140a…, git e6139c29e5, 196eaef710, 2 completed passes: 1, 3
+
+This group has 2 completed passes, 1 short of the plan of 3. Its means and spreads use only these.
 
 #### 3A.1 All 170 tuning messages (k/answered)
 

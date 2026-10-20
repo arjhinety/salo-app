@@ -92,6 +92,8 @@ node eval/record-tuning.js --dry-run --pass 1    # plan and cost estimate, sends
 node eval/record-tuning.js --pass 1              # a real run: costs money, needs Arjhine's go-ahead
 ```
 
+`--pass <n>` is any whole number from 1 (0, negatives, decimals and text are refused). The plan is 3 completed passes per request config. A stopped pass cannot be resumed, so its replacement takes the next free number (for example 4). The scorer reads every `pass-<n>.jsonl` and lists any other `.jsonl` name as ignored.
+
 Pacing: at most 30 sends per sliding 60 s window and at least 2100 ms between sends. Retries: 429 waits `Retry-After` (60 s if absent); 503 `model_unavailable` and network errors back off 2, 4, 8, 16 s; `model_output_rejected` and 422 are never retried. At most 5 attempts per message. `/health` is re-read every 25 messages, and a change of `prompt_sha256`, `request_config_sha256` or model stops the pass. Prices are in `eval/pricing.json`.
 
 ## Tests

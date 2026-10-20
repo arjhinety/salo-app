@@ -29,7 +29,10 @@ import type { ParseResponse } from '../types';
 import { validateResponse } from '../validate';
 import { FIELDS, scoreResponse, type Field, type FieldScores, type ScoredRow } from './score';
 
-export const PASS_NUMBERS: readonly number[] = [1, 2, 3];
+/** The plan: 3 completed passes per request config. Pass numbers are not limited to this (a stopped pass gets a new number). */
+export const PLANNED_PASSES = 3;
+/** The report lists pass numbers 1 to the highest present; this caps that range so a stray pass-999999999.jsonl cannot hang it. */
+export const MAX_PASS_NUMBER = 999;
 export const MAX_ATTEMPTS = 5;
 export const TUNING_MESSAGE_COUNT = 170;
 /** Messages quoted in the proxy's prompt (their answers are in it). */
@@ -183,15 +186,36 @@ export function parsePassText(text: string, pass: number, source: string): PassF
   return { pass, attempts, end };
 }
 
-/** Reads every pass-<n>.jsonl in dir, and nothing else. A pass with no marker is returned with end null. */
-export function readPassFiles(dir: string): PassFile[] {
+export interface PassDir {
+  /** Every pass-<n>.jsonl in the directory (n a whole number from 1), sorted by n. A pass with no marker has end null. */
+  files: PassFile[];
+  /** Other .jsonl names (pass-0.jsonl, pass-01.jsonl, notes.jsonl, ...). They are not read; the report lists them. */
+  ignored: string[];
+}
+
+const PASS_FILE_NAME = /^pass-([1-9]\d*)\.jsonl$/;
+
+/** Discovers the pass files in dir. Files that are not .jsonl are not looked at at all. */
+export function readPassDir(dir: string): PassDir {
   const names = readdirSync(dir).filter((f) => f.endsWith('.jsonl')).sort();
-  if (names.length === 0) throw new Error(`no .jsonl files in ${dir}`);
-  return names.map((name) => {
-    const m = /^pass-([1-3])\.jsonl$/.exec(name);
-    if (!m) throw new Error(`${name}: file names must be pass-1.jsonl, pass-2.jsonl or pass-3.jsonl`);
-    return parsePassText(readFileSync(join(dir, name), 'utf8'), Number(m[1]), name);
-  });
+  const files: PassFile[] = [];
+  const ignored: string[] = [];
+  for (const name of names) {
+    const m = PASS_FILE_NAME.exec(name);
+    if (!m) {
+      ignored.push(name);
+      continue;
+    }
+    files.push(parsePassText(readFileSync(join(dir, name), 'utf8'), Number(m[1]), name));
+  }
+  if (files.length === 0) throw new Error(`no pass-<n>.jsonl files in ${dir}`);
+  files.sort((a, b) => a.pass - b.pass);
+  return { files, ignored };
+}
+
+/** The pass files in dir (see readPassDir). */
+export function readPassFiles(dir: string): PassFile[] {
+  return readPassDir(dir).files;
 }
 
 /** completed: marker says completed and the hashes agree. invalid: lines or marker disagree on a hash. */
@@ -269,8 +293,10 @@ export interface Group {
 
 export interface Evaluation {
   rows: ScoredRow[];
-  /** Always three entries, for passes 1, 2 and 3. */
+  /** One entry per pass number from 1 to the highest pass file present. A number with no file has status "no file". */
   passes: PassResult[];
+  /** .jsonl names in the pass directory that are not pass-<n>.jsonl. Not read, listed in the report. */
+  ignoredFiles: string[];
   completed: PassResult[];
   excluded: PassResult[];
   groups: Group[];
@@ -338,17 +364,21 @@ export function costUsd(t: { input: number; output: number; cacheWrite: number; 
  * file, or a "completed" pass that does not cover all 170 messages. A pass whose hashes disagree internally is not an
  * error: it gets status "invalid" and is excluded.
  */
-export function evaluate(rows: ScoredRow[], files: PassFile[]): Evaluation {
+export function evaluate(rows: ScoredRow[], files: PassFile[], ignoredFiles: string[] = []): Evaluation {
   if (rows.length !== TUNING_MESSAGE_COUNT) throw new Error(`expected ${TUNING_MESSAGE_COUNT} tuning rows, got ${rows.length}`);
+  if (files.length === 0) throw new Error('no pass files given');
   const byId = new Map(rows.map((r) => [r.message_id, r]));
   const filesByPass = new Map<number, PassFile>();
   for (const f of files) {
     if (filesByPass.has(f.pass)) throw new Error(`pass ${f.pass} given twice`);
     filesByPass.set(f.pass, f);
   }
+  const highest = Math.max(...files.map((f) => f.pass));
+  if (highest > MAX_PASS_NUMBER) throw new Error(`pass ${highest} is above the ${MAX_PASS_NUMBER}-pass range of the report`);
   const allModels = new Set<string>();
 
-  const passes: PassResult[] = PASS_NUMBERS.map((pass) => {
+  const passNumbers = Array.from({ length: highest }, (_, i) => i + 1);
+  const passes: PassResult[] = passNumbers.map((pass) => {
     const file = filesByPass.get(pass);
     const attemptsAll = [...(file?.attempts ?? [])];
     const byMsg = new Map<string, AttemptLine[]>();
@@ -458,7 +488,7 @@ export function evaluate(rows: ScoredRow[], files: PassFile[]): Evaluation {
     g.passes.push(p);
     for (const c of p.gitCommits) if (!g.gitCommits.includes(c)) g.gitCommits.push(c);
   }
-  return { rows, passes, completed, excluded, groups, models: [...allModels].sort() };
+  return { rows, passes, ignoredFiles: [...ignoredFiles].sort(), completed, excluded, groups, models: [...allModels].sort() };
 }
 
 export interface FieldRate {
@@ -550,6 +580,13 @@ export function renderClaudeReport(ev: Evaluation, pricing: Pricing): string {
   L.push(`Model id(s) seen: ${ev.models.length ? ev.models.join(', ') : 'none'}.`, '');
 
   const done = ev.completed.length;
+  const passList = (ps: PassResult[]): string => ps.map((p) => p.pass).join(', ');
+  // Compared with the plan: fewer completed passes than planned are named as short; more are all used, none dropped.
+  const planNote = (n: number): string => (n < PLANNED_PASSES
+    ? `${PLANNED_PASSES - n} short of the plan of ${PLANNED_PASSES}`
+    : n > PLANNED_PASSES
+      ? `${n - PLANNED_PASSES} more than the plan of ${PLANNED_PASSES}; all ${n} are used, none dropped`
+      : `the plan of ${PLANNED_PASSES}`);
   if (ev.groups.length > 1) {
     L.push(`**Warning: the completed passes used ${ev.groups.length} different request configurations** ` +
       `(request_config_sha256: ${ev.groups.map((g) => `group ${g.letter} ${short(g.requestConfigSha256)}`).join('; ')}). ` +
@@ -557,13 +594,18 @@ export function renderClaudeReport(ev: Evaluation, pricing: Pricing): string {
       'Read them as separate runs.', '');
   }
   if (done === 0) {
-    L.push('**No completed pass.** No score is reported. Every pass is listed in section 1 with its status and reason.', '');
-  } else if (done < PASS_NUMBERS.length) {
-    L.push(`**Only ${done} of ${PASS_NUMBERS.length} passes are completed** (pass ${ev.completed.map((p) => p.pass).join(', pass ')}). ` +
-      `The means and spreads below are over the completed passes of each group only (${ev.groups.map((g) => `group ${g.letter}: ${g.passes.length} pass${g.passes.length === 1 ? '' : 'es'}`).join('; ')}). ` +
-      'Passes that are not completed are listed in section 4 and are not in any mean or spread.', '');
+    L.push(`**No completed pass.** The plan is ${PLANNED_PASSES} completed passes per request config. No score is reported. ` +
+      'Every pass is listed in section 1 with its status and reason.', '');
   } else {
-    L.push(`All ${PASS_NUMBERS.length} passes are completed.`, '');
+    const groupText = ev.groups.map((g) => `group ${g.letter}: ${g.passes.length} completed (pass numbers ${passList(g.passes)}), ${planNote(g.passes.length)}`).join('; ');
+    L.push(`**Completed passes: ${done} (pass numbers ${passList(ev.completed)}), against a plan of ${PLANNED_PASSES} completed passes per request config.** ` +
+      `${groupText}. The means and spreads in section 3 use the completed passes of each group only.`, '');
+  }
+  const notDone = ev.passes.filter((p) => p.status !== 'completed');
+  L.push('Not completed, so in no mean or spread (listed in section 4): ' +
+    (notDone.length === 0 ? 'none.' : `${notDone.map((p) => `pass ${p.pass} ${p.status}${p.reason ? ` (${p.reason})` : ''}`).join('; ')}.`), '');
+  if (ev.ignoredFiles.length > 0) {
+    L.push(`Ignored .jsonl files in the directory (not pass-<n>.jsonl, not read): ${ev.ignoredFiles.join(', ')}.`, '');
   }
 
   L.push('## 1. Pass status and counts', '');
@@ -598,6 +640,11 @@ export function renderClaudeReport(ev: Evaluation, pricing: Pricing): string {
     const nm = `${g.passes.length} completed pass${g.passes.length === 1 ? '' : 'es'}: ${g.passes.map((p) => p.pass).join(', ')}`;
     L.push(`### Group ${g.letter}: request config ${short(g.requestConfigSha256)}, prompt ${short(g.promptSha256)}, git ${g.gitCommits.map(shortCommit).join(', ') || 'unknown'}, ${nm}`, '');
     if (g.passes.length === 1) L.push('One completed pass in this group: the spread is that single value, not a range over passes.', '');
+    if (g.passes.length > PLANNED_PASSES) {
+      L.push(`This group has ${g.passes.length} completed passes, more than the ${PLANNED_PASSES} planned. All ${g.passes.length} are in its means and spreads; none is dropped.`, '');
+    } else if (g.passes.length < PLANNED_PASSES) {
+      L.push(`This group has ${g.passes.length} completed pass${g.passes.length === 1 ? '' : 'es'}, ${planNote(g.passes.length)}. Its means and spreads use only these.`, '');
+    }
     L.push(...scoreTable(g, () => true, `3${g.letter}.1 All 170 tuning messages (k/answered)`));
     L.push(...scoreTable(g, excludeIds(PROMPT_EXAMPLE_IDS),
       `3${g.letter}.2 The 167 messages without M0001, M0008 and M0025 (still in-sample: food list overlap; k/answered)`));
@@ -617,6 +664,10 @@ export function renderClaudeReport(ev: Evaluation, pricing: Pricing): string {
   L.push('## 4. Passes not in any group (invalid, stopped, no marker, no file)', '');
   if (ev.excluded.length === 0) L.push('None.', '');
   for (const p of ev.excluded) {
+    if (p.status === 'no file') {
+      L.push(`### Pass ${p.pass}: no file`, '', `- No pass-${p.pass}.jsonl in the directory. Not in any mean or spread.`, '');
+      continue;
+    }
     const answered = p.sentIds.length - p.unansweredIds.length;
     const outage = Object.entries(p.counts.outage503).map(([k, n]) => `${k} ${n}`).join(', ') || 'none';
     L.push(`### Pass ${p.pass}: ${p.status}`, '');

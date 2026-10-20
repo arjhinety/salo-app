@@ -27,7 +27,7 @@ Proxy (`server/`):
 - `src/requestConfig.js` (new): `request_config_sha256` = sha256 of canonical JSON (keys sorted at every depth) of `{system_prompt, output_schema, model, effort, max_tokens, schema_js, parse_js, sdk_version}`. The schema is `zodOutputFormat(ModelOutput).schema`. The two source files are LF-normalised.
 
 Recorder (`server/eval/`):
-- `record-tuning.js` (new). Args: `--base-url` (default `http://127.0.0.1:8787`), `--pass 1|2|3`, `--out-dir` (default `docs/reports/claude-tuning/`), `--dry-run`. Calls `GET /health` first and refuses if `key` is false, if `prompt_sha256` or `request_config_sha256` is missing, or if the file exists. Pacer: 2100 ms gap and 30 sends per sliding 60 s, using `RATE_LIMIT_PER_MINUTE` from `config.js`. `/health` re-read before messages 26, 51, ...; a change of `prompt_sha256`, `request_config_sha256` or model stops the pass.
+- `record-tuning.js` (new). Args: `--base-url` (default `http://127.0.0.1:8787`), `--pass N` (any whole number from 1, see "Pass numbers" below), `--out-dir` (default `docs/reports/claude-tuning/`), `--dry-run`. Calls `GET /health` first and refuses if `key` is false, if `prompt_sha256` or `request_config_sha256` is missing, or if the file exists. Pacer: 2100 ms gap and 30 sends per sliding 60 s, using `RATE_LIMIT_PER_MINUTE` from `config.js`. `/health` re-read before messages 26, 51, ...; a change of `prompt_sha256`, `request_config_sha256` or model stops the pass.
 - `pricing.json` (new): the one place prices are kept. Source: Claude API model table, cached 2026-10-06. Haiku 5.5: $0.10 input and $0.50 output per million tokens; cache read 0.1x input; cache write (5 minute) 1.25x input.
 - Request timeout 30 s per `/parse` call (`AbortSignal.timeout`). A timeout is a network error.
 - A SIGINT handler writes a `stopped` marker and exits 130. It is not covered by an automated test.
@@ -53,7 +53,7 @@ The scorer groups completed passes by `request_config_sha256`. A pass whose line
 Claude-path recorder: plan (dry run, nothing sent)
   proxy: http://127.0.0.1:8787 (a dry run does not call GET /health or POST /parse)
   model: claude-haiku-5-5 (the run confirms the model from /health)
-  pass: 1 of 3
+  pass: 1 (any whole number from 1; the plan is 3 completed passes per request config)
   messages: 170 tuning messages (E01..E10), file order
   requests: 170 if nothing is retried; at most 850 with retries
   pacing: at least 2100 ms between sends; at most 30 sends per 60 s sliding window
@@ -76,7 +76,7 @@ Estimate notes: tokens are characters divided by 4 (not a tokenizer). Output is 
 1. Start the proxy with its SDK retries off and a key in `server/.env`: `cd server && SALO_SDK_MAX_RETRIES=0 npm start`.
 2. `node eval/record-tuning.js --dry-run --pass N` to see the plan.
 3. `node eval/record-tuning.js --pass N` (the real run; costs money). It refuses if `docs/reports/claude-tuning/pass-N.jsonl` exists. There is no resume. A stopped pass needs a new pass number, or the file moved aside.
-4. When the three passes are done: `EVAL_CLAUDE=1 npx jest src/parse/__tests__/eval-claude-tuning.test.ts`, which writes `docs/reports/parser-claude-tuning.md`.
+4. When the planned three completed passes are done (any further completed passes are reported too): `EVAL_CLAUDE=1 npx jest src/parse/__tests__/eval-claude-tuning.test.ts`, which writes `docs/reports/parser-claude-tuning.md`.
 
 ## Test results (all run 2026-10-20, fake responses only)
 
@@ -102,3 +102,25 @@ Literal assertions in the fixture tests (hand-computed, then asserted): pass 1 a
 9. Not run: any real `/parse` call, any paid pass, `EVAL_CLAUDE=1` against real data (no pass files exist yet). `docs/reports/parser-claude-tuning.md` does not exist yet.
 10. Lint and typecheck do not cover the new `.mjs` scratch edits (deleted after use).
 11. Git: nothing committed. Files touched by this work: `server/` (new `eval/`, `src/requestConfig.js`, tests; edited `src/config.js`, `src/parse.js`, `src/server.js`, `test/parse.test.js`, `README.md`), `src/parse/eval/` (new), `src/parse/__tests__/` (new tests, new fixtures; edited `eval-parser-tuning.test.ts`, `imports.test.ts`), `docs/handoffs/2026-10-20-mobile-data-claude-recorder.md` (this file). Not touched: `src/app`, `src/components`, `src/voice`, `app.json`, root `package.json`. The untracked `docs/handoffs/2026-10-20-mobile-native-voice.md` belongs to another agent.
+
+## Pass numbers (2026-10-20, follow-up after the real passes)
+
+Why: pass 2 was stopped by a laptop internet outage. A stopped pass cannot be resumed, so its replacement needs a new number, but the tools accepted only 1 to 3.
+
+- Recorder (`server/eval/record-tuning.js`): `--pass` takes any whole number from 1. `0`, negatives, decimals, empty text, `01`, `1e3` and text are refused with "--pass must be a whole number from 1". An existing `pass-<n>.jsonl` is still refused. The dry run now says `pass: N (any whole number from 1; the plan is 3 completed passes per request config)`. The "pass: 1 of 3" line in the dry-run block above is the earlier wording; the block was edited to the new wording, nothing else in it changed.
+- Scorer (`src/parse/eval/claudeTuning.ts`): pass numbers come from the `pass-<n>.jsonl` files present. Every number from 1 to the highest one is listed; a number with no file is "no file". Any other `.jsonl` name (`pass-0.jsonl`, `pass-01.jsonl`, `notes.jsonl`, ...) is not read and is listed as ignored. Pass numbers above 999 are refused. The top note gives the completed passes against the plan of 3 per request config and lists the passes that are not completed, with status and reason. Means and spreads use every completed pass of a group. A group with more than 3 says so and uses all of them; none is dropped.
+- Real data: pass 1 completed, pass 2 stopped, pass 3 completed, as before. The real pass 2 reason is `no_usable_response_x5` (five messages in a row with no usable response during the outage), not `auth`. Group A (passes 1 and 3) is unchanged: all-four mean 94.4% (93.5%-95.2%). Against the earlier report, the only changes are the top note (now the completed-versus-plan note and a "not completed" line) and one new line under group A ("This group has 2 completed passes, 1 short of the plan of 3."). Every table number is unchanged.
+- Fixtures and tests: `src/parse/__tests__/fixtures/claude-tuning-replacement/` has pass 1 (completed), pass 2 (stopped), pass 3 (completed) and pass 4 (completed). Pass 4 is pass 3 with one change: M0002's food is "ground pork" (gold: giniling), so only M0002's food and all-four flip. The group is A = passes 1, 3, 4. Hand-computed literals in `src/parse/__tests__/claude-tuning-replacement.test.ts`: food mean (3/169 + 7/170 + 6/170) / 3 = 3.1% (1.8%-4.1%); all-four mean (3/169 + 4/170 + 3/170) / 3 = 2.0% (1.8%-2.4%), where the minimum is 3/170 because it is smaller than 3/169. Also covered: a 4-pass group with the "more than 3" wording, a gap ("no file"), ignored names, no pass file at all, and the 999 limit. `claude-tuning-scorer.test.ts` and `eval-claude-tuning.test.ts` now use the discovery function. Recorder tests (`server/test/record-tuning.test.js`): `--pass 4` and `--pass 12` accepted; `0`, `-1`, `2.5`, `x`, empty, `01`, `1e3` and ` 2` refused.
+- `server/README.md` gained a short paragraph on pass numbers.
+- `docs/decisions.md` was not edited (orchestrator-owned).
+
+Results (2026-10-20, after this change, no real call, no spend):
+
+- `cd server && npm test`: 87 tests, 87 pass, 0 fail.
+- `npx tsc --noEmit`: exit 0.
+- `npx expo lint`: exit 0.
+- `npx jest`: 19 suites pass, 3 skipped (env-gated), 292 tests pass, 3 skipped, 0 fail.
+- `EVAL_CLAUDE=1 npx jest src/parse/__tests__/eval-claude-tuning.test.ts`: 1 test pass. It rewrote `docs/reports/parser-claude-tuning.md` from the real pass files (see the real data bullet above).
+- `node server/eval/record-tuning.js --dry-run --pass 4`: prints the new plan line; nothing sent.
+
+Not touched: `src/app`, `src/components`, `src/voice`, `src/donor`, `app.json`, `package.json`. Nothing committed or pushed. No pass has been run after pass 3.

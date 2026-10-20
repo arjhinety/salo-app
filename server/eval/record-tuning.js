@@ -40,7 +40,8 @@ export const BACKOFF_MS = [2000, 4000, 8000, 16000];
 export const REQUEST_TIMEOUT_MS = 30_000;
 export const SAFETY_STOP_CONSECUTIVE = 5;
 export const FATAL_ERROR_KINDS = ["auth", "bad_request"];
-export const PASSES = [1, 2, 3];
+// The plan: 3 completed passes per request config. Pass numbers are not limited to this; a stopped pass gets a new number.
+export const PLANNED_PASSES = 3;
 export const DEFAULT_BASE_URL = "http://127.0.0.1:8787";
 export const DEFAULT_OUT_DIR = resolve(fileURLToPath(new URL("../../docs/reports/claude-tuning", import.meta.url)));
 // Prices live in server/eval/pricing.json, the one place they are kept (the scorer reads the same file).
@@ -77,8 +78,8 @@ export function parseArgs(argv) {
     else if (name === "--dry-run" && inline === undefined) opts.dryRun = true;
     else throw new RecorderError(`unknown argument: ${arg}`);
   }
-  if (opts.pass === null) throw new RecorderError("--pass <n> is required (1, 2 or 3)");
-  if (!/^[1-3]$/.test(opts.pass)) throw new RecorderError(`--pass must be 1, 2 or 3 (got "${opts.pass}")`);
+  if (opts.pass === null) throw new RecorderError(`--pass <n> is required (a whole number from 1; the plan is ${PLANNED_PASSES} completed passes per request config)`);
+  if (!/^[1-9]\d*$/.test(opts.pass)) throw new RecorderError(`--pass must be a whole number from 1 (got "${opts.pass}")`);
   opts.pass = Number(opts.pass);
   opts.baseUrl = opts.baseUrl.replace(/\/+$/, "");
   return opts;
@@ -181,7 +182,7 @@ export function planLines({ rows, opts, systemPrompt, fileExists }) {
     "Claude-path recorder: plan (dry run, nothing sent)",
     `  proxy: ${opts.baseUrl} (a dry run does not call GET /health or POST /parse)`,
     `  model: ${MODEL} (the run confirms the model from /health)`,
-    `  pass: ${opts.pass} of ${PASSES.length}`,
+    `  pass: ${opts.pass} (any whole number from 1; the plan is ${PLANNED_PASSES} completed passes per request config)`,
     `  messages: ${n} tuning messages (E01..E10), file order`,
     `  requests: ${n} if nothing is retried; at most ${n * MAX_ATTEMPTS} with retries`,
     `  pacing: at least ${MIN_SPACING_MS} ms between sends; at most ${RATE_LIMIT_PER_MINUTE} sends per ${WINDOW_MS / 1000} s sliding window`,
@@ -195,7 +196,7 @@ export function planLines({ rows, opts, systemPrompt, fileExists }) {
     `    system prompt: ${est.systemChars} characters; output schema: ${est.schemaChars} characters; tokens = characters / ${CHARS_PER_TOKEN}`,
     `    per call: input about ${Math.round(pc.inputTokens)} tokens = ${usd(pc.inputUsd)}; output about ${Math.round(pc.outputTokens)} tokens (from the gold answers) = ${usd(pc.outputUsd)}; total ${usd(pc.expectedUsd)} (worst case ${usd(pc.worstUsd)}, 2048 output tokens)`,
     `    per pass (${n} calls): ${usd(est.expectedUsd)} expected; worst case ${usd(est.worstUsd)}`,
-    `    3 passes (${3 * n} calls): ${usd(3 * est.expectedUsd)} expected; worst case ${usd(3 * est.worstUsd)}`,
+    `    ${PLANNED_PASSES} passes (${PLANNED_PASSES * n} calls): ${usd(PLANNED_PASSES * est.expectedUsd)} expected; worst case ${usd(PLANNED_PASSES * est.worstUsd)}`,
     `  Prices (${PRICING.source}, ${PRICING.date}): $${PRICING.input_per_mtok} per million input tokens, $${PRICING.output_per_mtok} per million output tokens.`,
   ];
 }
