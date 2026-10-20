@@ -38,6 +38,8 @@ function checkAvailable(speech: Speech | null): boolean {
 export interface SpeechState {
   /** False in Expo Go, or when there is no recognizer on the phone. Starts false until the check runs. */
   available: boolean;
+  /** False when the native speech module is not in this build (Expo Go). Distinct from `available`. */
+  hasModule: boolean;
   listening: boolean;
   /** Text from the latest session: finished utterances plus the words still being heard. */
   transcript: string;
@@ -53,6 +55,7 @@ export interface SpeechState {
  */
 export function useSpeech(): SpeechState {
   const [available, setAvailable] = useState(() => checkAvailable(loadSpeech()));
+  const hasModule = loadSpeech() !== null;
   const [listening, setListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [error, setError] = useState<VoiceError | null>(null);
@@ -149,5 +152,5 @@ export function useSpeech(): SpeechState {
     }
   }, []);
 
-  return { available, listening, transcript, error, start, stop };
+  return { available, hasModule, listening, transcript, error, start, stop };
 }

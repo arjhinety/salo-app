@@ -1,6 +1,7 @@
 import { AccessibilityInfo, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
-import { catalogKey, estKgFor, findEntry, type CatalogEntry } from '../donor/catalog';
-import { clampAmount, type DraftItem } from '../donor/postForm';
+import { catalogKey, estKgFor, type CatalogEntry } from '../donor/catalog';
+import { chooseEntry, reviewLine, type DraftLine, type LineIssue } from '../donor/fromParsed';
+import { clampAmount } from '../donor/postForm';
 import { S } from '../i18n/strings';
 import { useTheme } from '../theme/theme';
 import { SPACE, TYPE } from '../theme/tokens';
@@ -10,64 +11,71 @@ import { FridgeIcon } from './icons';
 const STACK_BELOW = 360;
 
 /**
- * The confirm cards for a post: one kraft card per item (DON-02). Fed by a plain DraftItem array and reports the next
- * array through onChange, so the same component can show what the M4 parser produces. Items the catalog does not know
- * are not drawn.
+ * The confirm cards for a post: one kraft card per line (DON-02). A line that names a catalog item shows the amount
+ * stepper and storage. A line that does not resolve shows what is missing and, when there are candidates, chips to
+ * choose from. Reports the next array through onChange; the screen decides what posts.
  */
 export function DraftCards({
-  items,
+  lines,
   onChange,
 }: {
-  items: readonly DraftItem[];
-  onChange: (next: DraftItem[]) => void;
+  lines: readonly DraftLine[];
+  onChange: (next: DraftLine[]) => void;
 }) {
   const { width, fontScale } = useWindowDimensions();
   const stacked = width / fontScale < STACK_BELOW;
   return (
     <View style={styles.list}>
-      {items.map((item, i) => {
-        const entry = findEntry(item.foodItem, item.unit);
-        if (!entry) return null;
-        return (
-          <DraftCard
-            key={catalogKey(item.foodItem, item.unit)}
-            item={item}
-            entry={entry}
-            stacked={stacked}
-            onQuantity={(quantity) => onChange(items.map((x, j) => (j === i ? { ...x, quantity } : x)))}
-            onRemove={() => onChange(items.filter((_, j) => j !== i))}
-          />
-        );
-      })}
+      {lines.map((line, i) => (
+        <LineCard
+          key={`${i}-${line.foodItem ?? line.rawText}-${line.unit ?? ''}`}
+          line={line}
+          stacked={stacked}
+          onChange={(next) => onChange(lines.map((x, j) => (j === i ? next : x)))}
+          onRemove={() => onChange(lines.filter((_, j) => j !== i))}
+        />
+      ))}
     </View>
   );
 }
 
-function DraftCard({
-  item,
-  entry,
+function issueText(issue: LineIssue, entry: CatalogEntry | null, hasChoices: boolean): string {
+  switch (issue) {
+    case 'unmatched':
+      return hasChoices ? S.parsePost.unmatched : S.parsePost.noMatch;
+    case 'missing_unit':
+      return S.parsePost.missingUnit;
+    case 'missing_quantity':
+      return S.parsePost.missingQuantity;
+    case 'over_max':
+      return S.parsePost.overMax(entry?.maxQty ?? 0);
+  }
+}
+
+function LineCard({
+  line,
   stacked,
-  onQuantity,
+  onChange,
   onRemove,
 }: {
-  item: DraftItem;
-  entry: CatalogEntry;
+  line: DraftLine;
   stacked: boolean;
-  onQuantity: (quantity: number) => void;
+  onChange: (next: DraftLine) => void;
   onRemove: () => void;
 }) {
   const { c } = useTheme();
-  const q = item.quantity;
-  const unitFil = S.units[entry.unit];
-  const kg = estKgFor(q, entry);
-  const atMin = q <= 1;
-  const atMax = q >= entry.maxQty;
-  const showEn = entry.foodItemFil !== entry.foodItem;
+  const review = reviewLine(line);
+  const entry = review.entry;
+  const q = line.quantity;
+  const unitFil = entry ? S.units[entry.unit] : '';
+  const showEn = entry !== null && entry.foodItemFil !== entry.foodItem;
+  const title = entry ? entry.foodItemFil : line.rawText.trim() || '—';
 
-  const change = (next: number) => {
+  const setQuantity = (next: number) => {
+    if (!entry) return;
     const clamped = clampAmount(entry, next);
     if (clamped === q) return;
-    onQuantity(clamped);
+    onChange({ ...line, quantity: clamped });
     AccessibilityInfo.announceForAccessibility(S.postForm.amountSaid(clamped, unitFil, entry.unit));
   };
 
@@ -75,59 +83,89 @@ function DraftCard({
     <View style={[styles.card, { backgroundColor: c.kraft, borderColor: c.kraftEdge }]}>
       <View style={styles.head}>
         <View style={styles.names}>
-          <Text style={[TYPE.item, { color: c.marker }]}>{entry.foodItemFil}</Text>
-          {showEn ? <Text style={[TYPE.small, { color: c.onKraftMuted }]}>{entry.foodItem}</Text> : null}
+          <Text style={[TYPE.item, { color: c.marker }]}>{title}</Text>
+          {showEn && entry ? <Text style={[TYPE.small, { color: c.onKraftMuted }]}>{entry.foodItem}</Text> : null}
         </View>
         <Pressable
           onPress={onRemove}
           accessibilityRole="button"
-          accessibilityLabel={S.postForm.removeA11y(entry.foodItemFil, entry.foodItem)}
+          accessibilityLabel={S.postForm.removeA11y(title, entry?.foodItem ?? line.rawText)}
           style={({ pressed }) => [styles.remove, { borderColor: c.kraftEdge, opacity: pressed ? 0.7 : 1 }]}
         >
           <Text style={[TYPE.bodyStrong, { color: c.onKraft }]}>×</Text>
         </Pressable>
       </View>
-      <View style={[styles.rule, { backgroundColor: c.kraftEdge }]} />
-      <View style={[styles.row, stacked ? styles.rowStacked : null]}>
-        <Text style={[TYPE.label, { color: c.onKraftMuted }]}>{S.postForm.amount}</Text>
-        <View style={styles.stepper}>
-          <Pressable
-            onPress={() => change(q - 1)}
-            disabled={atMin}
-            accessibilityRole="button"
-            accessibilityState={{ disabled: atMin }}
-            accessibilityLabel={S.postForm.decreaseA11y(entry.foodItemFil, entry.foodItem)}
-            style={({ pressed }) => [styles.step, { backgroundColor: c.tape, borderColor: c.kraftEdge, opacity: atMin ? 0.4 : pressed ? 0.7 : 1 }]}
-          >
-            <Text style={[TYPE.bodyStrong, { color: c.onTape }]}>−</Text>
-          </Pressable>
-          <Text style={[TYPE.bodyStrong, styles.value, { color: c.onKraft }]}>
-            {q} {unitFil}
-          </Text>
-          <Pressable
-            onPress={() => change(q + 1)}
-            disabled={atMax}
-            accessibilityRole="button"
-            accessibilityState={{ disabled: atMax }}
-            accessibilityLabel={S.postForm.increaseA11y(entry.foodItemFil, entry.foodItem)}
-            style={({ pressed }) => [styles.step, { backgroundColor: c.tape, borderColor: c.kraftEdge, opacity: atMax ? 0.4 : pressed ? 0.7 : 1 }]}
-          >
-            <Text style={[TYPE.bodyStrong, { color: c.onTape }]}>+</Text>
-          </Pressable>
+
+      {review.issues.map((issue) => (
+        <Text key={issue} style={[TYPE.small, styles.issue, { color: c.onKraft }]} accessibilityLiveRegion="polite">
+          {issueText(issue, entry, review.choices.length > 0)}
+        </Text>
+      ))}
+
+      {!entry && review.choices.length > 0 ? (
+        <View style={styles.choices}>
+          {review.choices.map((choice) => (
+            <Pressable
+              key={catalogKey(choice.foodItem, choice.unit)}
+              onPress={() => onChange(chooseEntry(line, choice))}
+              accessibilityRole="button"
+              accessibilityLabel={S.parsePost.chooseA11y(choice.foodItemFil, choice.foodItem)}
+              style={({ pressed }) => [styles.choice, { backgroundColor: c.groundRaised, borderColor: c.rule, opacity: pressed ? 0.8 : 1 }]}
+            >
+              <Text style={[TYPE.bodyStrong, { color: c.text }]}>{choice.foodItemFil}</Text>
+              {choice.foodItemFil !== choice.foodItem ? (
+                <Text style={[TYPE.small, { color: c.textMuted }]}>{choice.foodItem}</Text>
+              ) : null}
+            </Pressable>
+          ))}
         </View>
-      </View>
-      <Text style={[TYPE.small, { color: c.onKraft }]}>{S.postForm.kg(kg)}</Text>
-      <View style={[styles.row, stacked ? styles.rowStacked : null]}>
-        <Text style={[TYPE.label, { color: c.onKraftMuted }]}>{S.postForm.storage}</Text>
-        {entry.needsFridgeIfKept ? (
-          <View style={styles.fridge}>
-            <FridgeIcon color={c.onKraft} />
-            <Text style={[TYPE.small, { color: c.onKraft, flexShrink: 1 }]}>{S.postForm.fridge}</Text>
+      ) : null}
+
+      {entry ? (
+        <>
+          <View style={[styles.rule, { backgroundColor: c.kraftEdge }]} />
+          <View style={[styles.row, stacked ? styles.rowStacked : null]}>
+            <Text style={[TYPE.label, { color: c.onKraftMuted }]}>{S.postForm.amount}</Text>
+            <View style={styles.stepper}>
+              <Pressable
+                onPress={() => setQuantity(q === null ? entry.minQty : q - 1)}
+                disabled={q !== null && q <= 1}
+                accessibilityRole="button"
+                accessibilityState={{ disabled: q !== null && q <= 1 }}
+                accessibilityLabel={S.postForm.decreaseA11y(entry.foodItemFil, entry.foodItem)}
+                style={({ pressed }) => [styles.step, { backgroundColor: c.tape, borderColor: c.kraftEdge, opacity: q !== null && q <= 1 ? 0.4 : pressed ? 0.7 : 1 }]}
+              >
+                <Text style={[TYPE.bodyStrong, { color: c.onTape }]}>−</Text>
+              </Pressable>
+              <Text style={[TYPE.bodyStrong, styles.value, { color: c.onKraft }]}>
+                {q === null ? '—' : `${q} ${unitFil}`}
+              </Text>
+              <Pressable
+                onPress={() => setQuantity((q ?? entry.minQty) + 1)}
+                disabled={q !== null && q >= entry.maxQty}
+                accessibilityRole="button"
+                accessibilityState={{ disabled: q !== null && q >= entry.maxQty }}
+                accessibilityLabel={S.postForm.increaseA11y(entry.foodItemFil, entry.foodItem)}
+                style={({ pressed }) => [styles.step, { backgroundColor: c.tape, borderColor: c.kraftEdge, opacity: q !== null && q >= entry.maxQty ? 0.4 : pressed ? 0.7 : 1 }]}
+              >
+                <Text style={[TYPE.bodyStrong, { color: c.onTape }]}>+</Text>
+              </Pressable>
+            </View>
           </View>
-        ) : (
-          <Text style={[TYPE.small, { color: c.onKraft, flexShrink: 1 }]}>{S.postForm.noFridge}</Text>
-        )}
-      </View>
+          {q !== null ? <Text style={[TYPE.small, { color: c.onKraft }]}>{S.postForm.kg(estKgFor(q, entry))}</Text> : null}
+          <View style={[styles.row, stacked ? styles.rowStacked : null]}>
+            <Text style={[TYPE.label, { color: c.onKraftMuted }]}>{S.postForm.storage}</Text>
+            {entry.needsFridgeIfKept ? (
+              <View style={styles.fridge}>
+                <FridgeIcon color={c.onKraft} />
+                <Text style={[TYPE.small, { color: c.onKraft, flexShrink: 1 }]}>{S.postForm.fridge}</Text>
+              </View>
+            ) : (
+              <Text style={[TYPE.small, { color: c.onKraft, flexShrink: 1 }]}>{S.postForm.noFridge}</Text>
+            )}
+          </View>
+        </>
+      ) : null}
     </View>
   );
 }
@@ -145,6 +183,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  issue: { fontWeight: '600' },
+  choices: { flexDirection: 'row', flexWrap: 'wrap', gap: SPACE.s },
+  choice: { minHeight: 48, borderWidth: 1, borderRadius: 8, paddingHorizontal: SPACE.m, paddingVertical: SPACE.s, justifyContent: 'center' },
   rule: { height: 1, opacity: 0.6 },
   row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: SPACE.s, flexWrap: 'wrap' },
   rowStacked: { flexDirection: 'column', alignItems: 'flex-start' },

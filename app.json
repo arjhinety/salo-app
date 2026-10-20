@@ -41,8 +41,18 @@
         "expo-speech-recognition",
         {
           "microphonePermission": "Gagamitin ang mikropono habang nagsasalita ka lang. · The microphone is used only while you speak.",
-          "speechRecognitionPermission": "Gagawing text ng speech recognition ang sinasabi mo. · Speech recognition turns what you say into text.",
-          "androidSpeechServicePackages": ["com.google.android.googlequicksearchbox"]
+          "speechRecognitionPermission": "Gagawing text ang sasabihin mo gamit ang speech recognition. · Speech recognition turns what you say into text.",
+          "androidSpeechServicePackages": [
+            "com.google.android.googlequicksearchbox"
+          ]
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
         }
       ]
     ],

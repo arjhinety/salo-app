@@ -21,9 +21,24 @@ export const S = {
     question: 'Ano ang natira?',
     example: 'Isulat gaya ng pag-text. Halimbawa: “May 3 tray ng adobo pa, kunin bago mag-8 PM.”',
     placeholder: 'May 3 tray ng adobo pa, kunin bago mag-8',
-    voiceSoon: 'Hindi pa puwedeng mag-post gamit ang boses. Sa susunod na bersyon pa ito.',
-    voiceBody: 'Sa susunod na bersyon, mauunawaan ni Salo ang text o boses mo at gagawa ng mga tag na kukumpirmahin mo.',
     back: 'Bumalik · Back',
+  },
+  /**
+   * The text-to-cards path (M4). Filipino first. Nothing here posts: the donor confirms every card with postForm.post.
+   */
+  parsePost: {
+    send: 'Basahin · Read',
+    sending: 'Binabasa ang mensahe… · Reading your message…',
+    fallbackBanner: 'Offline ang pagbasa. Pakisuri ang bawat item. · Offline parse, please check.',
+    noItems: 'Walang nakitang item sa mensahe. Pumili sa listahan sa ibaba. · No items found in the message. Pick from the list below.',
+    unmatched: 'Hindi namin matukoy ang item. Pumili ng isa, o alisin ito. · We could not tell the item. Choose one, or remove it.',
+    noMatch: 'Walang katugmang item. Pumili sa listahan sa ibaba, o alisin ito. · No matching item. Pick one from the list below, or remove it.',
+    missingUnit: 'Walang nakasulat na unit. Pumili ng item at unit. · No unit written. Choose the item and unit.',
+    missingQuantity: 'Kulang ang dami, kaya hindi pa ito maipo-post. Ilagay gamit ang + at −. · Amount missing, so this cannot post yet. Set it with + and −.',
+    overMax: (max: number) => `Mas malaki ito sa karaniwang dami (pinakamataas ${max}). Ibaba gamit ang −. · More than the usual amount (maximum ${max}). Lower it with −.`,
+    pickupAsk: 'Hindi malinaw ang oras ng pagkuha. Pumili ng isa. · The pickup time is unclear. Pick one.',
+    fixFirst: 'Ayusin muna ang mga card sa itaas. · Fix the cards above first.',
+    chooseA11y: (fil: string, en: string) => `Piliin ang ${fil}. Choose ${en}.`,
   },
   /**
    * The manual post form under the text box (M3). Filipino first; English after " · " or " / ". The one word

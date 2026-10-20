@@ -112,3 +112,27 @@ Screenshots (`.impeccable/review/`): `release-post.png` (donor home at 5:45 PM w
 Not run on the device: a double tap on "Tama, i-post" (covered by the pure guard test `submitLots`, `src/donor/__tests__/postForm.test.ts`); Cancel driver while the clock was running.
 
 Open items: the Filipino copy in the new `postForm` strings (listed in the handoff) is for the Codex grammar review. Physical phone install is still Arjhine's step.
+
+## Server address for a phone build (M4, 2026-10-20)
+
+The post screen sends each message to the laptop's LLM proxy (`POST /parse`, architecture section 5). The address is `src/config/server.ts`: it reads `EXPO_PUBLIC_SALO_SERVER` and falls back to `http://10.0.2.2:8787`, which is the Android emulator's alias for the laptop. Expo inlines the value at bundle time, so it is fixed inside each APK.
+
+- **Emulator (vel_phone):** no setting needed. The default is used.
+- **A real phone:** build with the laptop's LAN address. Find it with `ipconfig` (the IPv4 address of the Wi-Fi adapter), then build with the variable set in the same shell that runs gradle:
+
+  ```
+  source scripts/android-env.sh
+  export EXPO_PUBLIC_SALO_SERVER=http://192.168.1.20:8787   # your laptop's address and the proxy port
+  cd android && ./gradlew assembleRelease -x lintVitalAnalyzeRelease
+  ```
+
+  Check the bundle before installing: the address should appear in the JavaScript bundle inside the APK, and `10.0.2.2` should not, for a phone build.
+- The phone must be on the same Wi-Fi as the laptop, and the proxy must listen on that port. If the proxy is not reachable, the screen parses with the rule-based fallback and shows "offline parse, please check" (CC-03).
+
+**Cleartext HTTP (Android).** Release builds block cleartext (`http://`) traffic by default on Android 9 and later. The app allows it for the LAN proxy with the Expo config plugin `expo-build-properties` in `app.json`:
+
+```json
+["expo-build-properties", { "android": { "usesCleartextTraffic": true } }]
+```
+
+This writes `android:usesCleartextTraffic="true"` into the generated `AndroidManifest.xml` (it applies to all build types, release included). After any change to `app.json`, run `npx expo prebuild --platform android --no-install` before the gradle build. `android/` is generated and gitignored, so it is not edited by hand. The SDK 57 docs for `expo-build-properties` do not say the key can be limited to release builds, so it is set for every build type.
