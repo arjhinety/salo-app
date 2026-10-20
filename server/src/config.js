@@ -5,7 +5,10 @@ import { existsSync, readFileSync } from "node:fs";
 export const ENV_FILE_URL = new URL("../.env", import.meta.url);
 export const MODEL = "claude-haiku-5-5";
 export const SDK_TIMEOUT_MS = 8000;
-export const SDK_MAX_RETRIES = 1;
+// SDK retries per /parse call. Default 1 (the value used before M4 evaluation). Evaluation runs start the proxy with
+// SALO_SDK_MAX_RETRIES=0 so that no attempt is hidden inside the SDK (see server/README.md).
+export const DEFAULT_SDK_MAX_RETRIES = 1;
+export const MAX_OUTPUT_TOKENS = 2048;
 export const MAX_TEXT_CHARS = 500;
 export const MAX_BODY_BYTES = 8 * 1024;
 export const RATE_LIMIT_PER_MINUTE = 30;
@@ -25,6 +28,16 @@ export function loadEnvFile(url = ENV_FILE_URL, env = process.env) {
     }
     if (env[name] === undefined) env[name] = value;
   }
+}
+
+// Reads SALO_SDK_MAX_RETRIES: an integer 0 or more. Unset means the default. Anything else throws (the server refuses to start).
+export function readSdkMaxRetries(env = process.env) {
+  const raw = env.SALO_SDK_MAX_RETRIES;
+  if (raw === undefined) return DEFAULT_SDK_MAX_RETRIES;
+  if (!/^\d+$/.test(raw)) {
+    throw new Error(`SALO_SDK_MAX_RETRIES must be an integer 0 or more (got "${raw}")`);
+  }
+  return Number(raw);
 }
 
 export function readPort(env = process.env) {

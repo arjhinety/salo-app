@@ -56,6 +56,44 @@ Every error body is `{"error": "<code>", "reason": "<text>"}`. The app treats an
 - 8 second timeout to the model, one retry.
 - Output capped at 2048 tokens per call.
 
+### Build and request identity (`GET /health`)
+
+`/health` also returns:
+
+- `prompt_sha256`: sha256 of the exact system prompt sent to the model.
+- `request_config_sha256`: sha256 of everything that defines a `/parse` request (system prompt, output JSON Schema, model, effort, max_tokens, the source of `src/schema.js` and `src/parse.js` with LF line endings, and the installed SDK version). Computed by `src/requestConfig.js` at startup.
+- `git_commit`: the server's `git rev-parse HEAD` at startup, or `null`.
+- `git_dirty`: `true` if `git status --porcelain -- .` (this directory only) is non-empty, `null` if unknown.
+
+The key is never part of `/health`.
+
+### `usage` on `/parse` bodies
+
+Every `/parse` body has a `usage` field. When a model response exists (200, 422, and 503 `model_output_rejected`), it holds `input_tokens`, `output_tokens`, `cache_creation_input_tokens` and `cache_read_input_tokens`, copied from the API response (`null` for a field the API omits). Thinking tokens are billed as output and are included in `output_tokens`. When no model response exists (429, 503 `model_unavailable`, 400, 413), `usage` is `null`.
+
+### 503 `error_kind`
+
+A 503 `model_unavailable` body carries `error_kind`: `auth` (401/403), `bad_request` (400/404/422), `timeout` (SDK timeout), `connection`, `server` (5xx), `other`, or `no_client` (no key). The SDK's message is never echoed.
+
+## SDK retries (`SALO_SDK_MAX_RETRIES`)
+
+The SDK retries a failed model call this many times before the proxy answers. Default `1` (the value used before evaluation). Evaluation runs start the proxy with `SALO_SDK_MAX_RETRIES=0` so that every attempt is visible in the evaluation log and none is hidden inside the proxy. It must be an integer 0 or more; anything else stops the server at startup. The startup log prints the value in use.
+
+```
+SALO_SDK_MAX_RETRIES=0 npm start
+```
+
+## Claude-path recorder (evaluation only)
+
+`eval/record-tuning.js` sends the 170 tuning messages (E01 to E10 only) to a running proxy, one pass at a time, and writes every attempt to `docs/reports/claude-tuning/pass-<n>.jsonl`. Each file ends with a `pass_end` marker (`completed`, or `stopped` with a reason). It never writes request headers and never overwrites a pass file.
+
+```
+node eval/record-tuning.js --dry-run --pass 1    # plan and cost estimate, sends nothing
+node eval/record-tuning.js --pass 1              # a real run: costs money, needs Arjhine's go-ahead
+```
+
+Pacing: at most 30 sends per sliding 60 s window and at least 2100 ms between sends. Retries: 429 waits `Retry-After` (60 s if absent); 503 `model_unavailable` and network errors back off 2, 4, 8, 16 s; `model_output_rejected` and 422 are never retried. At most 5 attempts per message. `/health` is re-read every 25 messages, and a change of `prompt_sha256`, `request_config_sha256` or model stops the pass. Prices are in `eval/pricing.json`.
+
 ## Tests
 
 ```
@@ -77,5 +115,7 @@ The tests use a mocked Anthropic client, so they make no network calls and need 
 - `src/prompt.js`: the system prompt, built once at startup.
 - `src/tuning.js`, `src/csv.js`: read the tuning file (E01 to E10 only).
 - `src/schema.js`: the Zod schema and output checks.
+- `src/requestConfig.js`: `request_config_sha256` (what defines a `/parse` request).
 - `src/rateLimit.js`, `src/config.js`: rate limit and settings.
+- `eval/record-tuning.js`: the Claude-path recorder (evaluation only). `eval/pricing.json`: prices for the estimate and the scorer.
 - `test/`: tests (`npm test`).

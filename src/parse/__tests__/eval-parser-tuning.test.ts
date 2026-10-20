@@ -8,13 +8,12 @@
 import { mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { parseRules } from '../rules';
-import { CANONICAL_FOODS } from '../rules/vocab';
+import { scoreResponse } from '../eval/score';
 import type { ParseResponse } from '../types';
 import { loadTuningRows, type TuningRow } from './tuningCorpus';
 
 const run = process.env.EVAL === '1' ? describe : describe.skip;
 const REPORT_PATH = join(__dirname, '..', '..', '..', 'docs', 'reports', 'parser-tuning-fallback.md');
-const CANONICAL_NAMES: ReadonlySet<string> = new Set(CANONICAL_FOODS.map((c) => c.food));
 
 interface Counts {
   n: number;
@@ -49,19 +48,8 @@ const pct = (k: number, n: number): string => (n === 0 ? '-' : `${k}/${n} (${((1
 
 function scoreRow(row: TuningRow): RowResult {
   const resp = parseRules(row.message_text);
-  const item = resp.items[0];
-  // The raw food_item is compared directly: a matched item carries its canonical name; anything else is no match.
-  const predFood = item !== undefined && CANONICAL_NAMES.has(item.food_item) ? item.food_item : null;
-  const goldFood = row.gold_food_item === '' ? null : row.gold_food_item;
-  const goldUnit = row.gold_unit === '' ? null : row.gold_unit;
-  return {
-    row,
-    resp,
-    food: predFood === goldFood,
-    quantity: (item?.quantity ?? null) === row.gold_quantity,
-    unit: (item?.unit ?? null) === goldUnit,
-    pickup: resp.pickup_by === row.gold_pickup_by,
-  };
+  const s = scoreResponse(row, resp);
+  return { row, resp, food: s.food, quantity: s.quantity, unit: s.unit, pickup: s.pickup };
 }
 
 function table(title: string, groups: Map<string, Counts>): string[] {

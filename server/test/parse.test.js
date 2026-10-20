@@ -28,7 +28,8 @@ const okOut = {
   pickup_by: "20:00",
   missing: [],
 };
-const modelOk = (out, stop_reason = "end_turn") => ({ stop_reason, parsed_output: out, content: [] });
+const FAKE_USAGE = { input_tokens: 1000, output_tokens: 80, cache_creation_input_tokens: 0, cache_read_input_tokens: 0 };
+const modelOk = (out, stop_reason = "end_turn") => ({ stop_reason, parsed_output: out, content: [], usage: FAKE_USAGE });
 
 function startServer(app) {
   return new Promise((resolve) => {
@@ -68,6 +69,7 @@ test("200 happy path returns the exact output shape and sends the documented req
     missing: [],
     source: "llm",
     model: "claude-haiku-5-5",
+    usage: FAKE_USAGE,
   });
   const args = client.calls.at(-1);
   assert.equal(args.model, "claude-haiku-5-5");
@@ -207,14 +209,18 @@ test("health: ok, model, and key true/false; the key value is never returned", a
   const withKey = await withServer(t, mockClient(() => modelOk(okOut)));
   const h1 = await fetch(`${withKey.base}/health`);
   const body1 = await h1.json();
-  assert.deepEqual(body1, { ok: true, model: "claude-haiku-5-5", key: true });
+  assert.deepEqual({ ...body1, prompt_sha256: undefined, request_config_sha256: undefined, git_commit: undefined, git_dirty: undefined },
+    { ok: true, model: "claude-haiku-5-5", key: true, prompt_sha256: undefined, request_config_sha256: undefined, git_commit: undefined, git_dirty: undefined });
+  assert.match(body1.prompt_sha256, /^[0-9a-f]{64}$/);
 
   const app = createApp({ client: null, keyConfigured: false, systemPrompt: SYSTEM });
   const { server, base } = await startServer(app);
   try {
     const res = await fetch(`${base}/health`);
     const text = await res.text();
-    assert.deepEqual(JSON.parse(text), { ok: true, model: "claude-haiku-5-5", key: false });
+    const body = JSON.parse(text);
+    assert.deepEqual([body.ok, body.model, body.key, body.git_commit, body.git_dirty], [true, "claude-haiku-5-5", false, null, null]);
+    assert.match(body.prompt_sha256, /^[0-9a-f]{64}$/);
     assert.ok(!text.includes(FAKE_KEY));
   } finally {
     await new Promise((r) => server.close(r));

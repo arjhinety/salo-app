@@ -49,6 +49,11 @@ describe('src/parse import guard', () => {
     expect(bad).toEqual([]);
   });
 
+  it('scans the eval code as well (src/parse/eval)', () => {
+    const rel = files.map((f) => relative(PARSE_DIR, f).replace(/\\/g, '/'));
+    expect(rel).toEqual(expect.arrayContaining(['eval/score.ts', 'eval/claudeTuning.ts']));
+  });
+
   it('the guard catches a forbidden import when one is present', () => {
     // The keywords are built from parts so this file's own text does not contain a real forbidden import.
     const FROM = ['fr', 'om'].join('');
