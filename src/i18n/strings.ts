@@ -184,6 +184,7 @@ export const dash = {
     closed_before_earliest_arrival: 'closed before the earliest driver could arrive',
     cannot_store_lot: "can't store it, too big for dry and fridge space",
     no_remaining_need: 'no remaining need today',
+    no_shares_left: 'no shares left tonight',
   } as const,
   failure: {
     withdrew_before_commit: 'driver withdrew before committing',

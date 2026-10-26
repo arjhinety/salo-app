@@ -312,10 +312,12 @@ export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): 
     const leg = wx.road(lot.donorId, pantryId);
     const need = needKg.get(pantryId) ?? 0;
     const rem = remaining.get(pantryId) ?? 0;
+    // PAN-04: under Salo a pantry with no shares left cannot bid, so it refuses. Checked after the others.
     const refuse =
       !isOpen.get(pantryId) || earliest === null || earliest > p.closesMinute ? 'closed_before_earliest_arrival'
       : lot.estKg > p.dryStorageKg + p.fridgeCapacityKg ? 'cannot_store_lot'
       : rem <= 0 ? 'no_remaining_need'
+      : policyId === 'salo' && (sharesLeft.get(pantryId) ?? 0) <= 0 ? 'no_shares_left'
       : null;
     const transportMinutes = earliest === null ? null : earliest - close;
     const u = utility(

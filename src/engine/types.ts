@@ -240,7 +240,9 @@ export interface UtilityBreakdown {
 export type RefuseReason =
   | 'closed_before_earliest_arrival'
   | 'cannot_store_lot'
-  | 'no_remaining_need';
+  | 'no_remaining_need'
+  /** Salo only: the pantry has 0 shares left in its daily budget (PAN-04). */
+  | 'no_shares_left';
 
 /** Why a driver withdraws or a delivery fails. */
 export type FailureReason =
