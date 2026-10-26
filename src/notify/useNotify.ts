@@ -19,7 +19,7 @@ import { announce, setupChannel } from './deliver';
 import { notifyEvents, type NotifyEvent } from './events';
 import { attachTapRouting, openLastTap } from './tap';
 import { NotifyTracker } from './tracker';
-import { ASKED_KEY, shouldAskInContext, type PermissionState } from './permission';
+import { ASKED_KEY, permissionStateFrom, shouldAskInContext, type PermissionState } from './permission';
 import { indexWorld } from '../engine/world';
 import { WORLD } from '../data/dataset';
 import type { Lot, LotId } from '../engine/types';
@@ -33,7 +33,7 @@ function postedLotMap(): Map<LotId, Lot> {
 async function readPermission(): Promise<PermissionState> {
   try {
     const status = await Notifications.getPermissionsAsync();
-    return status.status;
+    return permissionStateFrom(status);
   } catch (error) {
     console.warn('notify: permission could not be read', error);
     return 'unknown';

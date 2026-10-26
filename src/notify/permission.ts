@@ -22,6 +22,22 @@ export interface AskContext {
   asked: boolean | null;
 }
 
+/** The two parts of expo-notifications' permission answer that the app reads. */
+export interface OsPermission {
+  granted: boolean;
+  canAskAgain: boolean;
+}
+
+/**
+ * Maps expo-notifications' answer to the app's state. Expo reports DENIED whenever the app's notifications are off, and on
+ * Android 13+ they stay off until the permission is granted, so a phone that was never asked also reads DENIED. What tells
+ * the two apart is canAskAgain: it stays true until the OS has refused for good.
+ */
+export function permissionStateFrom(p: OsPermission): PermissionState {
+  if (p.granted) return 'granted';
+  return p.canAskAgain ? 'undetermined' : 'denied';
+}
+
 /** True when the reason should be shown now: eligible role, clock running, OS still undecided, never asked before. */
 export function shouldAskInContext(c: AskContext): boolean {
   return eligibleRole(c.role) && c.running && c.state === 'undetermined' && c.asked === false;

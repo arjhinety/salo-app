@@ -17,6 +17,24 @@ export const PANTRY_UNITS_EN: Record<string, string> = {
   can: 'cans',
 };
 
+/** English unit for quantity 1 (the plural map above is for every other quantity). */
+const PANTRY_UNITS_EN_ONE: Record<string, string> = {
+  tray: 'tray',
+  piece: 'piece',
+  bilao: 'bilao',
+  kg: 'kg',
+  loaf: 'loaf',
+  pot: 'pot',
+  pack: 'pack',
+  can: 'can',
+};
+
+/** The English unit for a quantity: "1 tray", "3 trays". The Filipino unit is the same either way. */
+export function enUnit(unit: string, qty: number): string {
+  if (qty === 1) return PANTRY_UNITS_EN_ONE[unit] ?? PANTRY_UNITS_EN[unit] ?? unit;
+  return PANTRY_UNITS_EN[unit] ?? unit;
+}
+
 export const PANTRY_UNITS_FIL: Record<string, string> = {
   tray: 'tray',
   piece: 'piraso',

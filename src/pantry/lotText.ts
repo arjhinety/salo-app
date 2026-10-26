@@ -1,5 +1,5 @@
 /** Lot facts and status text for the pantry screens. Pure: built from the lot and the engine's log only. */
-import { PANTRY_COPY, PANTRY_UNITS_EN, PANTRY_UNITS_FIL } from '../i18n/pantry';
+import { enUnit, PANTRY_COPY, PANTRY_UNITS_FIL } from '../i18n/pantry';
 import { clockText, kmText } from './format';
 import type { PantryLotView, PantryStatus } from './model';
 
@@ -17,7 +17,7 @@ export function lotFacts(v: PantryLotView): LotFacts {
   const items = v.lot.items;
   const item = items.map((i) => i.foodItemFil).join(' + ');
   const amount = items
-    .map((i) => PANTRY_COPY.amountLine(i.quantity, PANTRY_UNITS_FIL[i.unit] ?? i.unit, PANTRY_UNITS_EN[i.unit] ?? i.unit))
+    .map((i) => PANTRY_COPY.amountLine(i.quantity, PANTRY_UNITS_FIL[i.unit] ?? i.unit, enUnit(i.unit, i.quantity)))
     .join(' + ');
   const needsFridge = items.some((i) => i.needsFridgeIfKept);
   return {
