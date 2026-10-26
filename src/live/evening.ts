@@ -15,6 +15,8 @@ import { runEvening, type RunOutput } from '../engine/simulate';
 import type {
   AwardState,
   DonorId,
+  DriverAnswer,
+  DriverId,
   EngineInput,
   Evening,
   EveningId,
@@ -208,6 +210,16 @@ export class LiveEvening {
     this.run = null;
     this.publish();
     return { ok: true, value: lotId };
+  }
+
+  /**
+   * A person holding a driver profile answers a request (decision D-Q5). Logged at the clock like any input. The engine
+   * ignores an answer that does not apply (wrong lot, not asked, too late, duplicate).
+   */
+  answerDriver(lotId: LotId, driverId: DriverId, answer: DriverAnswer): void {
+    this.inputs.push({ atMinute: this.minute(), input: { type: 'DRIVER_RESPONSE', driverId, lotId, answer } });
+    this.run = null;
+    this.publish();
   }
 
   /** Switches the policy at the clock, keeping the clock where it is. */

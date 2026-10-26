@@ -247,7 +247,9 @@ export type FailureReason =
   | 'withdrew_before_commit'
   | 'no_show'
   | 'cancelled_by_operator'
-  | 'no_commit_before_pickup_deadline';
+  | 'no_commit_before_pickup_deadline'
+  /** A held driver was picked and did not send COMMIT within the window (decision D-Q5). */
+  | 'no_reply';
 
 export type AgentMessage =
   | {
@@ -315,10 +317,16 @@ export type AgentMessage =
  * Inputs are logged like messages. Replaying the seed, the scenario and the
  * input log reproduces a live run exactly (decision D-06).
  */
+/**
+ * The answers a person holding a driver profile can give (decision D-Q5): offer to deliver, decline the request,
+ * send COMMIT for a run picked for them, or withdraw a picked run before commit.
+ */
+export type DriverAnswer = 'offer' | 'decline' | 'commit' | 'withdraw';
+
 export type EngineInput =
   | { type: 'LOT_POSTED'; lot: Lot }
   | { type: 'CANCEL_DRIVER'; lotId: LotId }
-  | { type: 'DRIVER_RESPONSE'; driverId: DriverId; lotId: LotId; answer: 'commit' | 'decline' };
+  | { type: 'DRIVER_RESPONSE'; driverId: DriverId; lotId: LotId; answer: DriverAnswer };
 
 /** Tentative and final states of one lot (guide page 13). */
 export type AwardState =

@@ -1,7 +1,8 @@
 import { TRUE_SHOW_RATE } from './hiddenTruth.generated';
 import { resultFromLog } from './metrics';
 import {
-  BID_WINDOW_MINUTES, DRIVER_REPLY_DELAY_MAX_MIN, LATE_SHARE_OF_SHOWS, WITHDRAW_SHARE_OF_MISSES,
+  BID_WINDOW_MINUTES, DRIVER_REPLY_DELAY_MAX_MIN, HUMAN_REPLY_WINDOW_MIN, LATE_SHARE_OF_SHOWS,
+  WITHDRAW_SHARE_OF_MISSES,
 } from './params';
 import { centralGreedyPolicy, fcfsPolicy, nearestPolicy, saloPolicy } from './policies';
 import { reliability } from './reliability';
@@ -55,6 +56,12 @@ export interface RunOptions {
    * Defaults to DRIVER_REPLY_DELAY_MAX_MIN.
    */
   replyDelayMaxMin?: number;
+  /**
+   * Driver profiles held by a person on the phone (decision D-Q5). They are asked like any driver but never
+   * offer or commit on their own: they answer with DRIVER_RESPONSE inputs. Tuning evenings only (the guard in
+   * runEvening). Absent or empty: every driver is simulated, as before D-Q5.
+   */
+  humanDrivers?: ReadonlySet<DriverId>;
 }
 
 export interface RunOutput {
@@ -95,6 +102,32 @@ interface LotState {
   reannouncements: number;
   replies: PantryCandidate[];
   bids: Map<PantryId, number>;
+  /** The driver round waiting for held drivers to answer (decision D-Q5), or null. */
+  round: PendingRound | null;
+}
+
+/** A driver offer that the round's selection can choose (decision D-Q1). */
+interface Offer {
+  ds: DriverState;
+  pickup: Minute;
+  arrive: Minute;
+  rel: number;
+}
+
+/** A driver round that waits for the held drivers in it (decision D-Q5). */
+interface PendingRound {
+  /** Held drivers asked in this round who have not answered yet. */
+  waiting: Set<DriverId>;
+  /** Simulated offers from the round's minute, and held offers as they come in. */
+  offers: Offer[];
+}
+
+/** A held driver the engine picked, who must send COMMIT within the window (decision D-Q5). */
+interface Awaiting {
+  lotId: LotId;
+  ds: DriverState;
+  /** The ETA the engine computed at the selection, which the COMMIT carries. */
+  etaMinute: Minute;
 }
 
 type QEvent =
@@ -104,12 +137,19 @@ type QEvent =
   | { kind: 'driverRound'; lotId: LotId }
   | { kind: 'noShow'; lotId: LotId; token: number }
   | { kind: 'arrive'; lotId: LotId; token: number; lateMin: number }
-  | { kind: 'input'; input: EngineInput };
+  | { kind: 'input'; input: EngineInput }
+  /** A held round's window ends (decision D-Q5). */
+  | { kind: 'roundClose'; lotId: LotId; round: PendingRound }
+  /** A picked held driver's COMMIT window ends (decision D-Q5). */
+  | { kind: 'commitDeadline'; lotId: LotId; awaiting: Awaiting };
 
 interface Queued {
   minute: Minute;
-  /** 0 = engine events, 1 = outside inputs: an input at minute m applies after the engine's own events of m. */
-  phase: 0 | 1;
+  /**
+   * 0 = engine events, 1 = outside inputs: an input at minute m applies after the engine's own events of m.
+   * 2 = window ends: they run after the inputs of their minute, so an answer in the last minute still counts.
+   */
+  phase: 0 | 1 | 2;
   seq: number;
   ev: QEvent;
 }
@@ -120,7 +160,8 @@ class Queue {
   private n = 0;
   push(minute: Minute, ev: QEvent) {
     const h = this.h;
-    h.push({ minute, phase: ev.kind === 'input' ? 1 : 0, seq: this.n++, ev });
+    const phase = ev.kind === 'input' ? 1 : ev.kind === 'roundClose' || ev.kind === 'commitDeadline' ? 2 : 0;
+    h.push({ minute, phase, seq: this.n++, ev });
     let i = h.length - 1;
     while (i > 0) {
       const p = (i - 1) >> 1;
@@ -165,11 +206,18 @@ function lotIndex(id: LotId): number {
 
 /** Runs one evening under one policy. Pure and deterministic: same inputs, same log. */
 export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): RunOutput {
+  // Decision D-Q5: people hold driver profiles only in the tuning evenings of the live demo. Evaluation never does.
+  if (opts.humanDrivers?.size && evening.split !== 'tuning') {
+    throw new Error(`held driver profiles are only allowed on tuning evenings; ${evening.id} is ${evening.split}`);
+  }
   const { world } = wx;
   const { params, policy: policyId } = opts;
   const driverRule = opts.driverRule ?? 'earliest_eta';
   const truth = opts.trueShowRate ?? TRUE_SHOW_RATE;
   const replyDelayMax = opts.replyDelayMaxMin ?? DRIVER_REPLY_DELAY_MAX_MIN;
+  const humans: ReadonlySet<DriverId> = opts.humanDrivers ?? new Set();
+  /** Held drivers the engine picked and waits on for COMMIT (decision D-Q5). Keyed by driver. */
+  const awaiting = new Map<DriverId, Awaiting>();
   const seed = evening.seed;
   const weights: UtilityWeights =
     policyId === 'central_greedy' ? params.centralGreedy.utilityWeights : params.salo.utilityWeights;
@@ -243,7 +291,7 @@ export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): 
   function post(lot: Lot) {
     const ls: LotState = {
       lot, idx: lotIndex(lot.id), state: 'announced', pantryId: null, driverId: null, excluded: new Set(),
-      attempts: 0, token: 0, reannouncements: 0, replies: [], bids: new Map(),
+      attempts: 0, token: 0, reannouncements: 0, replies: [], bids: new Map(), round: null,
     };
     lots.set(lot.id, ls);
     msg({ type: 'CALL_FOR_PROPOSALS', lotId: lot.id, atMinute: now, target: 'pantry', from: lot.donorId });
@@ -329,17 +377,37 @@ export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): 
     const pantryId = ls.pantryId!;
     const pantry = pantryById.get(pantryId)!;
     msg({ type: 'CALL_FOR_PROPOSALS', lotId: lot.id, atMinute: now, target: 'driver', from: lot.donorId });
-    const offers: { ds: DriverState; pickup: Minute; arrive: Minute; rel: number }[] = [];
+    const offers: Offer[] = [];
+    const waiting = new Set<DriverId>();
     for (const ds of drivers) {
-      if (ls.excluded.has(ds.d.id) || !canCarry(ds, lot)) continue;
+      if (ls.excluded.has(ds.d.id) || awaiting.has(ds.d.id) || !canCarry(ds, lot)) continue;
       const { pickup, arrive } = trip(ds, lot, pantryId, now);
       const deadline = Math.min(ds.d.availableToMinute, lot.pickupByMinute, pantry.closesMinute);
       if (arrive > deadline) continue;
+      // A held driver is asked but does not offer until the person answers (decision D-Q5).
+      if (humans.has(ds.d.id)) {
+        waiting.add(ds.d.id);
+        continue;
+      }
       const rel = reliability(ds.shows, ds.runs);
       offers.push({ ds, pickup, arrive, rel });
       msg({ type: 'PROPOSE', proposer: 'driver', lotId: lot.id, atMinute: now, driverId: ds.d.id,
         etaMinute: arrive, reliability: rel });
     }
+    if (waiting.size) {
+      // The selection waits for the held drivers: it happens when they have all answered, or at the window's end.
+      const round: PendingRound = { waiting, offers };
+      ls.round = round;
+      q.push(now + HUMAN_REPLY_WINDOW_MIN, { kind: 'roundClose', lotId: lot.id, round });
+      return;
+    }
+    decide(ls, offers);
+  }
+
+  /** The round's selection at `now`: earliest ETA, reliability breaks ties (decision D-Q1). */
+  function decide(ls: LotState, offers: readonly Offer[]) {
+    const lot = ls.lot;
+    const pantryId = ls.pantryId!;
     if (!offers.length) {
       strand(ls);
       return;
@@ -355,6 +423,11 @@ export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): 
     if (offers.filter((o) => o.arrive === etaPick.arrive).length > 1) stats.etaTiesBrokenByReliability += 1;
     const chosen = driverRule === 'earliest_eta' ? etaPick : relPick;
     const ds = chosen.ds;
+    // A held driver's outcome is the person's answer, not a draw: no random number is used (decision D-Q5).
+    if (humans.has(ds.d.id)) {
+      pickHeld(ls, chosen);
+      return;
+    }
 
     // Ground truth for this offer, from the counter-based RNG (same draws under every policy).
     const k = ls.attempts++;
@@ -364,12 +437,7 @@ export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): 
     if (u >= pShow) {
       const withdraws = u01(seed, STREAM.driverOutcome, ds.idx, ls.idx, 2 * k + 1) < WITHDRAW_SHARE_OF_MISSES;
       if (withdraws) {
-        msg({ type: 'FAILURE', lotId: lot.id, atMinute: now, driverId: ds.d.id, reason: 'withdrew_before_commit' });
-        updateReliability(ds, false);
-        ls.excluded.add(ds.d.id);
-        // Re-announced after the reply delay, like the first round after TENTATIVE_ACCEPT.
-        ls.reannouncements += 1;
-        q.push(now + roundDelay(ls, ls.reannouncements), { kind: 'driverRound', lotId: lot.id });
+        failBeforeCommit(ls, ds, 'withdrew_before_commit');
         return;
       }
     }
@@ -387,6 +455,113 @@ export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): 
     }
     ds.freeAt = chosen.arrive + lateMin;
     q.push(chosen.arrive + lateMin, { kind: 'arrive', lotId: lot.id, token: ls.token, lateMin });
+  }
+
+  /** A driver FAILURE before COMMIT: the driver is excluded for this lot, and the lot is re-announced after the reply delay. */
+  function failBeforeCommit(ls: LotState, ds: DriverState, reason: 'withdrew_before_commit' | 'no_reply') {
+    msg({ type: 'FAILURE', lotId: ls.lot.id, atMinute: now, driverId: ds.d.id, reason });
+    updateReliability(ds, false);
+    ls.excluded.add(ds.d.id);
+    // Re-announced after the reply delay, like the first round after TENTATIVE_ACCEPT.
+    ls.reannouncements += 1;
+    q.push(now + roundDelay(ls, ls.reannouncements), { kind: 'driverRound', lotId: ls.lot.id });
+  }
+
+  /** Decision D-Q5: a held driver is picked. The lot stays TENTATIVE until the person sends COMMIT, or the window ends. */
+  function pickHeld(ls: LotState, chosen: Offer) {
+    const aw: Awaiting = { lotId: ls.lot.id, ds: chosen.ds, etaMinute: chosen.arrive };
+    awaiting.set(chosen.ds.d.id, aw);
+    q.push(now + HUMAN_REPLY_WINDOW_MIN, { kind: 'commitDeadline', lotId: ls.lot.id, awaiting: aw });
+  }
+
+  /**
+   * The round's offers checked again at `now`, the selection minute. Held rounds can wait a few minutes, and a driver
+   * may have been picked for another lot meanwhile, so offers that no longer arrive in time are dropped (decision D-Q5).
+   */
+  function stillOffered(ls: LotState, offers: readonly Offer[]): Offer[] {
+    const lot = ls.lot;
+    const pantry = pantryById.get(ls.pantryId!)!;
+    const kept: Offer[] = [];
+    for (const o of offers) {
+      if (awaiting.has(o.ds.d.id)) continue;
+      const { pickup, arrive } = trip(o.ds, lot, ls.pantryId!, now);
+      const deadline = Math.min(o.ds.d.availableToMinute, lot.pickupByMinute, pantry.closesMinute);
+      if (arrive <= deadline) kept.push({ ...o, pickup, arrive });
+    }
+    return kept;
+  }
+
+  function finishRound(ls: LotState, round: PendingRound) {
+    ls.round = null;
+    decide(ls, stillOffered(ls, round.offers));
+  }
+
+  /** The held round's window ends: a held driver who has not answered counts as a decline (decision D-Q5). */
+  function closeRound(ls: LotState, round: PendingRound) {
+    if (ls.round !== round) return; // every held driver answered earlier
+    for (const id of round.waiting) ls.excluded.add(id);
+    round.waiting.clear();
+    finishRound(ls, round);
+  }
+
+  /** A DRIVER_RESPONSE from the person holding a driver profile (decision D-Q5). Answers that do not apply are ignored. */
+  function answer(i: Extract<EngineInput, { type: 'DRIVER_RESPONSE' }>) {
+    const ls = lots.get(i.lotId);
+    if (!ls) return;
+    const aw = awaiting.get(i.driverId);
+    if (aw && aw.lotId === i.lotId) {
+      if (i.answer === 'commit') commitHeld(ls, aw);
+      else if (i.answer === 'withdraw') withdrawHeld(ls, aw);
+      return;
+    }
+    const round = ls.round;
+    if (!round || !round.waiting.has(i.driverId)) return;
+    if (i.answer === 'offer') offerHeld(ls, round, i.driverId);
+    else if (i.answer === 'decline') {
+      round.waiting.delete(i.driverId);
+      ls.excluded.add(i.driverId);
+      if (round.waiting.size === 0) finishRound(ls, round);
+    }
+  }
+
+  /** A held driver offers. The ETA is computed now, from the driver's state now. Not eligible any more: ignored. */
+  function offerHeld(ls: LotState, round: PendingRound, driverId: DriverId) {
+    const ds = driverById.get(driverId)!;
+    const lot = ls.lot;
+    const pantry = pantryById.get(ls.pantryId!)!;
+    const { pickup, arrive } = trip(ds, lot, ls.pantryId!, now);
+    const deadline = Math.min(ds.d.availableToMinute, lot.pickupByMinute, pantry.closesMinute);
+    if (awaiting.has(driverId) || arrive > deadline) return;
+    round.waiting.delete(driverId);
+    const rel = reliability(ds.shows, ds.runs);
+    round.offers.push({ ds, pickup, arrive, rel });
+    msg({ type: 'PROPOSE', proposer: 'driver', lotId: lot.id, atMinute: now, driverId, etaMinute: arrive, reliability: rel });
+    if (round.waiting.size === 0) finishRound(ls, round);
+  }
+
+  /** A picked held driver sends COMMIT. No lateness draw and no no-show for a held driver (decision D-Q5). */
+  function commitHeld(ls: LotState, aw: Awaiting) {
+    awaiting.delete(aw.ds.d.id);
+    msg({ type: 'COMMIT', lotId: ls.lot.id, atMinute: now, driverId: aw.ds.d.id, pantryId: ls.pantryId!, etaMinute: aw.etaMinute });
+    ls.driverId = aw.ds.d.id;
+    setState(ls, 'final');
+    // Arrives at the ETA. A commit later than the ETA arrives at the commit minute instead, so nothing is delivered before it is final.
+    const arriveAt = Math.max(aw.etaMinute, now);
+    aw.ds.freeAt = arriveAt;
+    q.push(arriveAt, { kind: 'arrive', lotId: ls.lot.id, token: ls.token, lateMin: 0 });
+  }
+
+  /** A picked held driver withdraws before COMMIT: a missed run, like any withdrawal (DRV-04). */
+  function withdrawHeld(ls: LotState, aw: Awaiting) {
+    awaiting.delete(aw.ds.d.id);
+    failBeforeCommit(ls, aw.ds, 'withdrew_before_commit');
+  }
+
+  /** The COMMIT window of a picked held driver ends. Acts only if that pick is still waiting (decision D-Q5). */
+  function missedCommit(aw: Awaiting) {
+    if (awaiting.get(aw.ds.d.id) !== aw) return;
+    awaiting.delete(aw.ds.d.id);
+    failBeforeCommit(lots.get(aw.lotId)!, aw.ds, 'no_reply');
   }
 
   function failCommitted(ls: LotState, reason: 'no_show' | 'cancelled_by_operator') {
@@ -421,8 +596,7 @@ export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): 
     else if (i.type === 'CANCEL_DRIVER') {
       const ls = lots.get(i.lotId);
       if (ls && ls.state === 'final' && ls.driverId) failCommitted(ls, 'cancelled_by_operator');
-    }
-    // DRIVER_RESPONSE (human-held driver profiles, decision D-Q5) arrives with milestone M5.
+    } else if (i.type === 'DRIVER_RESPONSE') answer(i);
   }
 
   for (let e = q.pop(); e; e = q.pop()) {
@@ -430,6 +604,8 @@ export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): 
     const ev = e.ev;
     if (ev.kind === 'post') post(ev.lot);
     else if (ev.kind === 'input') input(ev.input);
+    else if (ev.kind === 'roundClose') closeRound(lots.get(ev.lotId)!, ev.round);
+    else if (ev.kind === 'commitDeadline') missedCommit(ev.awaiting);
     else {
       const ls = lots.get(ev.lotId)!;
       if (ev.kind === 'reply') reply(ls, ev.pantryId);

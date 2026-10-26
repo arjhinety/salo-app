@@ -190,6 +190,7 @@ export const dash = {
     no_show: 'driver did not show up at pickup',
     cancelled_by_operator: 'driver cancelled by the operator',
     no_commit_before_pickup_deadline: 'no driver committed before the pickup deadline',
+    no_reply: 'driver did not commit in time',
   } as const,
   // Bars
   barOpen: (n: number) => `TENTATIVE · held until a driver commits · ${n} min`,

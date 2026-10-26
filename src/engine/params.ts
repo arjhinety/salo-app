@@ -13,6 +13,12 @@ export const WITHDRAW_SHARE_OF_MISSES = 0.5;
  * happens 1 to this many minutes later (uniform whole minutes). Assumption, not measured data.
  */
 export const DRIVER_REPLY_DELAY_MAX_MIN = 3;
+/**
+ * Decision D-Q5 (human-held driver profiles): a driver round waits this many minutes for the person holding a
+ * driver profile to answer, and a picked person has this long to send COMMIT. Silence counts as a decline. It is
+ * the simulated reply delay, so a person and a simulated agent get the same time to answer. Assumption.
+ */
+export const HUMAN_REPLY_WINDOW_MIN = DRIVER_REPLY_DELAY_MAX_MIN;
 
 /**
  * UNTUNED starting values, for development only. Tuning on E01-E10 (milestone M6) replaces them and
