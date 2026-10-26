@@ -6,8 +6,9 @@ select is(
   (select array_agg(table_name::text order by table_name)
      from information_schema.tables
     where table_schema = 'public' and table_type = 'BASE TABLE'),
-  array['devices', 'donors', 'drivers', 'events', 'live_sessions', 'lots', 'pantries', 'parse_requests'],
-  'public holds exactly the eight planned tables (no dataset messages, no pilot or main evening tables)'
+  array['devices', 'donors', 'drivers', 'events', 'input_requests', 'live_sessions', 'lots', 'pantries',
+        'parse_requests', 'session_inputs', 'session_members'],
+  'public holds exactly the eleven planned tables (no dataset messages, no pilot or main evening tables)'
 );
 
 select is(

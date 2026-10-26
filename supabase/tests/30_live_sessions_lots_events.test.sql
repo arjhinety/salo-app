@@ -1,6 +1,6 @@
 -- live_sessions (tuning evenings only), lots (unique per session, donor-bound), events (creator-only).
 begin;
-select plan(31);
+select plan(32);
 
 create function pg_temp.err_state(stmt text) returns text language plpgsql as $$
 begin
@@ -101,19 +101,20 @@ select is(
   0::bigint,
   'a donor device cannot end the dashboard session (0 rows touched)'
 );
-select is((select count(*) from public.live_sessions), 2::bigint, 'authenticated devices can read sessions');
+select is((select count(*) from public.live_sessions), 0::bigint, 'a device that has not joined sees no session');
 
--- Lots. Donor A posts for D01 in S1.
-select lives_ok(
-  $$ insert into public.lots (session_id, lot_id, donor_id, items, est_kg, load_units,
+-- Lots. Donors no longer post lots directly (they send input_requests, stamped by the dashboard).
+select is(
+  pg_temp.err_state($$ insert into public.lots (session_id, lot_id, donor_id, items, est_kg, load_units,
                               posted_minute, pickup_by_minute, created_by)
      values ('50000000-0000-4000-8000-000000000001', 'LIVE-1', 'D01',
              '[{"foodItem":"adobo","quantity":3,"unit":"tray"}]'::jsonb, 5.5, 1,
-             1020, 1200, '00000000-0000-4000-8000-000000000a01') $$,
-  'a donor device posts a lot for its own donor id'
+             1020, 1200, '00000000-0000-4000-8000-000000000a01') $$),
+  '42501',
+  'a donor device cannot post a lot directly (it sends a request instead)'
 );
 select is((select count(*) from public.lots where session_id = '50000000-0000-4000-8000-000000000001'),
-  1::bigint, 'an authenticated device reads the posted lot');
+  0::bigint, 'a device that has not joined reads no lots of the session');
 select is(
   pg_temp.err_state($$ update public.lots set est_kg = 9 $$),
   '42501',
@@ -137,6 +138,14 @@ select set_config('request.jwt.claims',
   true);
 set local role authenticated;
 
+select lives_ok(
+  $$ insert into public.lots (session_id, lot_id, donor_id, items, est_kg, load_units,
+                              posted_minute, pickup_by_minute, created_by)
+     values ('50000000-0000-4000-8000-000000000001', 'LIVE-1', 'D01',
+             '[{"foodItem":"adobo","quantity":3,"unit":"tray"}]'::jsonb, 5.5, 1,
+             1020, 1200, '00000000-0000-4000-8000-000000000c01') $$,
+  'the dashboard posts a lot for donor D01 (the stamped LOT_POSTED)'
+);
 select is(
   pg_temp.err_state($$ insert into public.lots (session_id, lot_id, donor_id, items, est_kg, load_units,
                               posted_minute, pickup_by_minute, created_by)
