@@ -49,16 +49,19 @@ const pantries = table('pantries').map((r) => ({
   id: r.pantry_id, name: r.pantry_name, type: r.pantry_type, street: r.street,
   opensMinute: minute(r.opens), closesMinute: minute(r.closes), hasFridge: bool(r.has_fridge),
   fridgeCapacityKg: num(r.fridge_capacity_kg), dryStorageKg: num(r.dry_storage_kg), anchor: bool(r.anchor),
+  lat: num(r.lat), lon: num(r.lon),
 }));
 const donors = table('donors').map((r) => ({
   id: r.donor_id, name: r.donor_name, type: r.donor_type, street: r.street,
   closingMinute: minute(r.closing_time), anchor: bool(r.anchor),
+  lat: num(r.lat), lon: num(r.lon),
 }));
 const drivers = table('drivers').map((r) => ({
   id: r.driver_id, name: r.display_name, vehicle: r.vehicle, capacityLoadUnits: num(r.capacity_load_units),
   street: r.street, availableFromMinute: minute(r.available_from), availableToMinute: minute(r.available_to),
   tuningRuns: num(r.tuning_runs), tuningShows: num(r.tuning_shows),
   frozenReliability: num(r.reliability_estimate_frozen), anchor: bool(r.anchor),
+  homeLat: num(r.home_lat), homeLon: num(r.home_lon),
 }));
 const roads = table('road_distances').map((r) => ({
   donorId: r.donor_id, pantryId: r.pantry_id, roadKm: num(r.road_km),

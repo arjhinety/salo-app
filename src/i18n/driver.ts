@@ -12,7 +12,7 @@ export const DRV = {
   chooserItem: (name: string) => `Piliin si ${name} · Choose ${name}`,
   requests: 'Mga request · Requests',
   requestsEmpty: 'Wala pang request sa ngayon · No requests right now',
-  requestsEmptyHint: 'Lalabas dito ang mga request habang umuusad ang oras sa simulasyon · A request appears here when the simulated clock calls you',
+  requestsEmptyHint: 'Lalabas dito ang mga request habang umuusad ang oras sa simulasyon · Requests appear here as the simulated clock moves',
   pickupFrom: 'Kunin sa · Pick up at',
   dropoffAt: 'Ihatid sa · Drop off at',
   before: (t: string) => `bago ang ${t} · before ${t}`,

@@ -1,3 +1,5 @@
+import type { AwardState } from '../engine/types';
+
 /**
  * All user-facing copy. Donor, pantry and driver screens are Filipino-first with a small English
  * subtitle (PRODUCT.md). Written by Claude; Codex reviews the Filipino before the demo (decision log).
@@ -197,4 +199,48 @@ export const dash = {
   barOpen: (n: number) => `TENTATIVE · held until a driver commits · ${n} min`,
   barCommitted: (n: number) => `held ${n} min · driver committed`,
   barStruck: (n: number) => `held ${n} min · driver failed`,
+  // Views under the ruler
+  viewsLabel: 'Dashboard view',
+  views: { tape: 'Tape', bids: 'Bids', map: 'Map', drivers: 'Drivers' } as const,
+  viewA11y: (name: string) => `Show ${name}`,
+  // Bid list (DSH-03)
+  bidsTitle: 'Bids for this lot, largest first',
+  bidsBaseline: 'Baselines have no share budget. Bids are listed in the order they came, with values only.',
+  bidsEmpty: 'No pantry has bid on this lot yet.',
+  refusedTag: 'REFUSED',
+  hasFridge: 'Has a fridge',
+  noFridge: 'No fridge',
+  km: (n: number) => `${n.toFixed(1)} km`,
+  valuesAt: (v: string) => `Values it at ${v}`,
+  sharesCount: (n: string) => `${n} shares`,
+  wasShares: (n: string) => `was ${n} shares`,
+  remarkAt: (clock: string, by: string, own: string) => `Re-marked at ${clock} when ${by} outbid ${own}`,
+  // Schematic map and table (DSH-06)
+  mapTitle: 'Tonight on the map',
+  schematic: 'Schematic, not to scale',
+  mapSwitch: { map: 'Map', table: 'Table' } as const,
+  mapA11y: 'Schematic map of tonight, not to scale. The table shows the same places in words.',
+  legend: { donor: 'Donor with surplus', pantry: 'Pantry', driver: 'Volunteer driver', tentative: 'Tentative route' } as const,
+  legendNote:
+    'Dashed route: tentative. Solid route: final. No roads are drawn, because the roads file is not bundled: each route is a straight line from donor to pantry.',
+  tableHead: { name: 'Name', role: 'Role', where: 'Where', rightNow: 'Right now', from: 'From' } as const,
+  role: { donor: 'Donor', pantry: 'Pantry', driver: 'Volunteer driver' } as const,
+  noPlaces: 'No places yet. They appear as lots post and the agents answer.',
+  rowA11y: (name: string, role: string, where: string, rightNow: string, from: string) =>
+    `${name}. ${role}. ${where}. Right now: ${rightNow}.${from ? ` From ${from}.` : ''}`,
+  holdingLot: (lot: string, state?: AwardState) => `holding ${lot}, ${state ? dash.stateWords[state] : 'posted'}`,
+  bidOn: (lot: string) => `bid on ${lot}`,
+  refusedLot: (lot: string) => `refused ${lot}`,
+  committedTo: (lot: string) => `committed to ${lot}`,
+  offeredFor: (lot: string) => `offered for ${lot}`,
+  failedOn: (lot: string) => `failed on ${lot}`,
+  deliveredLot: (lot: string) => `delivered ${lot}`,
+  lotState: (lot: string, state?: AwardState) => `${lot} ${state ? dash.stateWords[state] : 'posted'}`,
+  noRoute: 'No award yet, so no route.',
+  // Driver track record (DSH-07)
+  driversTitle: 'Driver track record',
+  driversNote: 'These are the frozen starting estimates from tuning. The update after each run is shown after the evening.',
+  track: (shows: number, runs: number, est: string) => `Showed up ${shows} of ${runs} runs (estimate ${est})`,
+  newVolunteer: (est: string) => `New volunteer, no history yet (estimate ${est})`,
+  driversEmpty: 'No driver has been asked yet.',
 } as const;

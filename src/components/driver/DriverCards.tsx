@@ -5,7 +5,8 @@ import { DRV, splitBi } from '../../i18n/driver';
 import { S } from '../../i18n/strings';
 import type { Driver, Donor, Pantry } from '../../engine/types';
 import { HUMAN_REPLY_WINDOW_MIN } from '../../engine/params';
-import { directionsUrl, placeText } from '../../driver/maps';
+import { directionsUrl } from '../../driver/maps';
+import { donorPosition, pantryPosition } from '../../data/places';
 import type { Ask, Trip } from '../../driver/board';
 import { useTheme } from '../../theme/theme';
 import { SPACE, TYPE } from '../../theme/tokens';
@@ -231,7 +232,11 @@ export function RunCard({
 
 /** Opens the Google Maps directions; if no app takes the link, the browser does. */
 export async function openDirections(donor: Donor, pantry: Pantry): Promise<void> {
-  const url = directionsUrl(placeText(donor.name, donor.street), placeText(pantry.name, pantry.street));
+  // Every bundled donor and pantry has coordinates; a place without them has no link to open.
+  const from = donorPosition(donor.id);
+  const to = pantryPosition(pantry.id);
+  if (!from || !to) return;
+  const url = directionsUrl(from, to);
   try {
     await Linking.openURL(url);
   } catch {

@@ -9,12 +9,19 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EveningRuler } from '../../components/EveningRuler';
 import { LotStrip, type StripState } from '../../components/LotStrip';
 import { PolicySheet } from '../../components/PolicySheet';
+import { BidList } from '../../components/BidList';
+import { DriverTrackPanel } from '../../components/DriverTrackPanel';
+import { MapPanel } from '../../components/MapPanel';
 import { ReceiptTape } from '../../components/ReceiptTape';
 import { SimControl } from '../../components/SimControl';
 import { TarpBar } from '../../components/TarpBar';
+import { WORLD } from '../../data/dataset';
 import type { LotId, PolicyId } from '../../engine/types';
 import { dash } from '../../i18n/strings';
+import { bidRows } from '../../live/bids';
+import { driverTrack } from '../../live/drivers';
 import { cancelledAtMinute, clock24, lotsWithBids, stripState, tapeRows, type TapeRow, WORLD_NAMES } from '../../live/tape';
+import { placesInvolved, routeLegs } from '../../live/schematic';
 import { RESULTS_COPY, RESULTS_ROUTE } from '../../results/copy';
 import { liveEvening, useLiveSnapshot } from '../../live/useLive';
 import { useTheme } from '../../theme/theme';
@@ -39,6 +46,8 @@ export default function Dashboard() {
   const [sheetOpen, setSheetOpen] = useState(false);
   // A refused cancel. Cleared by a replay and by a seek.
   const [refusal, setRefusal] = useState<string | null>(null);
+  // Which view the body shows under the ruler. The tape is the default; the others read the same visible log.
+  const [view, setView] = useState<DashView>('tape');
 
   // Everything below is a fold of the store's visible state. The store caches the log, so re-deriving per publish is cheap.
   const posted = liveEvening.postedLots();
@@ -56,6 +65,14 @@ export default function Dashboard() {
   const rows: TapeRow[] = selectedId ? tapeRows(log, selectedId, selState, sim.minute) : [];
   const canCancel = selState === 'final';
   const stripStateOf = (id: LotId): StripState => stripState(liveEvening.stateOf(id), bidLots.has(id));
+  const stateOfLot = (id: LotId) => liveEvening.stateOf(id);
+  const bids = view === 'bids' && selected ? bidRows(log, { id: selected.id, donorId: selected.donorId }, sim.policy) : [];
+  const places = view === 'map' || view === 'drivers' ? placesInvolved(log, posted, stateOfLot) : [];
+  const routes = view === 'map' ? routeLegs(log, posted, stateOfLot) : [];
+  const tracks = places.flatMap((r) => {
+    const d = r.kind === 'driver' ? WORLD.drivers.find((x) => x.id === r.id) : undefined;
+    return d ? [driverTrack(d)] : [];
+  });
 
   const togglePlay = () => (sim.running ? liveEvening.pause() : liveEvening.start());
   const cancelDriver = () => {
@@ -144,7 +161,30 @@ export default function Dashboard() {
 
       <EveningRuler minute={sim.minute} postings={posted.map((l) => l.postedMinute)} onSeek={seek} />
 
-      <ReceiptTape key={selectedId ?? 'none'} rows={rows} emptyText={emptyText} header={header} />
+      <ViewChoice current={view} onPick={setView} />
+
+      {view === 'tape' ? (
+        <ReceiptTape key={selectedId ?? 'none'} rows={rows} emptyText={emptyText} header={header} />
+      ) : view === 'bids' ? (
+        <View style={styles.body}>
+          {header ? <View style={[styles.bodyHeader, { backgroundColor: c.tape }]}>{header}</View> : null}
+          {selected ? (
+            <BidList rows={bids} policy={sim.policy} />
+          ) : (
+            <View style={[styles.body, { backgroundColor: c.tape }]}>
+              <Text style={[TYPE.tapeBody, styles.bodyHeader, { color: c.onTape }]}>{emptyText}</Text>
+            </View>
+          )}
+        </View>
+      ) : view === 'map' ? (
+        <View style={styles.body}>
+          <MapPanel places={places} routes={routes} />
+        </View>
+      ) : (
+        <View style={styles.body}>
+          <DriverTrackPanel tracks={tracks} />
+        </View>
+      )}
 
       <View style={[styles.dock, { backgroundColor: c.ground, borderTopColor: c.rule, paddingBottom: insets.bottom + SPACE.s }]}>
         <LotStrip lots={posted} stateOf={stripStateOf} selectedId={selectedId} onSelect={setPicked} />
@@ -180,6 +220,36 @@ export default function Dashboard() {
       </View>
 
       <PolicySheet visible={sheetOpen} current={sim.policy} onPick={replayUnder} onClose={() => setSheetOpen(false)} />
+    </View>
+  );
+}
+
+const VIEWS = ['tape', 'bids', 'map', 'drivers'] as const;
+type DashView = (typeof VIEWS)[number];
+
+/** The four views of the body: the tape, the bids for the selected lot, the map of tonight, the driver track record. */
+function ViewChoice({ current, onPick }: { current: DashView; onPick: (v: DashView) => void }) {
+  const { c } = useTheme();
+  return (
+    <View style={styles.views} accessibilityRole="radiogroup" accessibilityLabel={dash.viewsLabel}>
+      {VIEWS.map((v) => {
+        const on = v === current;
+        return (
+          <Pressable
+            key={v}
+            onPress={() => onPick(v)}
+            accessibilityRole="radio"
+            accessibilityState={{ checked: on }}
+            accessibilityLabel={dash.viewA11y(dash.views[v])}
+            style={({ pressed }) => [
+              styles.viewBtn,
+              { borderColor: c.text, backgroundColor: on ? c.tarp : 'transparent', opacity: pressed ? 0.7 : 1 },
+            ]}
+          >
+            <Text style={[TYPE.bodyStrong, { color: on ? c.onTarp : c.text }]}>{dash.views[v]}</Text>
+          </Pressable>
+        );
+      })}
     </View>
   );
 }
@@ -245,6 +315,19 @@ const styles = StyleSheet.create({
   backend: { paddingHorizontal: SPACE.l, paddingTop: SPACE.xs },
   code: { marginHorizontal: SPACE.l, marginTop: SPACE.xs, borderWidth: 1, borderRadius: 4, padding: SPACE.s, gap: 2 },
   codeText: { letterSpacing: 6 },
+  body: { flex: 1 },
+  bodyHeader: { paddingHorizontal: SPACE.l, paddingTop: SPACE.s },
+  views: { flexDirection: 'row', flexWrap: 'wrap', gap: SPACE.s, paddingHorizontal: SPACE.l, marginTop: SPACE.xs },
+  viewBtn: {
+    flexGrow: 1,
+    minWidth: 88,
+    minHeight: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: SPACE.s,
+    borderWidth: 1.5,
+    borderRadius: 4,
+  },
   dock: { borderTopWidth: 1, paddingTop: SPACE.s, gap: SPACE.s },
   status: { paddingHorizontal: SPACE.l },
   actions: { paddingHorizontal: SPACE.l, gap: SPACE.s },

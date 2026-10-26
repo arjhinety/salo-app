@@ -135,7 +135,7 @@ export const PANTRY_COPY = {
       `${f.name} got this lot because its bid was the highest: ${f.shares} shares from a value of ${f.total} ` +
       `(${f.need} need + ${f.storage} storage + ${f.distance} distance + ${f.freshness} freshness). Shares left now: ${f.left}. Distance: ${f.km} km.`,
     outbid: (f: WhyFill) =>
-      `Nag-bid ang ${f.name} ng ${f.shares} shares batay sa value na ${f.total}, pero mas mataas ang bid ng ibang pantry. Natira ngayon: ${f.left} shares. · ` +
+      `Nag-bid ang ${f.name} ng ${f.shares} shares batay sa value na ${f.total}, pero mas mataas ang bid ng ibang pantry. Natitirang shares: ${f.left}. · ` +
       `${f.name} bid ${f.shares} shares from a value of ${f.total}, but another pantry's bid was higher. Shares left now: ${f.left}.`,
     bidding: (f: WhyFill) =>
       `Nag-bid ang ${f.name} ng ${f.shares} shares batay sa value na ${f.total}. Bukas pa ang round. · ` +
