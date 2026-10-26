@@ -1,3 +1,4 @@
+import { router, type Href } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { databaseStatusLine } from '../../backend/outbox';
@@ -12,6 +13,7 @@ import { TarpBar } from '../../components/TarpBar';
 import type { LotId, PolicyId } from '../../engine/types';
 import { dash } from '../../i18n/strings';
 import { cancelledAtMinute, clock24, lotsWithBids, stripState, tapeRows, type TapeRow, WORLD_NAMES } from '../../live/tape';
+import { RESULTS_COPY, RESULTS_ROUTE } from '../../results/copy';
 import { liveEvening, useLiveSnapshot } from '../../live/useLive';
 import { useTheme } from '../../theme/theme';
 import { SPACE, TYPE } from '../../theme/tokens';
@@ -95,6 +97,14 @@ export default function Dashboard() {
         <View style={styles.controls}>
           <SimControl english running={sim.running} ended={sim.ended} onPress={togglePlay} />
           <SpeedChoice current={sim.secondsPerMinute} onPick={(secs) => liveEvening.setSpeed(secs)} />
+          <Pressable
+            onPress={() => router.push(RESULTS_ROUTE as Href)}
+            accessibilityRole="link"
+            accessibilityLabel={RESULTS_COPY.link}
+            style={({ pressed }) => [styles.resultsLink, { borderColor: c.onTarp, opacity: pressed ? 0.7 : 1 }]}
+          >
+            <Text style={[TYPE.bodyStrong, { color: c.onTarp }]}>{RESULTS_COPY.link}</Text>
+          </Pressable>
         </View>
       </TarpBar>
 
@@ -189,6 +199,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: SPACE.s,
+    borderWidth: 1.5,
+    borderRadius: 4,
+  },
+  resultsLink: {
+    minHeight: 48,
+    justifyContent: 'center',
+    paddingHorizontal: SPACE.m,
     borderWidth: 1.5,
     borderRadius: 4,
   },
