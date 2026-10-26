@@ -209,3 +209,11 @@ Untuned starting weights for development: need 0.4, storage 0.3, distance 0.15, 
 ## Zero shares left means refuse (PAN-04, implemented 2026-10-26, pre-tuning engine definition)
 
 - Under Salo, a pantry with 0 shares left now REFUSEs a lot with reason `no_shares_left` instead of sending a 0-share PROPOSE, as story PAN-04 states. Before, such a bid could in principle win a lot for free (highest share bid wins; ties go to value). On the tuning evenings under untuned parameters it never did: 484 awards, 126 zero-share bids, none won. Checked independently by the orchestrator against the previous engine: all 40 tuning results (10 evenings x 4 policies) identical; only 7 Salo logs differ, by exactly those 126 PROPOSE-to-REFUSE changes. The other policies do not use shares and are unchanged.
+
+## Results screen defaults (orchestrator, 2026-10-26; change on request)
+
+- **Gate:** the Results screen and its runner stay closed until `src/results/registration.ts` records the pilot as done, the main-evening count and the frozen-parameters checksum; the runner also refuses untuned parameters and anything but main_sample evenings. While closed, every result cell reads "Not measured yet". Checked by the orchestrator: the only engine call is behind the gate, and the tests mock the engine and assert it is never called.
+- **Shown while closed:** the pre-registered resample count (10,000) and seed (20260927) are shown as values, because they are fixed in advance, not results. The gate line reads "after the pilot has run" without evening ids, so the screen names no pilot or tuning evening (RES-06 test).
+- **Food ceiling (RES-07):** assumed to mean every pantry's need fully met on that evening; the guide does not define it (open question).
+- **Learning-off run (RES-07, P2):** not built yet; it needs an engine option that fixes every driver estimate at 0.50. To be added as a small, reviewed engine change before the pilot.
+- **Citation:** the screen cites Bestgen (2022) without a page number, because the pages given in the docs differ (p.20 and p.21).
