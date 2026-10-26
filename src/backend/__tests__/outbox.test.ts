@@ -195,3 +195,76 @@ describe('outcomeOf and the status line', () => {
     expect(databaseStatusLine({ online: null, queued: 0, rejected: 0 })).toBe('Database: connecting');
   });
 });
+
+describe('Outbox: waiting before a role change, and writes of another user', () => {
+  it('flushWithin sends the signed-in user queue and reports done', async () => {
+    const { send, groups } = recordingSender();
+    const box = new Outbox(makeKvStore(), send);
+    box.enqueue(upsert('U1', 'events', 1, 'session_id,seq'));
+    expect(await box.flushWithin('U1', 5000)).toBe('done');
+    expect(groups).toEqual([['events']]);
+    expect(box.queuedFor('U1')).toBe(0);
+  });
+
+  it('flushWithin gives up after the time given and keeps the items that were not sent', async () => {
+    jest.useFakeTimers();
+    try {
+      const send = jest.fn(() => new Promise<WriteOutcome>(() => undefined));
+      const box = new Outbox(makeKvStore(), send);
+      box.enqueue(upsert('U1', 'events', 1, 'session_id,seq'));
+      const waiting = box.flushWithin('U1', 5000);
+      jest.advanceTimersByTime(4999);
+      await Promise.resolve();
+      jest.advanceTimersByTime(1);
+      expect(await waiting).toBe('timeout');
+      expect(box.queuedFor('U1')).toBe(1);
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it('flushWithin waits for a pass already in progress before it sends', async () => {
+    let release: () => void = () => undefined;
+    const send = jest.fn(
+      () =>
+        new Promise<WriteOutcome>((resolve) => {
+          release = () => resolve({ kind: 'ok' });
+        }),
+    );
+    const box = new Outbox(makeKvStore(), send);
+    box.enqueue(upsert('U1', 'events', 1, 'session_id,seq'));
+    const pass = box.flush('U1');
+    const waiting = box.flushWithin('U1', 5000);
+    release();
+    await pass;
+    expect(await waiting).toBe('done');
+    expect(send).toHaveBeenCalledTimes(1);
+    expect(box.queuedFor('U1')).toBe(0);
+  });
+
+  it('counts the items of other users as stranded; the signed-in user items are not', () => {
+    const { send } = recordingSender();
+    const box = new Outbox(makeKvStore(), send);
+    box.enqueue(upsert('U1', 'events', 1, 'session_id,seq'));
+    box.enqueue(upsert('U1', 'events', 2, 'session_id,seq'));
+    box.enqueue(upsert('U2', 'lots', 1, 'session_id,lot_id'));
+    expect(box.queuedFor('U1')).toBe(2);
+    expect(box.strandedCount('U2')).toBe(2);
+    expect(box.strandedCount('U1')).toBe(1);
+    expect(box.strandedCount(null)).toBe(3);
+  });
+
+  it('discardStranded removes only the other users items, when asked, and reports which users they were', () => {
+    const { send } = recordingSender();
+    const box = new Outbox(makeKvStore(), send);
+    box.enqueue(upsert('U1', 'events', 1, 'session_id,seq'));
+    box.enqueue(upsert('U2', 'lots', 1, 'session_id,lot_id'));
+    box.enqueue(upsert('U3', 'events', 1, 'session_id,seq'));
+
+    expect(box.strandedCount('U1')).toBe(2);
+    const gone = box.discardStranded('U1');
+    expect(gone).toEqual({ count: 2, userIds: ['U2', 'U3'] });
+    expect(box.pending().map((i) => i.userId)).toEqual(['U1']);
+    expect(box.discardStranded('U1')).toEqual({ count: 0, userIds: [] });
+  });
+});

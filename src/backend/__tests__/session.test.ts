@@ -140,3 +140,62 @@ describe('session: choosing a role and registering the device', () => {
     expect(fake.writes).toHaveLength(0);
   });
 });
+
+describe('session: queued writes keep their user until that role is chosen again', () => {
+  it('a role left with writes still queued keeps that user; choosing the role again puts the session back, with no new device row', async () => {
+    const { fake, kv, session } = load();
+    await session.chooseRole('donor', 'D01', () => undefined);
+    await session.connect();
+    expect(fake.signedInUser()).toBe('user-1');
+
+    await session.chooseRole('dashboard', null, () => true);
+    expect(fake.signedInUser()).toBeNull();
+    const kept = JSON.parse((await kv.getItem(session.KEPT_SESSIONS_KEY)) ?? '{}') as Record<string, unknown>;
+    expect(Object.keys(kept)).toEqual(['user-1']);
+    expect(kept['user-1']).toMatchObject({ userId: 'user-1', roleKey: 'donor:D01', registered: true });
+
+    await session.chooseRole('donor', 'D01', () => false);
+    expect(fake.signedInUser()).toBe('user-1');
+    expect(session.isRegistered()).toBe(true);
+    expect(await session.connect()).toBe('ok');
+    expect(fake.writes).toHaveLength(1);
+    expect(JSON.parse((await kv.getItem(session.KEPT_SESSIONS_KEY)) ?? '{}')).toEqual({});
+  });
+
+  it('a role left with nothing queued is not kept, so the next sign-in is a new user', async () => {
+    const { fake, kv, session } = load();
+    await session.chooseRole('donor', 'D01', () => undefined);
+    await session.connect();
+    await session.chooseRole('dashboard', null, () => false);
+    expect(JSON.parse((await kv.getItem(session.KEPT_SESSIONS_KEY)) ?? '{}')).toEqual({});
+    await session.chooseRole('donor', 'D01', () => false);
+    expect(await session.connect()).toBe('ok');
+    expect(fake.signedInUser()).toBe('user-2');
+  });
+
+  it('offline: a kept session that cannot be put back stays kept, and is tried again when its role is chosen again', async () => {
+    const { fake, kv, session } = load();
+    await session.chooseRole('donor', 'D01', () => undefined);
+    await session.connect();
+    await session.chooseRole('dashboard', null, () => true);
+
+    fake.net.down = true;
+    await session.chooseRole('donor', 'D01', () => false);
+    expect(fake.signedInUser()).toBeNull();
+    expect(JSON.parse((await kv.getItem(session.KEPT_SESSIONS_KEY)) ?? '{}')).toHaveProperty('user-1');
+
+    fake.net.down = false;
+    await session.chooseRole('donor', 'D01', () => false);
+    expect(fake.signedInUser()).toBe('user-1');
+    expect(JSON.parse((await kv.getItem(session.KEPT_SESSIONS_KEY)) ?? '{}')).toEqual({});
+  });
+
+  it('discarding a user forgets its kept session', async () => {
+    const { kv, session } = load();
+    await session.chooseRole('donor', 'D01', () => undefined);
+    await session.connect();
+    await session.chooseRole('dashboard', null, () => true);
+    await session.forgetKeptSessions(['user-1']);
+    expect(JSON.parse((await kv.getItem(session.KEPT_SESSIONS_KEY)) ?? '{}')).toEqual({});
+  });
+});

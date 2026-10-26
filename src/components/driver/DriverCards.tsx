@@ -244,16 +244,20 @@ export function DriverChooser({
   drivers,
   selectedId,
   onSelect,
+  locked,
 }: {
   drivers: readonly Driver[];
   selectedId: string | null;
   onSelect: (id: string) => void;
+  /** True after 17:00 or while the clock runs: the driver cannot change (see driver/chooser.ts). */
+  locked: boolean;
 }) {
   const { c } = useTheme();
   return (
     <View style={styles.chooser}>
       <Bi text={DRV.chooserLabel} strong surface="ground" />
       <Bi text={DRV.chooserHint} tone="muted" surface="ground" />
+      {locked ? <Bi text={DRV.chooserLocked} tone="muted" surface="ground" /> : null}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
         {drivers.map((d) => {
           const on = d.id === selectedId;
@@ -261,9 +265,10 @@ export function DriverChooser({
             <Pressable
               key={d.id}
               onPress={() => onSelect(d.id)}
+              disabled={locked && !on}
               accessibilityRole="button"
               accessibilityLabel={DRV.chooserItem(d.name)}
-              accessibilityState={{ selected: on }}
+              accessibilityState={{ selected: on, disabled: locked && !on }}
               style={[styles.chip, { backgroundColor: on ? c.tarp : 'transparent', borderColor: c.text }]}
             >
               <Text style={[TYPE.label, { color: on ? c.onTarp : c.text }]}>{d.name}</Text>

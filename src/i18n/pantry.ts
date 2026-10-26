@@ -49,10 +49,10 @@ export const PANTRY_COPY = {
     line: (left: number, total: number) => `Shares na natira: ${left} sa ${total}. · Shares left: ${left} of ${total}.`,
     note: 'Para ito sa gabing ito. Ang nanalong bid lang ang nagbabawas. · These are for tonight. Only a winning bid uses them up.',
   },
-  awards: { fil: 'Mga award ko', en: 'My awards' },
-  open: { fil: 'Mga bukas na lot', en: 'Open lots' },
-  noOpen: { fil: 'Walang bukas na lot ngayon.', en: 'No open lots right now.' },
-  noAwards: { fil: 'Wala pang award ang pantry na ito.', en: 'This pantry has no award yet.' },
+  awards: { fil: 'Mga lot na na-award sa amin', en: 'My awards' },
+  open: { fil: 'Mga lot na puwedeng i-bid', en: 'Open lots' },
+  noOpen: { fil: 'Walang lot na puwedeng i-bid ngayon.', en: 'No open lots right now.' },
+  noAwards: { fil: 'Wala pang na-award na lot sa pantry na ito.', en: 'This pantry has no award yet.' },
   unknownPantry: {
     fil: 'Hindi namin mahanap ang pantry na ito.',
     en: 'We could not find this pantry.',
@@ -97,7 +97,7 @@ export const PANTRY_COPY = {
     heading: { fil: 'Value ng lot para sa pantry', en: 'Value of this lot for the pantry' },
     bidShares: (n: number) => `Shares na na-bid: ${n} · Shares bid: ${n}`,
     sharesLeft: (n: number) => `Shares na natira: ${n} · Shares left: ${n}`,
-    auto: 'Awtomatikong nag-bid ang agent ng pantry. Hindi ito mababago ng coordinator sa v1. · The pantry agent bids automatically. The coordinator sees the bid and cannot change it in v1.',
+    auto: 'Awtomatikong nag-bid ang agent ng pantry. Hindi mababago ng coordinator ang bid sa bersyong ito. · The pantry agent bids automatically. The coordinator sees the bid and cannot change it in v1.',
     noValue: 'Walang value: tinanggihan ang lot. · No value: the lot was refused.',
     noBidYet: 'Hindi pa nag-bid ang agent. · The agent has not bid yet.',
   },
@@ -109,35 +109,36 @@ export const PANTRY_COPY = {
     bidding: { sticker: 'BIDDING', fil: 'Nagbi-bid', en: 'Bidding', detail: 'Nagbi-bid ang agent ng pantry. Bukas pa ang round. · The pantry agent is bidding. The round is still open.' },
     outbid: { sticker: 'OUTBID', fil: 'Natalo sa bid', en: 'Outbid', detail: 'May ibang pantry na mas mataas ang bid. · Another pantry bid higher.' },
     tentative: { sticker: 'TENTATIVE', fil: 'Tentative', en: 'Tentative', detail: 'Hawak muna hanggang may driver na mag-confirm · Held until a driver commits' },
-    final: { sticker: 'FINAL', fil: 'Final', en: 'Final', detail: 'Tapos na ang award: may driver na nag-commit. · Award is final: a driver has committed.' },
+    final: { sticker: 'FINAL', fil: 'Final', en: 'Final', detail: 'Pinal na ang award: may driver nang nag-commit. · Award is final: a driver has committed.' },
     delivered: { sticker: 'DELIVERED', fil: 'Naihatid', en: 'Delivered', detail: 'Naihatid na ang lot. · The lot has been delivered.' },
-    stranded: { sticker: 'STRANDED', fil: 'Hindi naihatid', en: 'Not delivered', detail: 'Walang driver na nag-commit bago matapos ang oras. · No driver committed in time.' },
+    stranded: { sticker: 'STRANDED', fil: 'Hindi naihatid', en: 'Not delivered', detail: 'Walang driver na nag-commit bago ang takdang oras. · No driver committed in time.' },
     refused: { sticker: 'REFUSED', fil: 'Tinanggihan', en: 'Refused', detail: 'Hindi kayang tanggapin ng pantry ang lot na ito. · The pantry cannot take this lot.' },
   } as Record<PantryStatus, { sticker: string; fil: string; en: string; detail: string }>,
   /** Shown when a driver failed after the pantry's award (PAN-06). The pantry is never asked to bid again. */
   reannounced: {
-    tentative: 'Umatras ang naunang driver. Ini-announce ulit ang delivery; hawak pa rin ng pantry ang award. · The earlier driver withdrew. The delivery is re-announced; the pantry keeps its tentative award.',
+    tentative: 'Umatras ang naunang driver. Inanunsyo ulit ang delivery; nakalaan pa rin sa pantry ang lot. · The earlier driver withdrew. The delivery is re-announced; the pantry keeps its tentative award.',
     committed: 'Umatras ang naunang driver; may bagong driver na nag-commit. · The earlier driver withdrew; a new driver committed.',
   },
   refuse: {
-    closed_before_earliest_arrival: { fil: 'Sarado na bago makarating ang driver.', en: 'Closed before any driver could arrive.' },
-    cannot_store_lot: { fil: 'Hindi kasya sa tuyo o ref na imbakan.', en: 'Too big for dry and fridge storage.' },
+    closed_before_earliest_arrival: { fil: 'Sarado na ang pantry bago pa makarating ang sinumang driver.', en: 'Closed before any driver could arrive.' },
+    cannot_store_lot: { fil: 'Hindi kasya sa tuyong imbakan o sa ref.', en: 'Too big for dry and fridge storage.' },
     no_remaining_need: { fil: 'Wala nang kailangan ngayong araw.', en: 'No remaining need today.' },
+    no_shares_left: { fil: 'Wala nang natitirang shares ngayong gabi.', en: 'No shares left tonight.' },
   } as Record<RefuseReason, { fil: string; en: string }>,
   /**
    * PAN-07: "Why did you get this lot?" Each sentence is a fixed template filled with the numbers.
    */
   whyLine: {
     won: (f: WhyFill) =>
-      `${f.name} ang nakakuha ng lot dahil pinakamataas ang bid nito: ${f.shares} shares mula sa value na ${f.total} ` +
-      `(${f.need} kailangan + ${f.storage} imbakan + ${f.distance} layo + ${f.freshness} sariwa). Natira ngayon: ${f.left} shares. Layo: ${f.km} km. · ` +
+      `${f.name} ang nakakuha ng lot dahil pinakamataas ang bid nito: ${f.shares} shares batay sa value na ${f.total} ` +
+      `(kailangan: ${f.need} + imbakan: ${f.storage} + layo: ${f.distance} + pagkasariwa: ${f.freshness}). Natitirang shares: ${f.left}. Layo: ${f.km} km. · ` +
       `${f.name} got this lot because its bid was the highest: ${f.shares} shares from a value of ${f.total} ` +
       `(${f.need} need + ${f.storage} storage + ${f.distance} distance + ${f.freshness} freshness). Shares left now: ${f.left}. Distance: ${f.km} km.`,
     outbid: (f: WhyFill) =>
-      `Nag-bid ang ${f.name} ng ${f.shares} shares mula sa value na ${f.total}, pero mas mataas ang bid ng ibang pantry. Natira ngayon: ${f.left} shares. · ` +
+      `Nag-bid ang ${f.name} ng ${f.shares} shares batay sa value na ${f.total}, pero mas mataas ang bid ng ibang pantry. Natira ngayon: ${f.left} shares. · ` +
       `${f.name} bid ${f.shares} shares from a value of ${f.total}, but another pantry's bid was higher. Shares left now: ${f.left}.`,
     bidding: (f: WhyFill) =>
-      `Nag-bid ang ${f.name} ng ${f.shares} shares mula sa value na ${f.total}. Bukas pa ang round. · ` +
+      `Nag-bid ang ${f.name} ng ${f.shares} shares batay sa value na ${f.total}. Bukas pa ang round. · ` +
       `${f.name} has bid ${f.shares} shares from a value of ${f.total}. The round is still open.`,
   },
 } as const;

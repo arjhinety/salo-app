@@ -186,7 +186,8 @@ describe('why sentence (PAN-07)', () => {
     const base = whySentence(v.status, whyFill('Bukal Community Kitchen', value, v.bid!.shares, left, v.roadKm))!;
     expect(base).toContain('0.85');
     expect(base).toContain('15 shares');
-    expect(base).toContain('Natira ngayon: 9 shares');
+    expect(base).toContain('batay sa value na 0.85 (kailangan: 0.31 + imbakan: 0.30 + layo: 0.12 + pagkasariwa: 0.12). Natitirang shares: 9.');
+    expect(base).not.toContain('mula sa value');
     expect(base).toContain('Shares left now: 9');
 
     const lowerNeed = valueFromParts({ need: 0.21, storage: 0.3, distance: 0.12, freshness: 0.12 });

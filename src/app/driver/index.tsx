@@ -6,10 +6,11 @@ import { SimControl } from '../../components/SimControl';
 import { TarpBar } from '../../components/TarpBar';
 import { WORLD } from '../../data/dataset';
 import { driverBoard, type Ask } from '../../driver/board';
-import { demoEvening, requestDrivers } from '../../driver/chooser';
+import { chooserLocked, chooserOrder, demoEvening } from '../../driver/chooser';
 import { hhmm } from '../../donor/tonight';
 import { DRV, splitBi } from '../../i18n/driver';
 import { indexWorld } from '../../engine/world';
+import { pickRole } from '../../backend/runtime';
 import { liveEvening, useLiveSnapshot } from '../../live/useLive';
 import { useTheme } from '../../theme/theme';
 import { SPACE, TYPE } from '../../theme/tokens';
@@ -20,23 +21,26 @@ const RUN_STATES = new Set<Ask['status']>(['picked', 'not_picked', 'committed', 
 
 /**
  * The driver's phone (DRV-01 to DRV-06). `?driver=V..` picks the profile this phone holds (decision D-Q5): the engine asks
- * that driver and waits for this screen's answers. The default is the first driver of E05 who gets a request.
- * Leaving the screen releases the profile.
+ * that driver and waits for this screen's answers. The default is the first driver of chooserOrder (the top winner of the
+ * no-hold baseline). The chooser locks after 17:00 or while the clock runs. Leaving the screen releases the profile.
  */
 export default function DriverHome() {
   const { c } = useTheme();
   const sim = useLiveSnapshot();
   const params = useLocalSearchParams<{ driver?: string }>();
-  const drivers = useMemo(() => requestDrivers(demoEvening()), []);
+  const drivers = useMemo(() => chooserOrder(demoEvening()), []);
+  const locked = chooserLocked(sim);
   const requested = typeof params.driver === 'string' ? params.driver : undefined;
   const selectedId = (requested && WORLD.drivers.some((d) => d.id === requested) ? requested : drivers[0]?.id) ?? null;
   const driver = WORLD.drivers.find((d) => d.id === selectedId) ?? null;
 
   // Hold the profile while this screen is open. The board is read only once the store reports this driver as held,
-  // so a frame never shows requests from an evening where nobody holds the profile.
+  // so a frame never shows requests from an evening where nobody holds the profile. The driver's phone registers for
+  // the role with this profile (the schema needs the profile at registration), so the choice is sent when it is made.
   useEffect(() => {
     if (!selectedId) return;
     liveEvening.holdDriver(selectedId);
+    pickRole('driver', selectedId).catch((error: unknown) => console.warn('driver: role not set', error));
     return () => liveEvening.holdDriver(null);
   }, [selectedId]);
 
@@ -65,7 +69,10 @@ export default function DriverHome() {
         <DriverChooser
           drivers={drivers}
           selectedId={selectedId}
-          onSelect={(id) => router.setParams({ driver: id })}
+          locked={locked}
+          onSelect={(id) => {
+            if (!locked) router.setParams({ driver: id });
+          }}
         />
 
         <Heading text={DRV.requests} />

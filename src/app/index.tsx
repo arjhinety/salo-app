@@ -1,8 +1,8 @@
-import { router } from 'expo-router';
+import { router, type Href } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { TarpBar } from '../components/TarpBar';
 import { WORLD } from '../data/dataset';
-import { pickRole } from '../backend/runtime';
+import { pickRole, useStrandedOutbox } from '../backend/runtime';
 import type { Role } from '../backend/types';
 import { useTheme } from '../theme/theme';
 import { SPACE, TYPE } from '../theme/tokens';
@@ -10,29 +10,38 @@ import { SPACE, TYPE } from '../theme/tokens';
 /** How long the picker waits for the sign-in and the device registration. Offline, it navigates after this. */
 const CONNECT_WAIT_MS = 2500;
 
+type Route = '/donor' | '/pantry' | '/driver' | '/dashboard';
+
 /**
  * Pick who you are tonight from the simulated dataset. There is no login: each role gets an anonymous Supabase user,
  * registered for that role (see src/backend/session.ts).
  */
 const ROLES = [
-  { key: 'donor', fil: 'Donor', en: 'Food business with surplus', who: WORLD.donors.find((d) => d.id === 'D01')!.name, ready: true, route: '/donor' as const, role: 'donor' as Role, profileId: 'D01' as string | null },
-  { key: 'pantry', fil: 'Pantry', en: 'Community pantry coordinator', who: WORLD.pantries.find((p) => p.id === 'P01')!.name, ready: false, route: null, role: 'pantry' as Role, profileId: 'P01' as string | null },
-  { key: 'driver', fil: 'Driver', en: 'Volunteer driver', who: WORLD.drivers.find((d) => d.id === 'V01')!.name, ready: false, route: null, role: 'driver' as Role, profileId: 'V01' as string | null },
-  { key: 'dashboard', fil: 'Dashboard', en: 'Live view for the panel', who: 'Walang profile na kailangan', ready: true, route: '/dashboard' as const, role: 'dashboard' as Role, profileId: null as string | null },
+  { key: 'donor', fil: 'Donor', en: 'Food business with surplus', who: WORLD.donors.find((d) => d.id === 'D01')!.name, ready: true, route: '/donor' as Route | null, role: 'donor' as Role, profileId: 'D01' as string | null },
+  { key: 'pantry', fil: 'Pantry', en: 'Community pantry coordinator', who: WORLD.pantries.find((p) => p.id === 'P01')!.name, ready: true, route: '/pantry' as Route | null, role: 'pantry' as Role, profileId: 'P01' as string | null },
+  // The driver's profile is chosen on the driver screen, which registers the phone with it (the schema needs the profile).
+  { key: 'driver', fil: 'Driver', en: 'Volunteer driver', who: 'Pipiliin sa susunod na screen', ready: true, route: '/driver' as Route | null, role: 'driver' as Role, profileId: null as string | null },
+  { key: 'dashboard', fil: 'Dashboard', en: 'Live view for the panel', who: 'Walang profile na kailangan', ready: true, route: '/dashboard' as Route | null, role: 'dashboard' as Role, profileId: null as string | null },
 ];
 
-/** Stores the role and tries to connect; navigates after at most CONNECT_WAIT_MS, so an offline phone still moves on. */
-async function go(role: Role, profileId: string | null, route: '/donor' | '/dashboard') {
-  try {
-    await Promise.race([pickRole(role, profileId), new Promise<void>((resolve) => setTimeout(resolve, CONNECT_WAIT_MS))]);
-  } catch (error) {
-    console.warn('picker: backend not ready, continuing offline', error);
+/**
+ * Stores the role and tries to connect; navigates after at most CONNECT_WAIT_MS, so an offline phone still moves on.
+ * The driver role is registered by the driver screen, once a driver is chosen there.
+ */
+async function go(role: Role, profileId: string | null, route: Route) {
+  if (role !== 'driver') {
+    try {
+      await Promise.race([pickRole(role, profileId), new Promise<void>((resolve) => setTimeout(resolve, CONNECT_WAIT_MS))]);
+    } catch (error) {
+      console.warn('picker: backend not ready, continuing offline', error);
+    }
   }
-  router.push(route);
+  router.push(route as Href);
 }
 
 export default function Picker() {
   const { c } = useTheme();
+  const stranded = useStrandedOutbox();
   return (
     <View style={{ flex: 1, backgroundColor: c.ground }}>
       <TarpBar clock="5:45 PM" />
@@ -41,6 +50,26 @@ export default function Picker() {
           Sino ka ngayong gabi?
         </Text>
         <Text style={[TYPE.small, { color: c.textMuted }]}>Who are you tonight? Lahat ng pangalan ay kathang-isip.</Text>
+
+        {stranded.count > 0 ? (
+          <View style={[styles.stranded, { borderColor: c.tarp }]} accessibilityLiveRegion="polite">
+            <Text style={[TYPE.bodyStrong, { color: c.text }]}>
+              {`${stranded.count} na hindi pa naipapadala · ${stranded.count} not sent yet`}
+            </Text>
+            <Text style={[TYPE.small, { color: c.textMuted }]}>
+              Nakatago ang mga ito at ipapadala kapag napili ulit ang tungkulin nila · Kept here; they are sent when you choose that role again.
+            </Text>
+            <Pressable
+              onPress={stranded.discard}
+              accessibilityRole="button"
+              accessibilityLabel="Burahin ang mga hindi pa naipapadala. Discard the writes not sent yet."
+              style={({ pressed }) => [styles.discard, { borderColor: c.rule, backgroundColor: pressed ? c.groundRaised : 'transparent' }]}
+            >
+              <Text style={[TYPE.label, { color: c.text }]}>Burahin ang mga ito · Discard them</Text>
+            </Pressable>
+          </View>
+        ) : null}
+
         <View style={[styles.list, { borderColor: c.rule }]}>
           {ROLES.map((r) => (
             <Pressable
@@ -75,6 +104,8 @@ export default function Picker() {
 const styles = StyleSheet.create({
   body: { padding: 16, gap: SPACE.s },
   list: { marginTop: SPACE.l, borderTopWidth: 1 },
+  stranded: { marginTop: SPACE.m, borderWidth: 2, borderStyle: 'dashed', borderRadius: 4, padding: SPACE.m, gap: SPACE.xs },
+  discard: { alignSelf: 'flex-start', minHeight: 44, justifyContent: 'center', borderWidth: 1, paddingHorizontal: SPACE.m, marginTop: SPACE.xs },
   row: {
     minHeight: 64,
     flexDirection: 'row',

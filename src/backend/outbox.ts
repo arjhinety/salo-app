@@ -137,6 +137,66 @@ export class Outbox {
     const report: FlushReport = { delivered: 0, rejected: 0, stopped: false };
     if (userId === null || this.flushing) return report;
     this.flushing = true;
+    this.running = this.drain(userId, report);
+    try {
+      return await this.running;
+    } finally {
+      this.running = null;
+    }
+  }
+
+  /**
+   * Waits up to `ms` for this user's queue to be sent: first any pass already in progress, then one more pass. Resolves
+   * 'done' when the pass finished (sent or stopped by a retryable failure), 'timeout' when it did not finish in time. The
+   * items that were not sent stay queued either way.
+   */
+  async flushWithin(userId: string, ms: number): Promise<'done' | 'timeout'> {
+    const work = (async () => {
+      await this.running;
+      await this.flush(userId);
+      return 'done' as const;
+    })();
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const timeout = new Promise<'timeout'>((resolve) => {
+      timer = setTimeout(() => resolve('timeout'), ms);
+    });
+    try {
+      return await Promise.race([work, timeout]);
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  /** How many queued items belong to this user. */
+  queuedFor(userId: string): number {
+    return this.items.filter((i) => i.userId === userId).length;
+  }
+
+  /**
+   * Items that belong to a user other than `userId` (null: nobody is signed in). They are not lost: they wait until that
+   * user is signed in again, and the picker shows how many there are.
+   */
+  strandedCount(userId: string | null): number {
+    return this.items.filter((i) => i.userId !== userId).length;
+  }
+
+  /**
+   * Removes the stranded items (see strandedCount). Only called by an explicit user action. Returns how many were removed
+   * and which users they belonged to.
+   */
+  discardStranded(userId: string | null): { count: number; userIds: string[] } {
+    const gone = this.items.filter((i) => i.userId !== userId);
+    if (gone.length === 0) return { count: 0, userIds: [] };
+    this.items = this.items.filter((i) => i.userId === userId);
+    this.persist();
+    this.publish();
+    return { count: gone.length, userIds: [...new Set(gone.map((i) => i.userId))] };
+  }
+
+  /** The pass in progress, if any. */
+  private running: Promise<FlushReport> | null = null;
+
+  private async drain(userId: string, report: FlushReport): Promise<FlushReport> {
     try {
       for (;;) {
         const group = this.nextGroup(userId);

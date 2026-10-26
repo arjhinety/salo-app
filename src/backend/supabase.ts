@@ -117,3 +117,26 @@ export async function sendOutboxGroup(group: readonly OutboxItem[]): Promise<Wri
     return { kind: 'retry', reason: error instanceof Error ? error.message : String(error) };
   }
 }
+
+/** The tokens of the signed-in session, so they can be kept on this device while another role is used. Null: nobody. */
+export async function sessionTokens(): Promise<{ userId: string; accessToken: string; refreshToken: string } | null> {
+  try {
+    const { data } = await supabase.auth.getSession();
+    const s = data.session;
+    return s ? { userId: s.user.id, accessToken: s.access_token, refreshToken: s.refresh_token } : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Puts a kept session back (its role was chosen again). Returns the user id, or null when it could not be restored. */
+export async function restoreKeptSession(accessToken: string, refreshToken: string): Promise<string | null> {
+  try {
+    const { data, error } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+    if (error || !data.session) return null;
+    user = data.session.user.id;
+    return user;
+  } catch {
+    return null;
+  }
+}

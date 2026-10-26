@@ -51,7 +51,9 @@ export function makeFakeSupabase(): Fake {
   let writes: Write[] = [];
   const net = { down: false };
   let refuse: Fake['refuse'] = () => null;
-  let session: { user: { id: string }; access_token: string } | null = null;
+  let session: { user: { id: string }; access_token: string; refresh_token: string } | null = null;
+  /** Every session ever issued, by refresh token: setSession can put back one that was signed out locally. */
+  const issued = new Map<string, { user: { id: string }; access_token: string; refresh_token: string }>();
   let users = 0;
   let listeners: ((event: string, s: unknown) => void)[] = [];
 
@@ -73,7 +75,8 @@ export function makeFakeSupabase(): Fake {
           return { data: { session: null, user: null }, error: { message: 'Network request failed', retryable: true } };
         }
         users += 1;
-        session = { user: { id: `user-${users}` }, access_token: `token-${users}` };
+        session = { user: { id: `user-${users}` }, access_token: `token-${users}`, refresh_token: `refresh-${users}` };
+        issued.set(session.refresh_token, session);
         emit('SIGNED_IN');
         return { data: { session, user: session.user }, error: null };
       },
@@ -81,6 +84,16 @@ export function makeFakeSupabase(): Fake {
         session = null;
         emit('SIGNED_OUT');
         return { error: null };
+      },
+      setSession: async ({ refresh_token }: { access_token: string; refresh_token: string }) => {
+        if (net.down) {
+          return { data: { session: null, user: null }, error: { message: 'Network request failed', retryable: true } };
+        }
+        const found = issued.get(refresh_token);
+        if (!found) return { data: { session: null, user: null }, error: { message: 'Invalid Refresh Token' } };
+        session = found;
+        emit('SIGNED_IN');
+        return { data: { session, user: session.user }, error: null };
       },
       onAuthStateChange: (cb: (event: string, s: unknown) => void) => {
         listeners = [...listeners, cb];
@@ -117,6 +130,7 @@ export function makeFakeSupabase(): Fake {
       refuse = () => null;
       session = null;
       users = 0;
+      issued.clear();
       listeners = [];
     },
   } as Fake;

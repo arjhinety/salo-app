@@ -9,12 +9,14 @@ import { useEffect, useSyncExternalStore } from 'react';
 import { liveEvening } from '../live/useLive';
 import { EveningSync, type Identity } from './eveningSync';
 import { Outbox, type OutboxStatus, type WriteOutcome, type OutboxItem } from './outbox';
-import { chooseRole, connect, isRegistered, loadRoleState, roleState, type ConnectResult } from './session';
+import { chooseRole, connect, forgetKeptSessions, isRegistered, loadRoleState, roleState, type ConnectResult } from './session';
 import { currentUserId, restoreSession, sendOutboxGroup } from './supabase';
 import Storage from 'expo-sqlite/kv-store';
 import type { Role } from './types';
 
 export const LOOP_MS = 3000;
+/** How long a role change waits for the queued writes of the user it signs out (see session.ts). */
+export const FLUSH_BEFORE_SIGN_OUT_MS = 5000;
 
 const sendGroup = (group: OutboxItem[]): Promise<WriteOutcome> => sendOutboxGroup(group);
 
@@ -72,12 +74,36 @@ function setOnlineFrom(result: ConnectResult): void {
 /**
  * The picker's action. Chooses the role (signing out first when it changes), then tries to connect. The caller may stop
  * waiting after a short time; the loop keeps trying in the background.
+ *
+ * Before a sign-out: the run is released, then the outgoing user's queued writes are sent for up to 5 s. Writes that are
+ * still queued are not dropped: their session is kept (session.ts) and the picker shows how many are waiting.
  */
 export async function pickRole(role: Role, profileId: string | null): Promise<void> {
   refusedRole = null;
-  await chooseRole(role, profileId, (uid) => eveningSync.release(uid));
+  await chooseRole(role, profileId, async (uid) => {
+    eveningSync.release(uid);
+    const sent = await outbox.flushWithin(uid, FLUSH_BEFORE_SIGN_OUT_MS);
+    if (sent === 'timeout') console.warn('backend: queued writes not sent before the role change; they are kept');
+    return outbox.queuedFor(uid) > 0;
+  });
   setOnlineFrom(await connect());
   eveningSync.reconcile();
+}
+
+/**
+ * Writes queued for a user other than the one signed in now. The picker shows the count and offers to discard them. Only
+ * the explicit discard removes them.
+ */
+export function useStrandedOutbox(): { count: number; discard: () => void } {
+  useBackendStatus();
+  const uid = currentUserId();
+  return {
+    count: outbox.strandedCount(uid),
+    discard: () => {
+      const gone = outbox.discardStranded(uid);
+      void forgetKeptSessions(gone.userIds);
+    },
+  };
 }
 
 /** Starts a new run (used by "Replay with baseline" before the replay is applied). */
