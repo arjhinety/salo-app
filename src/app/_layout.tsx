@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useBackendSync } from '../backend/runtime';
 import { useLiveTicker } from '../live/useLive';
+import { useNotifications } from '../notify/useNotify';
 import { ThemeProvider, useTheme } from '../theme/theme';
 
 SplashScreen.preventAutoHideAsync();
@@ -19,6 +20,8 @@ function Shell() {
   useLiveTicker();
   // The backend (sign-in, uploads, outbox) runs for the whole app, next to the clock.
   useBackendSync();
+  // Local notifications for this phone's profile (CC-12). Nothing is announced on the dashboard phone.
+  useNotifications();
   return (
     <>
       <StatusBar style="light" />
