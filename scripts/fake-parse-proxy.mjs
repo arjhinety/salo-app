@@ -62,7 +62,8 @@ function send(res, status, body) {
 
 const server = http.createServer((req, res) => {
   if (req.method === 'GET' && req.url === '/health') {
-    return send(res, 200, { ok: true, fake: true, mode });
+    // Same shape as the real /health (server/README.md): ok, model and key. key is true so the screen shows "may key".
+    return send(res, 200, { ok: true, model: 'fake-proxy', key: true, fake: true, mode });
   }
   if (req.method === 'POST' && req.url === '/parse') {
     let raw = '';

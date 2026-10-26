@@ -75,7 +75,7 @@ describe('missing quantity', () => {
   test('the amount is empty, the missing field is named, and posting is blocked', () => {
     const lines = applyParse([], draft([{ foodItem: 'pandesal', rawText: 'pandesal', quantity: null, unit: 'piece' }], clock(20, 0)));
     expect(reviewLine(lines[0]).issues).toEqual(['missing_quantity']);
-    expect(S.parsePost.missingQuantity).toContain('Kulang ang dami');
+    expect(S.parsePost.missingQuantity).toContain('Walang nabanggit na dami');
     expect(canPostLines(lines, clock(20, 0))).toBe(false);
   });
 });
