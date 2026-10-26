@@ -7,6 +7,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useBackendSync } from '../backend/runtime';
 import { useLiveTicker } from '../live/useLive';
 import { ThemeProvider, useTheme } from '../theme/theme';
 
@@ -16,6 +17,8 @@ function Shell() {
   const { c } = useTheme();
   // The simulated evening keeps its clock across screens, so the ticker lives here, not on one screen.
   useLiveTicker();
+  // The backend (sign-in, uploads, outbox) runs for the whole app, next to the clock.
+  useBackendSync();
   return (
     <>
       <StatusBar style="light" />

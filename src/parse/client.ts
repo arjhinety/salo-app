@@ -1,5 +1,5 @@
 /**
- * The donor's parse call: the laptop LLM proxy first, the rule-based fallback on any failure. Never throws.
+ * The donor's parse call: the Edge Function (Claude) first, the rule-based fallback on any failure. Never throws.
  * The base URL is a parameter; the screen wiring decides it. Pure TypeScript apart from the injected fetch.
  */
 import { parseRules } from './rules';
@@ -10,17 +10,19 @@ export const MAX_TEXT_CHARS = 500;
 export const DEFAULT_TIMEOUT_MS = 4000;
 
 export interface ParseOptions {
-  /** Proxy base URL, for example "http://192.168.1.20:8787". "/parse" is appended. */
+  /** Function base URL, for example "https://<project>.supabase.co/functions/v1". "/parse" is appended. */
   baseUrl: string;
   timeoutMs?: number;
+  /** Extra request headers (the app sends the Supabase apikey and the user's access token). */
+  headers?: Record<string, string>;
   /** Injected for tests; defaults to the global fetch. */
   fetchImpl?: typeof fetch;
 }
 
 /**
  * Parses one message. Uses POST `${baseUrl}/parse` with `{ text }` and returns the validated LLM result (source "llm").
- * Falls back to the rules (source "fallback") on a non-200 status, a timeout, a network error, invalid JSON, a failed
- * validation, or text over 500 characters (no request is made for that).
+ * Falls back to the rules (source "fallback") on any non-200 status (401, 403, 429 and 503 included), a timeout, a
+ * network error, invalid JSON, a failed validation, or text over 500 characters (no request is made for that).
  */
 export async function parseMessage(text: string, opts: ParseOptions): Promise<ParsedDraft> {
   const fallback = (): ParsedDraft => {
@@ -39,7 +41,7 @@ export async function parseMessage(text: string, opts: ParseOptions): Promise<Pa
     const base = opts.baseUrl.replace(/\/+$/, '');
     const res = await doFetch(`${base}/parse`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { ...opts.headers, 'Content-Type': 'application/json' },
       body: JSON.stringify({ text }),
       signal: controller.signal,
     });

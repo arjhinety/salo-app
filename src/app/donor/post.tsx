@@ -5,7 +5,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DraftCards } from '../../components/DraftCards';
 import { MicIcon } from '../../components/icons';
 import { TarpBar } from '../../components/TarpBar';
-import { PARSE_TIMEOUT_MS, SERVER_URL } from '../../config/server';
+import { parseAuthHeaders } from '../../backend/supabase';
+import { PARSE_BASE_URL, PARSE_TIMEOUT_MS } from '../../config/server';
 import { EVENINGS } from '../../data/dataset';
 import { CATALOG, catalogKey, type CatalogEntry } from '../../donor/catalog';
 import {
@@ -117,7 +118,8 @@ export default function Post() {
     if (speech.listening) speech.stop();
     const clock = sim.minute;
     setParsing(true);
-    const draft: ParsedDraft = await parseMessage(message, { baseUrl: SERVER_URL, timeoutMs: PARSE_TIMEOUT_MS });
+    const headers = await parseAuthHeaders();
+    const draft: ParsedDraft = await parseMessage(message, { baseUrl: PARSE_BASE_URL, timeoutMs: PARSE_TIMEOUT_MS, headers });
     if (!alive.current) return;
     setParsing(false);
     setLines((prev) => applyParse(prev, draft));

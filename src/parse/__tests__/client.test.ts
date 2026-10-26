@@ -106,6 +106,14 @@ describe('parseMessage', () => {
     expect(draft.source).toBe('fallback');
   });
 
+  it('sends the given headers with the request (the apikey and the user token), and the JSON content type', async () => {
+    const fetchImpl = jest.fn(async () => response(200, okBody));
+    const headers = { apikey: 'sb_publishable_test', Authorization: 'Bearer token-1' };
+    await parseMessage(TEXT, { baseUrl: BASE, headers, fetchImpl: fetchImpl as unknown as typeof fetch });
+    const [, init] = fetchImpl.mock.calls[0] as unknown as [string, RequestInit];
+    expect(init.headers).toEqual({ ...headers, 'Content-Type': 'application/json' });
+  });
+
   it('text of exactly 500 characters is sent to the proxy', async () => {
     const fetchImpl = jest.fn(async () => response(200, okBody));
     const text = 'a'.repeat(500);

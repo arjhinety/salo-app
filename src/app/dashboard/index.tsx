@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { databaseStatusLine } from '../../backend/outbox';
+import { startNewRun, useBackendStatus } from '../../backend/runtime';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EveningRuler } from '../../components/EveningRuler';
 import { LotStrip, type StripState } from '../../components/LotStrip';
@@ -27,6 +29,7 @@ export default function Dashboard() {
   const { fontScale } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const sim = useLiveSnapshot();
+  const backend = useBackendStatus();
   const [picked, setPicked] = useState<LotId | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
   // A refused cancel. Cleared by a replay and by a seek.
@@ -58,6 +61,8 @@ export default function Dashboard() {
   const replayUnder = (p: PolicyId) => {
     setSheetOpen(false);
     setRefusal(null);
+    // A replay is a new run in the database: the current session ends and the replayed run gets its own.
+    startNewRun();
     liveEvening.replayUnder(p);
   };
   const seek = (m: number) => {
@@ -100,6 +105,10 @@ export default function Dashboard() {
           </Text>
         </View>
       ) : null}
+
+      <Text style={[TYPE.small, styles.backend, { color: c.textMuted }]} accessibilityLiveRegion="polite">
+        {databaseStatusLine(backend)}
+      </Text>
 
       <EveningRuler minute={sim.minute} postings={posted.map((l) => l.postedMinute)} onSeek={seek} />
 
@@ -194,6 +203,7 @@ const styles = StyleSheet.create({
     marginBottom: SPACE.s,
   },
   replayNote: { borderBottomWidth: 1, paddingHorizontal: SPACE.l, paddingVertical: SPACE.s },
+  backend: { paddingHorizontal: SPACE.l, paddingTop: SPACE.xs },
   dock: { borderTopWidth: 1, paddingTop: SPACE.s, gap: SPACE.s },
   status: { paddingHorizontal: SPACE.l },
   actions: { paddingHorizontal: SPACE.l, gap: SPACE.s },
