@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { databaseStatusLine } from '../../backend/outbox';
 import { startNewRun, useBackendStatus } from '../../backend/runtime';
+import { useDashboardStatus } from '../../backend/useSession';
+import { SYNC } from '../../i18n/sync';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EveningRuler } from '../../components/EveningRuler';
 import { LotStrip, type StripState } from '../../components/LotStrip';
@@ -32,6 +34,7 @@ export default function Dashboard() {
   const insets = useSafeAreaInsets();
   const sim = useLiveSnapshot();
   const backend = useBackendStatus();
+  const session = useDashboardStatus();
   const [picked, setPicked] = useState<LotId | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
   // A refused cancel. Cleared by a replay and by a seek.
@@ -119,6 +122,25 @@ export default function Dashboard() {
       <Text style={[TYPE.small, styles.backend, { color: c.textMuted }]} accessibilityLiveRegion="polite">
         {databaseStatusLine(backend)}
       </Text>
+
+      <View style={[styles.code, { borderColor: c.rule }]}>
+        <Text style={[TYPE.small, { color: c.textMuted }]}>{SYNC.dashboard.codeLabel}</Text>
+        <Text
+          style={[TYPE.title, styles.codeText, { color: c.text }]}
+          accessibilityRole="text"
+          accessibilityLabel={session.joinCode ? `${SYNC.dashboard.codeLabel}: ${session.joinCode.split('').join(' ')}` : SYNC.dashboard.codeWaiting}
+        >
+          {session.joinCode ?? '······'}
+        </Text>
+        <Text style={[TYPE.small, { color: c.textMuted }]}>
+          {session.joinCode ? SYNC.dashboard.codeHint : SYNC.dashboard.codeWaiting}
+        </Text>
+        {session.warning ? (
+          <Text style={[TYPE.small, { color: c.red }]} accessibilityLiveRegion="polite">
+            {SYNC.dashboard.warning(session.warning)}
+          </Text>
+        ) : null}
+      </View>
 
       <EveningRuler minute={sim.minute} postings={posted.map((l) => l.postedMinute)} onSeek={seek} />
 
@@ -221,6 +243,8 @@ const styles = StyleSheet.create({
   },
   replayNote: { borderBottomWidth: 1, paddingHorizontal: SPACE.l, paddingVertical: SPACE.s },
   backend: { paddingHorizontal: SPACE.l, paddingTop: SPACE.xs },
+  code: { marginHorizontal: SPACE.l, marginTop: SPACE.xs, borderWidth: 1, borderRadius: 4, padding: SPACE.s, gap: 2 },
+  codeText: { letterSpacing: 6 },
   dock: { borderTopWidth: 1, paddingTop: SPACE.s, gap: SPACE.s },
   status: { paddingHorizontal: SPACE.l },
   actions: { paddingHorizontal: SPACE.l, gap: SPACE.s },

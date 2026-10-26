@@ -1,7 +1,9 @@
 import { router, useLocalSearchParams, type Href } from 'expo-router';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { PantryTag } from '../../components/pantry/PantryTag';
+import { SessionBanner } from '../../components/SessionBanner';
 import { SimControl } from '../../components/SimControl';
+import { useFollowStatus } from '../../backend/useSession';
 import { StallString } from '../../components/StallString';
 import { TarpBar } from '../../components/TarpBar';
 import { PANTRY_COPY } from '../../i18n/pantry';
@@ -18,6 +20,7 @@ export default function PantryHome() {
   const { c } = useTheme();
   const { profile } = useLocalSearchParams<{ profile?: string }>();
   const sim = useLiveSnapshot();
+  const following = useFollowStatus().state !== 'idle';
   const feed = usePantryFeed(profile);
   const pantry = feed.pantry;
 
@@ -47,9 +50,11 @@ export default function PantryHome() {
         <SimControl
           running={sim.running}
           ended={sim.ended}
+          locked={following}
           onPress={() => (sim.running ? liveEvening.pause() : liveEvening.start())}
         />
       </TarpBar>
+      <SessionBanner />
       <ScrollView contentContainerStyle={styles.body}>
         <View style={styles.heading}>
           <Text style={[TYPE.title, { color: c.text }]} accessibilityRole="header">

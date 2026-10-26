@@ -49,6 +49,22 @@ export interface TimedInput {
   input: EngineInput;
 }
 
+/** One row of the shared input log (session_inputs): its sequence number, the minute it was stamped at, and the input. */
+export interface SessionInput extends TimedInput {
+  seq: number;
+}
+
+/**
+ * The shared clock as the database holds it (live_sessions). `updatedAtMs` is when the dashboard wrote it. While the
+ * clock runs, a follower's minute is `minute + elapsed real seconds / secondsPerMinute` (decision D-k).
+ */
+export interface SharedClock {
+  minute: Minute;
+  running: boolean;
+  secondsPerMinute: number;
+  updatedAtMs: number;
+}
+
 /** What a donor posts. The phone fills it in; the store adds the id, the minute and the totals. */
 export interface LiveLotDraft {
   donorId: DonorId;
@@ -103,6 +119,16 @@ export class LiveEvening {
   private listeners = new Set<() => void>();
   /** The driver profile a person holds on this phone (decision D-Q5), or none. */
   private held: DriverId | null = null;
+  /** The drivers the session holds (held_drivers). The dashboard sets them; a follower reads them from the row. */
+  private sessionHeld: DriverId[] = [];
+  /** True once the clock has been started on this phone. The held drivers are fixed from then on (decision D-Q5). */
+  private startedOnce = false;
+  /**
+   * Set while this phone follows a session it joined (M5). Then the inputs are exactly the session's rows in seq order,
+   * the policy and the held drivers come from its row, and the clock follows the shared clock. Local inputs and the
+   * clock controls are not used.
+   */
+  private following: { inputs: SessionInput[] } | null = null;
 
   constructor(opts: LiveEveningOptions = {}) {
     const id = opts.eveningId ?? DEFAULT_EVENING_ID;
@@ -138,14 +164,15 @@ export class LiveEvening {
 
   /** Starts the clock. Does nothing once the evening has ended. `nowMs` is injectable for tests. */
   start(nowMs: number = Date.now()): void {
-    if (this.running || this.ended()) return;
+    if (this.running || this.ended() || this.following) return;
+    this.startedOnce = true;
     this.running = true;
     this.lastTickMs = nowMs;
     this.publish();
   }
 
   pause(nowMs: number = Date.now()): void {
-    if (!this.running) return;
+    if (!this.running || this.following) return;
     this.advanceTo(nowMs);
     this.running = false;
     this.lastTickMs = null;
@@ -154,6 +181,7 @@ export class LiveEvening {
 
   /** Real seconds per simulated minute. Time already elapsed is counted at the old speed. */
   setSpeed(secondsPerMinute: number, nowMs: number = Date.now()): void {
+    if (this.following) return;
     const s = validSpeed(secondsPerMinute);
     if (this.running) this.advanceTo(nowMs);
     this.secondsPerMinute = s;
@@ -174,6 +202,7 @@ export class LiveEvening {
 
   /** A donor posts a lot now. Returns the lot with id LIVE-<n>, posted at the current minute. */
   postLot(draft: LiveLotDraft): LiveResult<Lot> {
+    if (this.following) return { ok: false, problems: [FOLLOWER_NO_LOCAL_INPUT] };
     const problems: string[] = [];
     if (!WORLD.donors.some((d) => d.id === draft.donorId)) problems.push(`no donor ${draft.donorId}`);
     if (!(draft.pickupByMinute > this.minute())) problems.push('pickup time must be later than the clock');
@@ -200,11 +229,13 @@ export class LiveEvening {
 
   /** The ids the next `count` posts will get, in order. Read-only: nothing is posted. */
   nextLiveIds(count: number): LotId[] {
+    if (this.following) return [];
     return Array.from({ length: Math.max(0, count) }, (_, i) => `LIVE-${this.liveCount + 1 + i}`);
   }
 
   /** Cancel the driver of a lot. Only allowed while that lot is FINAL at the clock (decision D-Q7). */
   cancelDriver(lotId: LotId): LiveResult<LotId> {
+    if (this.following) return { ok: false, problems: [FOLLOWER_DASHBOARD_ONLY] };
     const state = this.stateOf(lotId);
     if (state === undefined) return { ok: false, problems: [`lot ${lotId} is not posted yet`] };
     if (state !== 'final') return { ok: false, problems: [`lot ${lotId} is ${state}, not final`] };
@@ -219,6 +250,7 @@ export class LiveEvening {
    * ignores an answer that does not apply (wrong lot, not asked, too late, duplicate).
    */
   answerDriver(lotId: LotId, driverId: DriverId, answer: DriverAnswer): void {
+    if (this.following) return;
     this.inputs.push({ atMinute: this.minute(), input: { type: 'DRIVER_RESPONSE', driverId, lotId, answer } });
     this.run = null;
     this.publish();
@@ -232,6 +264,114 @@ export class LiveEvening {
   holdDriver(driverId: DriverId | null): void {
     if (driverId === this.held) return;
     this.held = driverId;
+    // A follower's own driver profile is only a view: the run uses the session's held drivers (see humanDrivers()).
+    if (!this.following) this.run = null;
+    this.publish();
+  }
+
+  /**
+   * The held drivers of the session (the dashboard sets them at 17:00 with the clock stopped, before the clock first
+   * starts; the database rule is the same). Returns problems instead of changing anything when that does not hold.
+   */
+  setSessionHeld(driverIds: readonly DriverId[]): LiveResult<DriverId[]> {
+    if (this.following) return { ok: false, problems: [FOLLOWER_DASHBOARD_ONLY] };
+    if (this.startedOnce) return { ok: false, problems: ['held drivers are fixed once the evening has started'] };
+    if (this.running || this.minute() !== SIM_START_MINUTE) {
+      return { ok: false, problems: ['held drivers can be set only at 5:00 PM with the clock stopped'] };
+    }
+    const next = [...new Set(driverIds)].sort();
+    if (!sameIds(next, this.sessionHeld)) {
+      this.sessionHeld = next;
+      this.run = null;
+      this.publish();
+    }
+    return { ok: true, value: next };
+  }
+
+  /** The held drivers of the session, as the run uses them. */
+  heldDrivers(): readonly DriverId[] {
+    return this.following ? this.sessionHeld : [...this.humanDrivers()];
+  }
+
+  /**
+   * Why a driver answer cannot be applied to this log, or none. Only what the store can see: the lot is posted and
+   * the driver is held. The engine still decides the rest (an answer that does not apply is ignored, and it shows
+   * in the log).
+   */
+  answerProblems(lotId: LotId, driverId: DriverId): string[] {
+    const problems: string[] = [];
+    if (!this.postedLots().some((l) => l.id === lotId)) problems.push(`lot ${lotId} is not posted yet`);
+    if (!this.sessionHeld.includes(driverId)) problems.push(`driver ${driverId} is not held in this session`);
+    return problems;
+  }
+
+  /** Follower mode (M5): this phone shows a session it has joined. See `following`. */
+  isFollower(): boolean {
+    return this.following !== null;
+  }
+
+  /**
+   * Starts following a joined session. The policy and held drivers come from its row, the inputs are its session_inputs
+   * rows, and the clock follows the shared clock. Local inputs are kept but not used while following.
+   */
+  follow(
+    session: { policy: PolicyId; heldDrivers: readonly DriverId[] },
+    inputs: readonly SessionInput[],
+    clock: SharedClock,
+    nowMs: number = Date.now(),
+  ): void {
+    this.following = { inputs: sortBySeq(inputs) };
+    this.policy = session.policy;
+    this.sessionHeld = [...session.heldDrivers].sort();
+    this.run = null;
+    this.setFollowedClock(clock, nowMs, false);
+    this.publish();
+  }
+
+  /** Replaces the followed input log (a realtime insert, or a re-read after a reconnect). */
+  followInputs(inputs: readonly SessionInput[]): void {
+    if (!this.following) return;
+    this.following = { inputs: sortBySeq(inputs) };
+    this.run = null;
+    this.publish();
+  }
+
+  /** New held drivers from the session row (only a dashboard can change them, and only before the start). */
+  followHeld(heldDrivers: readonly DriverId[]): void {
+    if (!this.following) return;
+    const next = [...heldDrivers].sort();
+    if (sameIds(next, this.sessionHeld)) return;
+    this.sessionHeld = next;
+    this.run = null;
+    this.publish();
+  }
+
+  /**
+   * Moves the followed clock to the shared clock. While it runs, the minute is the stored minute plus the real time since
+   * the write, divided by the seconds per minute. `running: false` freezes the clock where the shared clock has it.
+   */
+  followClock(clock: SharedClock, nowMs: number = Date.now()): void {
+    if (!this.following) return;
+    this.setFollowedClock(clock, nowMs, true);
+  }
+
+  private setFollowedClock(clock: SharedClock, nowMs: number, publishNow: boolean): void {
+    const spm = validSpeed(clock.secondsPerMinute);
+    const elapsedMinutes = clock.running ? Math.max(0, nowMs - clock.updatedAtMs) / 1000 / spm : 0;
+    this.secondsPerMinute = spm;
+    this.clock = Math.min(SIM_END_MINUTE, clock.minute + elapsedMinutes);
+    this.running = clock.running && this.clock < SIM_END_MINUTE;
+    this.lastTickMs = this.running ? nowMs : null;
+    if (publishNow) this.publish();
+  }
+
+  /** Leaves the joined session. This phone goes back to its own inputs; the clock stays where it is, paused. */
+  leaveFollow(): void {
+    if (!this.following) return;
+    this.following = null;
+    this.sessionHeld = [];
+    this.running = false;
+    this.lastTickMs = null;
     this.run = null;
     this.publish();
   }
@@ -243,7 +383,7 @@ export class LiveEvening {
 
   /** Switches the policy at the clock, keeping the clock where it is. */
   setPolicy(policy: PolicyId): void {
-    if (policy === this.policy) return;
+    if (policy === this.policy || this.following) return;
     this.policy = policy;
     this.run = null;
     this.publish();
@@ -254,6 +394,7 @@ export class LiveEvening {
    * the same evening again from the start. Inputs keep their minutes and appear again as the clock reaches them.
    */
   replayUnder(policy: PolicyId): void {
+    if (this.following) return;
     if (policy !== this.policy) {
       this.policy = policy;
       this.run = null;
@@ -270,6 +411,7 @@ export class LiveEvening {
    */
   seek(minute: Minute): void {
     if (!Number.isFinite(minute)) throw new RangeError(`cannot seek to ${minute}`);
+    if (this.following) return;
     this.running = false;
     this.lastTickMs = null;
     this.clock = Math.min(SIM_END_MINUTE, Math.max(SIM_START_MINUTE, Math.round(minute)));
@@ -318,12 +460,12 @@ export class LiveEvening {
   /** The inputs posted at or before the clock. */
   inputsVisible(): readonly TimedInput[] {
     const minute = this.minute();
-    return this.inputs.filter((i) => i.atMinute <= minute);
+    return this.activeInputs().filter((i) => i.atMinute <= minute);
   }
 
   /** Every input so far, in order. Replaying these with the seed and world reproduces the evening (D-06). */
   inputLog(): readonly TimedInput[] {
-    return this.inputs;
+    return this.activeInputs();
   }
 
   /** How many times the engine has been run. Used by tests to check the memoization. */
@@ -359,13 +501,26 @@ export class LiveEvening {
     }
   }
 
+  /** The inputs the run uses: the followed session's rows while following, else this phone's own. */
+  private activeInputs(): readonly TimedInput[] {
+    return this.following ? this.following.inputs : this.inputs;
+  }
+
+  /** The drivers a person holds for this run. Following: the session's. Otherwise the session's plus this phone's. */
+  private humanDrivers(): Set<DriverId> {
+    const humans = new Set<DriverId>(this.sessionHeld);
+    if (!this.following && this.held !== null) humans.add(this.held);
+    return humans;
+  }
+
   private ensureRun(): RunOutput {
     if (!this.run) {
+      const humans = this.following ? new Set<DriverId>(this.sessionHeld) : this.humanDrivers();
       this.run = runEvening(WX, this.evening, {
         policy: this.policy,
         params: this.params,
-        inputs: this.inputs.map((i) => ({ atMinute: i.atMinute, input: i.input })),
-        humanDrivers: this.held === null ? undefined : new Set([this.held]),
+        inputs: this.activeInputs().map((i) => ({ atMinute: i.atMinute, input: i.input })),
+        humanDrivers: humans.size === 0 ? undefined : humans,
       });
       this.runs += 1;
     }
@@ -389,9 +544,21 @@ export class LiveEvening {
       running: this.running,
       ended: this.ended(),
       secondsPerMinute: this.secondsPerMinute,
-      inputCount: this.inputs.length,
+      inputCount: this.activeInputs().length,
     };
   }
+}
+
+/** Problem texts for the store's refusals. They are data (English), shown next to the request that failed. */
+export const FOLLOWER_NO_LOCAL_INPUT = 'this phone follows a session: send a request instead';
+export const FOLLOWER_DASHBOARD_ONLY = 'this change is made on the dashboard';
+
+function sortBySeq(inputs: readonly SessionInput[]): SessionInput[] {
+  return [...inputs].sort((a, b) => a.seq - b.seq);
+}
+
+function sameIds(a: readonly string[], b: readonly string[]): boolean {
+  return a.length === b.length && a.every((x, i) => x === b[i]);
 }
 
 function validSpeed(s: number): number {

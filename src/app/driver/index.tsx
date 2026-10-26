@@ -5,12 +5,17 @@ import { Bi, DriverChooser, openDirections, RequestCard, RunCard, spoken } from 
 import { SimControl } from '../../components/SimControl';
 import { TarpBar } from '../../components/TarpBar';
 import { WORLD } from '../../data/dataset';
+import type { DriverAnswer } from '../../engine/types';
 import { driverBoard, type Ask } from '../../driver/board';
 import { chooserLocked, chooserOrder, demoEvening } from '../../driver/chooser';
 import { hhmm } from '../../donor/tonight';
 import { DRV, splitBi } from '../../i18n/driver';
 import { indexWorld } from '../../engine/world';
-import { pickRole } from '../../backend/runtime';
+import { follower, pickRole } from '../../backend/runtime';
+import { answerRequest } from '../../backend/requests';
+import { useFollowStatus } from '../../backend/useSession';
+import { sessionMode } from '../../backend/sessionMode';
+import { SessionBanner } from '../../components/SessionBanner';
 import { liveEvening, useLiveSnapshot } from '../../live/useLive';
 import { useTheme } from '../../theme/theme';
 import { SPACE, TYPE } from '../../theme/tokens';
@@ -44,10 +49,21 @@ export default function DriverHome() {
     return () => liveEvening.holdDriver(null);
   }, [selectedId]);
 
+  // Joined (M5): the run uses the session's held drivers, and this phone's answers are requests. A phone that joined
+  // after the start only watches. Not joined: the same screen as before, with the answers applied locally.
+  const status = useFollowStatus();
+  const mode = sessionMode(status);
+  const sessionHolds = liveEvening.heldDrivers();
   const held = liveEvening.heldDriver();
+  const canAct = mode === 'local' || (mode === 'joined' && !status.watchOnly && driver !== null && sessionHolds.includes(driver.id));
+  const answer = (lotId: string, what: DriverAnswer) => {
+    if (!driver) return;
+    if (mode === 'joined') follower.send(answerRequest(lotId, driver.id, what));
+    else if (mode === 'local') liveEvening.answerDriver(lotId, driver.id, what);
+  };
   const lots = new Map(liveEvening.postedLots().map((l) => [l.id, l]));
   const board =
-    driver && held === driver.id
+    driver && held === driver.id && (mode === 'local' || sessionHolds.includes(driver.id))
       ? driverBoard({ log: liveEvening.visibleLog(), driver, wx: WX, lots, now: sim.minute })
       : null;
   const asks = board?.asks ?? [];
@@ -62,21 +78,23 @@ export default function DriverHome() {
         <SimControl
           running={sim.running}
           ended={sim.ended}
+          locked={mode !== 'local'}
           onPress={() => (sim.running ? liveEvening.pause() : liveEvening.start())}
         />
       </TarpBar>
       <ScrollView contentContainerStyle={styles.body}>
+        <SessionBanner />
         <DriverChooser
           drivers={drivers}
           selectedId={selectedId}
-          locked={locked}
+          locked={locked || mode !== 'local'}
           onSelect={(id) => {
             if (!locked) router.setParams({ driver: id });
           }}
         />
 
         <Heading text={DRV.requests} />
-        {board && driver ? (
+        {board && driver && canAct ? (
           requests.length === 0 ? (
             <View style={[styles.empty, { borderColor: c.zinc }]}>
               <Bi text={DRV.requestsEmpty} strong surface="ground" />
@@ -91,15 +109,15 @@ export default function DriverHome() {
                 donor={donorOf(ask.lot.donorId)}
                 pantry={pantryOf(ask.pantryId)}
                 offer={board.offerTrip(ask)}
-                onOffer={() => liveEvening.answerDriver(ask.lot.id, driver.id, 'offer')}
-                onDecline={() => liveEvening.answerDriver(ask.lot.id, driver.id, 'decline')}
+                onOffer={() => answer(ask.lot.id, 'offer')}
+                onDecline={() => answer(ask.lot.id, 'decline')}
               />
             ))
           )
         ) : null}
 
         <Heading text={DRV.runs} />
-        {board && driver ? (
+        {board && driver && canAct ? (
           runs.length === 0 ? (
             <Bi text={DRV.runsEmpty} tone="muted" surface="ground" />
           ) : (
@@ -110,8 +128,8 @@ export default function DriverHome() {
                 now={sim.minute}
                 donor={donorOf(ask.lot.donorId)}
                 pantry={pantryOf(ask.pantryId)}
-                onCommit={() => liveEvening.answerDriver(ask.lot.id, driver.id, 'commit')}
-                onWithdraw={() => liveEvening.answerDriver(ask.lot.id, driver.id, 'withdraw')}
+                onCommit={() => answer(ask.lot.id, 'commit')}
+                onWithdraw={() => answer(ask.lot.id, 'withdraw')}
                 onMaps={() => void openDirections(donorOf(ask.lot.donorId), pantryOf(ask.pantryId))}
               />
             ))

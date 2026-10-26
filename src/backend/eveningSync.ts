@@ -129,8 +129,16 @@ interface Run {
   lots: Set<string>;
 }
 
+/** What the session layer needs to know about the run: its id, whose it is, and whether its row has reached the database. */
+export interface RunView {
+  id: string;
+  userId: string;
+  synced: boolean;
+}
+
 export class EveningSync {
   private run: Run | null = null;
+  private readonly runListeners = new Set<(run: RunView | null) => void>();
   private lastMinute: number | null = null;
   /** Set when the run row was refused for good. Cleared by beginRun(). */
   private failed = false;
@@ -143,6 +151,20 @@ export class EveningSync {
     private readonly newId: () => string = newUuid,
     private readonly nowIso: () => string = () => new Date().toISOString(),
   ) {}
+
+  /** Called whenever the run opens, ends, or its row is delivered (or refused). Returns the unsubscribe function. */
+  onRunChange(fn: (run: RunView | null) => void): () => void {
+    this.runListeners.add(fn);
+    return () => {
+      this.runListeners.delete(fn);
+    };
+  }
+
+  private emitRun(): void {
+    const r = this.run;
+    const view: RunView | null = r ? { id: r.id, userId: r.userId, synced: r.synced } : null;
+    for (const fn of this.runListeners) fn(view);
+  }
 
   /** Subscribes to the evening and to the outbox. Idempotent. */
   start(): void {
@@ -250,6 +272,7 @@ export class EveningSync {
       rows: [sessionRow(this.run)],
       tag: `session:${id}`,
     });
+    this.emitRun();
   }
 
   private endRun(): void {
@@ -263,12 +286,14 @@ export class EveningSync {
       values: { ended_at: this.nowIso() },
       match: { id: run.id },
     });
+    this.emitRun();
   }
 
   private delivered(item: OutboxItem): void {
     const run = this.run;
     if (run !== null && item.tag === `session:${run.id}`) {
       run.synced = true;
+      this.emitRun();
       this.reconcile();
     }
   }
@@ -279,6 +304,7 @@ export class EveningSync {
       console.warn('evening sync: the live session row was refused; no more uploads for this run');
       this.run = null;
       this.failed = true;
+      this.emitRun();
     }
   }
 }

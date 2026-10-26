@@ -5,6 +5,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DraftCards } from '../../components/DraftCards';
 import { MicIcon } from '../../components/icons';
 import { TarpBar } from '../../components/TarpBar';
+import { SessionBanner } from '../../components/SessionBanner';
+import { follower } from '../../backend/runtime';
+import { lotRequest } from '../../backend/requests';
+import { useFollowStatus } from '../../backend/useSession';
+import { sessionMode } from '../../backend/sessionMode';
+import { SYNC } from '../../i18n/sync';
 import { parseAuthHeaders } from '../../backend/supabase';
 import { PARSE_BASE_URL, PARSE_TIMEOUT_MS } from '../../config/server';
 import { EVENINGS } from '../../data/dataset';
@@ -91,6 +97,7 @@ export default function Post() {
   const picked = new Set(lines.map(lineKey).filter((k): k is string => k !== null));
   const full = lines.length >= MAX_DRAFT_ITEMS;
   const canPost = canPostLines(lines, pickup);
+  const mode = sessionMode(useFollowStatus());
   const ids = liveEvening.nextLiveIds(lines.length);
 
   const update = (next: DraftLine[]) => {
@@ -129,8 +136,17 @@ export default function Post() {
   };
 
   const onPost = () => {
-    if (!canPost || pickup === null) return;
-    const result = submitLots(liveEvening, lotDrafts(readyItems(lines), DONOR, pickup), guard.current);
+    if (!canPost || pickup === null || mode === 'blocked') return;
+    const drafts = lotDrafts(readyItems(lines), DONOR, pickup);
+    if (mode === 'joined') {
+      // A joined phone never posts a lot itself: each lot is a request, and the dashboard stamps it (M5).
+      if (guard.current.posted || drafts.length === 0) return;
+      guard.current.posted = true;
+      for (const draft of drafts) follower.send(lotRequest(draft));
+      router.back();
+      return;
+    }
+    const result = submitLots(liveEvening, drafts, guard.current);
     if (result.status === 'posted') router.back();
     else if (result.status === 'problems') setFailed(true);
   };
@@ -168,6 +184,7 @@ export default function Post() {
   return (
     <View style={{ flex: 1, backgroundColor: c.ground }}>
       <TarpBar clock={hhmm(sim.minute)} subtitle={`${S.post.fil} · ${S.post.en}`} />
+      <SessionBanner />
       {/* The bottom inset keeps the last content (the post button, after scrolling) clear of the Android gesture bar. */}
       <ScrollView
         contentContainerStyle={[styles.body, { paddingBottom: SPACE.l + insets.bottom }]}
@@ -283,12 +300,13 @@ export default function Post() {
             </>
           )}
 
-          {canPost ? <Text style={[TYPE.bodyStrong, { color: c.text }]}>{S.postForm.becomes(ids)}</Text> : null}
+          {canPost && mode === 'joined' ? <Text style={[TYPE.bodyStrong, { color: c.text }]}>{SYNC.request.sentToDashboard}</Text> : null}
+          {canPost && mode === 'local' ? <Text style={[TYPE.bodyStrong, { color: c.text }]}>{S.postForm.becomes(ids)}</Text> : null}
           <Pressable
             onPress={onPost}
-            disabled={!canPost}
+            disabled={!canPost || mode === 'blocked'}
             accessibilityRole="button"
-            accessibilityState={{ disabled: !canPost }}
+            accessibilityState={{ disabled: !canPost || mode === 'blocked' }}
             accessibilityLabel={S.postForm.post}
             style={({ pressed }) => [
               styles.post,

@@ -1,8 +1,10 @@
 import { router, type Href } from 'expo-router';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { TarpBar } from '../components/TarpBar';
 import { WORLD } from '../data/dataset';
-import { pickRole, useStrandedOutbox } from '../backend/runtime';
+import { follower, pickRole, useStrandedOutbox } from '../backend/runtime';
+import { SYNC } from '../i18n/sync';
 import type { Role } from '../backend/types';
 import { useTheme } from '../theme/theme';
 import { SPACE, TYPE } from '../theme/tokens';
@@ -28,7 +30,10 @@ const ROLES = [
  * Stores the role and tries to connect; navigates after at most CONNECT_WAIT_MS, so an offline phone still moves on.
  * The driver role is registered by the driver screen, once a driver is chosen there.
  */
-async function go(role: Role, profileId: string | null, route: Route) {
+async function go(role: Role, profileId: string | null, route: Route, joinCode: string) {
+  // A typed code makes this phone a follower of that session (M5). The dashboard never joins: it owns the session.
+  if (role === 'dashboard' || joinCode.length === 0) follower.leave();
+  else follower.join(joinCode);
   if (role !== 'driver') {
     try {
       await Promise.race([pickRole(role, profileId), new Promise<void>((resolve) => setTimeout(resolve, CONNECT_WAIT_MS))]);
@@ -42,6 +47,7 @@ async function go(role: Role, profileId: string | null, route: Route) {
 export default function Picker() {
   const { c } = useTheme();
   const stranded = useStrandedOutbox();
+  const [joinCode, setJoinCode] = useState('');
   return (
     <View style={{ flex: 1, backgroundColor: c.ground }}>
       <TarpBar clock="5:45 PM" />
@@ -70,12 +76,28 @@ export default function Picker() {
           </View>
         ) : null}
 
+        <View style={[styles.join, { borderColor: c.rule }]}>
+          <Text style={[TYPE.bodyStrong, { color: c.text }]}>{SYNC.join.title}</Text>
+          <Text style={[TYPE.small, { color: c.textMuted }]}>{SYNC.join.hint}</Text>
+          <TextInput
+            value={joinCode}
+            onChangeText={(t) => setJoinCode(t.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6))}
+            placeholder={SYNC.join.placeholder}
+            placeholderTextColor={c.textMuted}
+            autoCapitalize="characters"
+            autoCorrect={false}
+            maxLength={6}
+            accessibilityLabel={SYNC.join.a11y}
+            style={[TYPE.bodyStrong, styles.joinInput, { color: c.text, borderColor: c.rule }]}
+          />
+        </View>
+
         <View style={[styles.list, { borderColor: c.rule }]}>
           {ROLES.map((r) => (
             <Pressable
               key={r.key}
               disabled={!r.ready || r.route === null}
-              onPress={() => r.route && void go(r.role, r.profileId, r.route)}
+              onPress={() => r.route && void go(r.role, r.profileId, r.route, joinCode)}
               accessibilityRole="button"
               accessibilityState={{ disabled: !r.ready }}
               accessibilityLabel={`${r.fil}, ${r.en}. ${r.who}.${r.ready ? '' : ' Darating sa susunod na build.'}`}
@@ -104,6 +126,8 @@ export default function Picker() {
 const styles = StyleSheet.create({
   body: { padding: 16, gap: SPACE.s },
   list: { marginTop: SPACE.l, borderTopWidth: 1 },
+  join: { marginTop: SPACE.l, gap: SPACE.xs, borderBottomWidth: 1, paddingBottom: SPACE.m },
+  joinInput: { minHeight: 48, borderWidth: 1.5, borderRadius: 4, paddingHorizontal: SPACE.m, letterSpacing: 4 },
   stranded: { marginTop: SPACE.m, borderWidth: 2, borderStyle: 'dashed', borderRadius: 4, padding: SPACE.m, gap: SPACE.xs },
   discard: { alignSelf: 'flex-start', minHeight: 44, justifyContent: 'center', borderWidth: 1, paddingHorizontal: SPACE.m, marginTop: SPACE.xs },
   row: {

@@ -10,7 +10,10 @@ import { liveEvening } from '../live/useLive';
 import { EveningSync, type Identity } from './eveningSync';
 import { Outbox, type OutboxStatus, type WriteOutcome, type OutboxItem } from './outbox';
 import { chooseRole, connect, forgetKeptSessions, isRegistered, loadRoleState, roleState, type ConnectResult } from './session';
-import { currentUserId, restoreSession, sendOutboxGroup } from './supabase';
+import { currentUserId, restoreSession, sendOutboxGroup, supabase } from './supabase';
+import { DashboardSession } from './dashboardSession';
+import { Follower } from './follower';
+import { makeSupabaseSessionApi } from './sessionApi';
 import Storage from 'expo-sqlite/kv-store';
 import type { Role } from './types';
 
@@ -30,6 +33,11 @@ const identity: Identity = {
 
 export const eveningSync = new EveningSync(liveEvening, outbox, identity);
 
+/** The two-phone session (M5). The dashboard writes it; a joined phone follows it. Both use the same live store. */
+export const sessionApi = makeSupabaseSessionApi(supabase, currentUserId);
+export const dashboard = new DashboardSession({ api: sessionApi, live: liveEvening });
+export const follower = new Follower({ api: sessionApi, live: liveEvening, registered: isRegistered, userId: currentUserId });
+
 let booting: Promise<void> | null = null;
 let busy = false;
 /** Set when the server refused the registration for the current role. Cleared by a role change. */
@@ -41,6 +49,8 @@ export function startBackend(): Promise<void> {
     await restoreSession();
     await loadRoleState();
     await outbox.load();
+    dashboard.start();
+    eveningSync.onRunChange((run) => dashboard.onRun(run));
     eveningSync.start();
     setInterval(() => void pass(), LOOP_MS);
     void pass();
@@ -61,6 +71,8 @@ export async function pass(): Promise<void> {
     }
     eveningSync.reconcile();
     await outbox.flush(currentUserId());
+    await dashboard.pass();
+    await follower.pass();
   } finally {
     busy = false;
   }

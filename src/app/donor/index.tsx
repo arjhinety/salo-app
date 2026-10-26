@@ -7,6 +7,8 @@ import { Tag } from '../../components/Tag';
 import { TarpBar } from '../../components/TarpBar';
 import { WORLD } from '../../data/dataset';
 import { hhmm } from '../../donor/tonight';
+import { SessionBanner } from '../../components/SessionBanner';
+import { useFollowStatus } from '../../backend/useSession';
 import { liveEvening, useLiveSnapshot, useLotViews } from '../../live/useLive';
 import { lotCountEn, S } from '../../i18n/strings';
 import { useTheme } from '../../theme/theme';
@@ -19,6 +21,7 @@ export default function DonorHome() {
   const { c } = useTheme();
   const { width, fontScale } = useWindowDimensions();
   const sim = useLiveSnapshot();
+  const following = useFollowStatus().state !== 'idle';
   const lots = useLotViews(DONOR);
   const donor = WORLD.donors.find((d) => d.id === DONOR)!;
   // Two tags per row; one when the screen is narrow or the text is enlarged (up to 200% font scale).
@@ -32,9 +35,11 @@ export default function DonorHome() {
         <SimControl
           running={sim.running}
           ended={sim.ended}
+          locked={following}
           onPress={() => (sim.running ? liveEvening.pause() : liveEvening.start())}
         />
       </TarpBar>
+      <SessionBanner />
       <ScrollView contentContainerStyle={styles.body}>
         <View style={styles.heading}>
           <Text style={[TYPE.title, { color: c.text }]} accessibilityRole="header">
