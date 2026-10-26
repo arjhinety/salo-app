@@ -102,18 +102,18 @@ permission.allow: Payagan · Allow
 permission.later: Hindi ngayon · Not now
 driverAsk.title: May request para sa iyo · A request for you
 driverAsk.body: Lot {lot}: sumagot bago ang {closes} · Lot {lot}: reply before {closes}
-donorTentative.title: Napili na ang pantry · A pantry was picked
-donorTentative.body: Lot {lot}: {pantry} muna, hanggang may driver · Lot {lot}: {pantry} for now, until a driver commits
+donorTentative.title: May napiling pantry muna · A pantry is picked for now
+donorTentative.body: Lot {lot}: sa {pantry} muna, hanggang may driver na mag-commit · Lot {lot}: {pantry} for now, until a driver commits
 donorCommit.title: May driver na ang lot mo · A driver is committed to your lot
 donorCommit.body: Lot {lot}: maghahatid si {driver}, dadating ng {eta} · Lot {lot}: {driver} delivers, arriving {eta}
-pantryTentative.title: Nakalaan sa inyo ang lot · A lot is held for your pantry
-pantryTentative.body: Lot {lot} mula sa {donor}: nakalaan muna hanggang may driver · Lot {lot} from {donor}: held until a driver commits
-pantryFinal.title: Final na ang lot · A lot is final
-pantryFinal.body: Lot {lot}: may driver na, si {driver} · Lot {lot}: a driver is committed, {driver}
+pantryTentative.title: Nakalaan muna sa inyo ang lot · A lot is held for your pantry for now
+pantryTentative.body: Lot {lot} mula sa {donor}: nakalaan muna hanggang may driver na mag-commit · Lot {lot} from {donor}: held until a driver commits
+pantryFinal.title: Sa inyo na ang lot · The lot is yours
+pantryFinal.body: Lot {lot}: si {driver} na ang maghahatid · Lot {lot}: {driver} will deliver it
 ```
 
 Times in the bodies come from `clockText` (for example `5:14 PM`), and names from the simulated dataset. For Codex review: the
-Taglish lines above (Filipino first).
+Taglish lines above (Filipino first). Codex reviewed them on 2026-10-26; its six fixes (tentative status made explicit, "mag-commit", pantryFinal reworded) are applied above.
 
 ## Open risks
 

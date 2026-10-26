@@ -16,9 +16,9 @@ export const NOTIFY = {
     body: (lot: string, closes: string) => `Lot ${lot}: sumagot bago ang ${closes} · Lot ${lot}: reply before ${closes}`,
   },
   donorTentative: {
-    title: 'Napili na ang pantry · A pantry was picked',
+    title: 'May napiling pantry muna · A pantry is picked for now',
     body: (lot: string, pantry: string) =>
-      `Lot ${lot}: ${pantry} muna, hanggang may driver · Lot ${lot}: ${pantry} for now, until a driver commits`,
+      `Lot ${lot}: sa ${pantry} muna, hanggang may driver na mag-commit · Lot ${lot}: ${pantry} for now, until a driver commits`,
   },
   donorCommit: {
     title: 'May driver na ang lot mo · A driver is committed to your lot',
@@ -26,12 +26,12 @@ export const NOTIFY = {
       `Lot ${lot}: maghahatid si ${driver}, dadating ng ${eta} · Lot ${lot}: ${driver} delivers, arriving ${eta}`,
   },
   pantryTentative: {
-    title: 'Nakalaan sa inyo ang lot · A lot is held for your pantry',
+    title: 'Nakalaan muna sa inyo ang lot · A lot is held for your pantry for now',
     body: (lot: string, donor: string) =>
-      `Lot ${lot} mula sa ${donor}: nakalaan muna hanggang may driver · Lot ${lot} from ${donor}: held until a driver commits`,
+      `Lot ${lot} mula sa ${donor}: nakalaan muna hanggang may driver na mag-commit · Lot ${lot} from ${donor}: held until a driver commits`,
   },
   pantryFinal: {
-    title: 'Final na ang lot · A lot is final',
-    body: (lot: string, driver: string) => `Lot ${lot}: may driver na, si ${driver} · Lot ${lot}: a driver is committed, ${driver}`,
+    title: 'Sa inyo na ang lot · The lot is yours',
+    body: (lot: string, driver: string) => `Lot ${lot}: si ${driver} na ang maghahatid · Lot ${lot}: ${driver} will deliver it`,
   },
 } as const;
