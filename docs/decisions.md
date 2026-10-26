@@ -217,3 +217,7 @@ Untuned starting weights for development: need 0.4, storage 0.3, distance 0.15, 
 - **Food ceiling (RES-07):** assumed to mean every pantry's need fully met on that evening; the guide does not define it (open question).
 - **Learning-off run (RES-07, P2):** not built yet; it needs an engine option that fixes every driver estimate at 0.50. To be added as a small, reviewed engine change before the pilot.
 - **Citation:** the screen cites Bestgen (2022) without a page number, because the pages given in the docs differ (p.20 and p.21).
+
+## Local notifications library (CC-12, orchestrator, 2026-10-26)
+
+- Local notifications use `expo-notifications` (the recommended Expo module). Its Android build includes Google's firebase-messaging library; there is no local-only variant. The app never initialises push: no `google-services.json`, no push-token calls, no push server, and a test fails if either appears. This is how CC-12's "no push service" is met; the library's presence is a known deviation, recorded here.
