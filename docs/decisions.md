@@ -199,3 +199,9 @@ Untuned starting weights for development: need 0.4, storage 0.3, distance 0.15, 
 - **Free-plan pause:** free projects pause after about 7 days without use. Before the demo, check the project is active.
 - **Parser scores:** the tuning scores in `docs/reports/parser-claude-tuning.md` belong to the laptop proxy's request config (`2aa58cdc…`). The Edge Function will have a different config hash; scoring it is a new paid run, only with Arjhine's go-ahead.
 - **Secrets:** the database password and project ref are in `supabase/.env`, ignored by git. Key names only were listed; no key was printed.
+
+## Human-held driver and backend operations (Arjhine, 2026-10-26)
+
+- **Delivery steps follow the simulated clock (DRV-05 open question, Arjhine approved the default):** after a human-held driver commits, pickup and delivery happen on the simulated clock at the engine's times; the driver phone shows the steps as they happen, but no tap is needed. A forgotten tap therefore cannot change a result. Human-held drivers have no simulated no-show or lateness draw.
+- **Claude key uploaded to Supabase (Arjhine approved):** `ANTHROPIC_API_KEY` set as a secret on project `salo` only, through a temporary file deleted at once; the key was never printed. The function's health reports `key: true` (checked without a Claude call). Every parse call from the app now costs money (about $0.0002 each) and is logged in `parse_requests`.
+- **Test data cleaned (Arjhine approved):** the six anonymous test users, four `devices` rows and 35 `parse_requests` rows created by the Edge Function checks (all before 2026-10-26 11:08:48 UTC) were deleted in one transaction; `salo` then held no users, devices or parse rows.
