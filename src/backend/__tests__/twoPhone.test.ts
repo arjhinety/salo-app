@@ -177,14 +177,14 @@ describe('two phones: the dashboard applies follower requests and both replay th
     expect(live.postedLots().some((l) => l.origin === 'live')).toBe(false);
   });
 
-  test('a driver phone cannot answer for another driver (database) and an unheld driver is refused (dashboard)', async () => {
+  test('an unheld driver is refused by the database, and a driver cannot answer for another driver', async () => {
     const { bus, time, live, dashboard, session } = setup();
     const other = phone(bus, time, 'driver2');
     expect(dashboard.setHeldDrivers(['V19']).ok).toBe(true);
     other.follower.join(CODE);
     await other.follower.pass();
     await settle();
-    // Its own profile V21 is not the one held: the request reaches the dashboard and is refused there.
+    // Its own profile V21 is not held: the database refuses the request, so it never reaches the dashboard.
     live.seek(1031);
     await dashboard.pass();
     await settle();
@@ -194,11 +194,11 @@ describe('two phones: the dashboard applies follower requests and both replay th
     await settle();
     await other.follower.pass();
     await settle();
-    expect(bus.requestsOf(session.id)[0].reason).toBe('driver V21 is not held in this session');
+    expect(bus.requestsOf(session.id)).toHaveLength(0);
     expect(statusOf(other).requests.filter((r) => r.status === 'rejected')[0].reason).toBe(
-      'driver V21 is not held in this session',
+      'input_requests: this role may not send that input',
     );
-    // Its request for another driver's id is refused by the database before it reaches the dashboard.
+    // Its request for another driver's id is refused by the database too.
     expect(() => bus.insertRequest('driver2', session.id, answerRequest('L0227', 'V19', 'offer'))).toThrow(
       'input_requests: this role may not send that input',
     );

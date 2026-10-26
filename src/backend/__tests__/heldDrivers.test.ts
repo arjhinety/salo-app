@@ -15,9 +15,8 @@ async function settle(): Promise<void> {
   for (let i = 0; i < 8; i++) await new Promise<void>((resolve) => setImmediate(resolve));
 }
 
-function setup(rosterVisible: boolean) {
+function setup() {
   const bus = new FakeSessionBus();
-  bus.rosterVisible = rosterVisible;
   bus.registerDevice('dash', 'dashboard', null);
   bus.registerDevice('driver', 'driver', 'V19');
   bus.registerDevice('driver2', 'driver', 'V21');
@@ -38,7 +37,7 @@ function setup(rosterVisible: boolean) {
 
 describe('held drivers', () => {
   test('they can be set only at 17:00 with the clock stopped', () => {
-    const { live } = setup(false);
+    const { live } = setup();
     expect(live.setSessionHeld(['V19']).ok).toBe(true);
     live.seek(1031);
     const midEvening = live.setSessionHeld(['V21']);
@@ -48,7 +47,7 @@ describe('held drivers', () => {
   });
 
   test('a start on the dashboard fixes the set: a later change is refused, and a rewind does not reopen it', () => {
-    const { live } = setup(false);
+    const { live } = setup();
     live.setSessionHeld(['V19']);
     live.start(T0);
     live.pause(T0 + 1000);
@@ -60,7 +59,7 @@ describe('held drivers', () => {
   });
 
   test('the dashboard writes the held set to the session row, once per change', async () => {
-    const { bus, dashboard, session } = setup(false);
+    const { bus, dashboard, session } = setup();
     expect(dashboard.setHeldDrivers(['V19']).ok).toBe(true);
     expect(dashboard.setHeldDrivers(['V19']).ok).toBe(true);
     await settle();
@@ -68,19 +67,19 @@ describe('held drivers', () => {
     expect(bus.accepted.filter((a) => a.startsWith('held:'))).toEqual(['held:V19']);
   });
 
-  test('from the roster: under the current rules the creator cannot read the members, so no driver is held', async () => {
-    const { bus, dashboard, session, join } = setup(false);
+  test('the roster is the creator’s alone: a member that is not the creator cannot read it (session_driver_members)', async () => {
+    const { bus, session, join } = setup();
     const driver = join('driver');
     driver.f.join(CODE);
     await driver.f.pass();
     await settle();
-    await dashboard.pass();
-    await settle();
-    expect(bus.row(session.id).heldDrivers).toEqual([]);
+    await expect(bus.api('driver').readDriverMembers(session.id)).rejects.toThrow(
+      'session_driver_members: only the session creator can read its members',
+    );
   });
 
-  test('from the roster, when the members are readable: at 17:00 stopped the joined driver is held', async () => {
-    const { bus, dashboard, session, live, join } = setup(true);
+  test('from the roster: at 17:00 stopped the joined driver is held (through session_driver_members)', async () => {
+    const { bus, dashboard, session, live, join } = setup();
     const driver = join('driver');
     driver.f.join(CODE);
     await driver.f.pass();
@@ -91,8 +90,8 @@ describe('held drivers', () => {
     expect(live.heldDrivers()).toEqual(['V19']);
   });
 
-  test('a driver phone that joins after the start is watch-only; its own answer for an unheld profile is refused', async () => {
-    const { bus, ref, live, dashboard, session, join } = setup(true);
+  test('a driver phone that joins after the start is watch-only, and the database refuses its answer', async () => {
+    const { bus, ref, live, dashboard, session, join } = setup();
     expect(dashboard.setHeldDrivers(['V19']).ok).toBe(true);
     live.start(T0);
     live.tick(T0 + 60_000);
@@ -109,15 +108,16 @@ describe('held drivers', () => {
     expect(late.live.heldDrivers()).toEqual(['V19']);
     late.f.send(answerRequest('L0227', 'V21', 'offer'));
     await late.f.pass();
-    await dashboard.pass();
     await settle();
-    await late.f.pass();
-    await settle();
-    expect(bus.requestsOf(session.id)[0].reason).toBe('driver V21 is not held in this session');
+    // The database refuses the insert (V21 is not in held_drivers): no request row reaches the dashboard.
+    expect(bus.requestsOf(session.id)).toHaveLength(0);
+    const refused = late.f.getStatus().requests.filter((r) => r.status === 'rejected');
+    expect(refused).toHaveLength(1);
+    expect(refused[0].reason).toBe('input_requests: this role may not send that input');
   });
 
   test('a driver phone that joined before the start is not watch-only', async () => {
-    const { session, dashboard, join } = setup(true);
+    const { session, dashboard, join } = setup();
     const early = join('driver');
     early.f.join(CODE);
     await early.f.pass();

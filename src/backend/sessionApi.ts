@@ -54,11 +54,10 @@ export interface ClockWrite {
   updatedAt: string;
 }
 
-/** A member of a session as the creator may see it: the device's role and profile (none under the current RLS, see the handoff). */
-export interface JoinedDevice {
+/** A driver phone that joined a session, as the creator reads it through session_driver_members(). */
+export interface DriverMember {
   deviceId: string;
-  role: string;
-  profileId: string | null;
+  driverId: DriverId;
 }
 
 export interface SessionHandlers {
@@ -82,8 +81,8 @@ export interface SessionApi {
   writeClock(id: string, clock: ClockWrite): Promise<void>;
   /** Creator only: held_drivers (the database allows it only at 17:00 with the clock stopped). */
   writeHeld(id: string, heldDrivers: readonly DriverId[]): Promise<void>;
-  /** Creator only: the members of the session and their device roles. */
-  readJoined(id: string): Promise<JoinedDevice[]>;
+  /** Creator only: the driver phones that joined the session, through the session_driver_members() RPC. */
+  readDriverMembers(id: string): Promise<DriverMember[]>;
   /** Creator only: appends one input. A repeated send of the same seq is harmless. */
   appendInput(id: string, seq: number, atMinute: number, input: EngineInput): Promise<void>;
   /** Creator only: the requests still pending in the session, oldest first. */
@@ -211,19 +210,13 @@ export function makeSupabaseSessionApi(client: SupabaseClient, userId: () => str
       await check<unknown>('write held drivers', client.from('live_sessions').update({ held_drivers: [...heldDrivers] }).eq('id', id).select('id'));
     },
 
-    async readJoined(id) {
-      type Raw = { device_id: string; devices: { role: string; profile_id: string | null } | { role: string; profile_id: string | null }[] | null };
+    async readDriverMembers(id) {
+      type Raw = { device_id: string; driver_id: string; joined_at: string };
       const rows = await check<Raw[] | null>(
-        'read members',
-        client.from('session_members').select('device_id, devices(role, profile_id)').eq('session_id', id) as unknown as PromiseLike<{
-          data: Raw[] | null;
-          error: unknown;
-        }>,
+        'read driver members',
+        client.rpc('session_driver_members', { p_session: id }) as unknown as PromiseLike<{ data: Raw[] | null; error: unknown }>,
       );
-      return (rows ?? []).map((r) => {
-        const dev = Array.isArray(r.devices) ? r.devices[0] : r.devices;
-        return { deviceId: r.device_id, role: dev?.role ?? '', profileId: dev?.profile_id ?? null };
-      });
+      return (rows ?? []).map((r) => ({ deviceId: r.device_id, driverId: r.driver_id as DriverId }));
     },
 
     async appendInput(id, seq, atMinute, input) {

@@ -9,7 +9,7 @@ import type { SessionInput } from '../../live/evening';
 import {
   SessionError,
   type ClockWrite,
-  type JoinedDevice,
+  type DriverMember,
   type RequestOutcome,
   type RequestRow,
   type SessionApi,
@@ -44,12 +44,6 @@ export class FakeSessionBus {
   private nextRequest = 1;
   /** When false, every call and every realtime delivery fails or stops, as with no network. */
   online = true;
-  /**
-   * Whether a creator can read the members of its session and their devices (session_members and devices). The real
-   * migration does not allow it: members and devices are readable only for the device itself. Tests turn it on to
-   * exercise the held-driver code path that the real rules cannot feed today.
-   */
-  rosterVisible = false;
   /** Every write the database accepted, in order (for the tests that count writes). */
   readonly accepted: string[] = [];
 
@@ -175,15 +169,17 @@ export class FakeSessionBus {
     this.emitSession(id);
   }
 
-  readJoined(userId: string, id: string): JoinedDevice[] {
+  /** session_driver_members(): creator only; the joined driver devices with their driver ids. */
+  readDriverMembers(userId: string, id: string): DriverMember[] {
     this.ensureOnline();
-    const s = this.sessions.get(id);
-    if (!s) return [];
-    const visible = this.rosterVisible ? [...s.members] : [...s.members].filter((m) => m === userId);
-    return visible.map((deviceId) => {
+    if (!this.isCreator(userId, id)) this.refuse('session_driver_members: only the session creator can read its members');
+    const s = this.sessions.get(id)!;
+    const out: DriverMember[] = [];
+    for (const deviceId of s.members) {
       const d = this.devices.get(deviceId);
-      return { deviceId, role: d?.role ?? '', profileId: d?.profileId ?? null };
-    });
+      if (d?.role === 'driver' && d.profileId) out.push({ deviceId, driverId: d.profileId as DriverId });
+    }
+    return out;
   }
 
   appendInput(userId: string, id: string, seq: number, atMinute: number, input: EngineInput): void {
@@ -229,10 +225,13 @@ export class FakeSessionBus {
     const device = this.devices.get(userId);
     if (!device || !this.isMember(userId, id)) this.refuse('input_requests: not a member of this session');
     const i = input as { type?: string; lot?: { donorId?: string }; driverId?: string };
+    const s = this.sessions.get(id)!;
+    // A DRIVER_RESPONSE needs a driver device whose driver id the session holds (migration 20261026120000).
+    const driverHeld = device.role === 'driver' && device.profileId !== null && s.row.heldDrivers.includes(device.profileId);
     const allowed =
       (device.role === 'donor' && i.type === 'LOT_POSTED' && i.lot?.donorId === device.profileId) ||
-      (device.role === 'driver' && i.type === 'DRIVER_RESPONSE' && i.driverId === device.profileId) ||
-      device.role === 'dashboard';
+      (device.role === 'driver' && i.type === 'DRIVER_RESPONSE' && i.driverId === device.profileId && driverHeld) ||
+      (device.role === 'dashboard' && i.type !== 'DRIVER_RESPONSE');
     if (!allowed) this.refuse('input_requests: this role may not send that input');
     const row = {
       id: this.nextRequest++,
@@ -297,9 +296,8 @@ class BusApi implements SessionApi {
   async writeHeld(id: string, heldDrivers: readonly DriverId[]): Promise<void> {
     this.bus.writeHeld(this.userId, id, heldDrivers);
   }
-  async readJoined(id: string): Promise<JoinedDevice[]> {
-    this.bus.ensureOnline();
-    return this.bus.readJoined(this.userId, id);
+  async readDriverMembers(id: string): Promise<DriverMember[]> {
+    return this.bus.readDriverMembers(this.userId, id);
   }
   async appendInput(id: string, seq: number, atMinute: number, input: EngineInput): Promise<void> {
     this.bus.appendInput(this.userId, id, seq, atMinute, input);

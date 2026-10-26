@@ -338,16 +338,17 @@ export class DashboardSession {
     }
   }
 
-  /** At 17:00 with the clock stopped, before the start: held drivers = the drivers who joined. Once only. */
+  /**
+   * At 17:00 with the clock stopped, before the start: held drivers = the driver phones that joined (session_driver_members).
+   * Once only.
+   */
   private async chooseHeldFromRoster(): Promise<void> {
     const id = this.active;
     const snap = this.opts.live.getSnapshot();
     if (id === null || this.heldFrozen || snap.running || snap.minute !== 1020) return;
     try {
-      const joined = await this.opts.api.readJoined(id);
-      const drivers = joined
-        .filter((j) => j.role === 'driver' && j.profileId)
-        .map((j) => j.profileId as DriverId);
+      const members = await this.opts.api.readDriverMembers(id);
+      const drivers = [...new Set(members.map((m) => m.driverId))];
       const r = this.setHeldDrivers(drivers);
       if (!r.ok) this.heldFrozen = true;
     } catch {
