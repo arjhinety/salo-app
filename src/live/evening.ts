@@ -101,6 +101,8 @@ export class LiveEvening {
   private visibleCache: { revision: number; log: readonly LogEntry[] } | null = null;
   private viewCache = new Map<DonorId, { revision: number; views: LotView[] }>();
   private listeners = new Set<() => void>();
+  /** The driver profile a person holds on this phone (decision D-Q5), or none. */
+  private held: DriverId | null = null;
 
   constructor(opts: LiveEveningOptions = {}) {
     const id = opts.eveningId ?? DEFAULT_EVENING_ID;
@@ -220,6 +222,23 @@ export class LiveEvening {
     this.inputs.push({ atMinute: this.minute(), input: { type: 'DRIVER_RESPONSE', driverId, lotId, answer } });
     this.run = null;
     this.publish();
+  }
+
+  /**
+   * Holds one driver profile on this phone (decision D-Q5), or releases it with null. The engine asks a held driver
+   * in every round it is eligible for and never offers for it; only DRIVER_RESPONSE inputs decide. The memoized run
+   * is dropped, so the next read re-runs the evening with the new hold.
+   */
+  holdDriver(driverId: DriverId | null): void {
+    if (driverId === this.held) return;
+    this.held = driverId;
+    this.run = null;
+    this.publish();
+  }
+
+  /** The driver profile this phone holds right now, or null. Read it on each render, after the snapshot changes. */
+  heldDriver(): DriverId | null {
+    return this.held;
   }
 
   /** Switches the policy at the clock, keeping the clock where it is. */
@@ -346,6 +365,7 @@ export class LiveEvening {
         policy: this.policy,
         params: this.params,
         inputs: this.inputs.map((i) => ({ atMinute: i.atMinute, input: i.input })),
+        humanDrivers: this.held === null ? undefined : new Set([this.held]),
       });
       this.runs += 1;
     }
