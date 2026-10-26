@@ -1,5 +1,7 @@
 # Parser tuning evaluation: Claude path (laptop proxy)
 
+**Label for every score in this report, including the all-four 94.3% (93.5%–95.2%): laptop proxy, tuning in-sample.** Hash check: the deployed Supabase `parse` function's `GET /health` (checked 2026-10-26, no Claude call) reports `prompt_sha256` 4d96cbac140a… (the same as every line of `docs/reports/claude-tuning/pass-{1,3,4}.jsonl`) but `request_config_sha256` 33fd2d6656d2…, which does **not** match the passes' 2aa58cdc2dec…. Model id, effort, `max_tokens` 2048, SDK 0.135.0 and the output JSON Schema (sha256 19b3f023422b…) are the same; the hash differs because the function hashes its own Deno `schema.ts`/`parse.ts` (as sha256 digests) where the laptop proxy hashes the source of `server/src/schema.js`/`parse.js`. So the 94.3% has not been measured on the Edge Function and applies to the laptop proxy only. (Note added by hand; a scorer re-run would drop it.)
+
 **Scope: tuning messages only.** 170 rows, evenings E01 to E10, from `data/parse-dev/donor_messages_tuning.csv`. The messages are template-generated, so every number here is an **optimistic upper bound**. No pilot or main message was sent or scored.
 
 Scores are computed on the raw ParseResponse (src/parse output), before any catalog mapping.
@@ -41,7 +43,7 @@ Not sent: no attempt line at all. Unanswered: attempts exist, but none is usable
 | quantity | 165/170 (97.1%) | 163/167 (97.6%) | 166/170 (97.6%) | 97.4% (97.1%–97.6%) |
 | unit | 164/170 (96.5%) | 164/167 (98.2%) | 164/170 (96.5%) | 97.0% (96.5%–98.2%) |
 | pickup_by | 169/170 (99.4%) | 167/167 (100.0%) | 169/170 (99.4%) | 99.6% (99.4%–100.0%) |
-| all four | 159/170 (93.5%) | 159/167 (95.2%) | 160/170 (94.1%) | 94.3% (93.5%–95.2%) |
+| all four | 159/170 (93.5%) | 159/167 (95.2%) | 160/170 (94.1%) | 94.3% (93.5%–95.2%) — laptop proxy, tuning in-sample |
 
 #### 3A.2 The 167 messages without M0001, M0008 and M0025 (still in-sample: food list overlap; k/answered)
 
