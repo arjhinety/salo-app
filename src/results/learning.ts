@@ -5,7 +5,8 @@ import { REGISTRATION, requireRecordOpen, type Registration } from './registrati
 
 /**
  * Supporting checks (RES-07). Labelled supporting, never a main result (guide p.13, p.15).
- * Functions only: the learning-off run needs an engine option that does not exist yet (see the handoff).
+ * These functions compare finished runs. The learning-off runs are produced by the runner (runLearningComparison),
+ * which uses the engine option `learning: false` (every driver's estimate fixed at 0.50).
  */
 
 const TOLERANCE_KG = 1e-9;

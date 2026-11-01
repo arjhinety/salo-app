@@ -62,6 +62,12 @@ export interface RunOptions {
    * runEvening). Absent or empty: every driver is simulated, as before D-Q5.
    */
   humanDrivers?: ReadonlySet<DriverId>;
+  /**
+   * Learning on (default) or off (RES-07, supporting evidence only). Off: every driver's reliability estimate stays at
+   * LEARNING_OFF_ESTIMATE (0.50) for the whole evening, in offers, PROPOSE messages and RELIABILITY_UPDATED events.
+   * Show and no-show outcomes still come from `trueShowRate`, with the same draws. Absent or true: the same run as before.
+   */
+  learning?: boolean;
 }
 
 export interface RunOutput {
@@ -76,6 +82,9 @@ export interface RunOutput {
     etaTiesBrokenByReliability: number;
   };
 }
+
+/** The reliability estimate every driver keeps when learning is off: the prior before any run, reliability(0, 0). */
+export const LEARNING_OFF_ESTIMATE = reliability(0, 0);
 
 type Loc = { at: 'home' } | { at: 'pantry'; pantryId: PantryId };
 
@@ -216,6 +225,9 @@ export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): 
   const truth = opts.trueShowRate ?? TRUE_SHOW_RATE;
   const replyDelayMax = opts.replyDelayMaxMin ?? DRIVER_REPLY_DELAY_MAX_MIN;
   const humans: ReadonlySet<DriverId> = opts.humanDrivers ?? new Set();
+  const learning = opts.learning ?? true;
+  /** The agents' show-rate estimate for a driver. Frozen at LEARNING_OFF_ESTIMATE when learning is off (RES-07). */
+  const estimateOf = (ds: DriverState) => (learning ? reliability(ds.shows, ds.runs) : LEARNING_OFF_ESTIMATE);
   /** Held drivers the engine picked and waits on for COMMIT (decision D-Q5). Keyed by driver. */
   const awaiting = new Map<DriverId, Awaiting>();
   const seed = evening.seed;
@@ -365,7 +377,7 @@ export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): 
     ds.runs += 1;
     if (showed) ds.shows += 1;
     emit({ type: 'RELIABILITY_UPDATED', driverId: ds.d.id, shows: ds.shows, runs: ds.runs,
-      estimate: reliability(ds.shows, ds.runs) });
+      estimate: estimateOf(ds) });
   }
 
   function strand(ls: LotState) {
@@ -391,7 +403,7 @@ export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): 
         waiting.add(ds.d.id);
         continue;
       }
-      const rel = reliability(ds.shows, ds.runs);
+      const rel = estimateOf(ds);
       offers.push({ ds, pickup, arrive, rel });
       msg({ type: 'PROPOSE', proposer: 'driver', lotId: lot.id, atMinute: now, driverId: ds.d.id,
         etaMinute: arrive, reliability: rel });
@@ -535,7 +547,7 @@ export function runEvening(wx: WorldIndex, evening: Evening, opts: RunOptions): 
     const deadline = Math.min(ds.d.availableToMinute, lot.pickupByMinute, pantry.closesMinute);
     if (awaiting.has(driverId) || arrive > deadline) return;
     round.waiting.delete(driverId);
-    const rel = reliability(ds.shows, ds.runs);
+    const rel = estimateOf(ds);
     round.offers.push({ ds, pickup, arrive, rel });
     msg({ type: 'PROPOSE', proposer: 'driver', lotId: lot.id, atMinute: now, driverId, etaMinute: arrive, reliability: rel });
     if (round.waiting.size === 0) finishRound(ls, round);

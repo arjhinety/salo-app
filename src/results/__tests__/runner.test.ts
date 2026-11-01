@@ -9,7 +9,7 @@ import { POLICY_IDS } from '../../engine/policies';
 import { runEvening } from '../../engine/simulate';
 import type { Evening, EveningResult, FrozenParams, PolicyId } from '../../engine/types';
 import { checksumParams, type Registration, REGISTRATION } from '../registration';
-import { mainEvenings, ResultsGateError, runMainResults, summarize } from '../runner';
+import { mainEvenings, ResultsGateError, runLearningComparison, runMainResults, summarize } from '../runner';
 
 jest.mock('../../engine/simulate', () => ({ runEvening: jest.fn() }));
 
@@ -153,5 +153,49 @@ describe('summarize (no engine call)', () => {
 
   test('REGISTRATION keeps the gate closed, so the summary is never reached from the runner by accident', () => {
     expect(REGISTRATION.mainEveningCount).toBeNull();
+  });
+});
+
+describe('the learning-off comparison (RES-07) goes through the same gate', () => {
+  test('gate closed (default record, untuned parameters): throws, and runEvening is never called', () => {
+    expect(() => runLearningComparison({ params: UNTUNED_PARAMS })).toThrow(ResultsGateError);
+    expect(() => runLearningComparison({ params: tuned })).toThrow(/the pilot has not run/);
+    expect(mockedRun).not.toHaveBeenCalled();
+  });
+
+  test('a count that differs from the evenings given: throws, and runEvening is never called', () => {
+    expect(() => runLearningComparison({ params: tuned, registration: openReg(3), evenings: synthetic(['M1', 'M2']) })).toThrow(
+      /recorded count is 3/,
+    );
+    expect(mockedRun).not.toHaveBeenCalled();
+  });
+
+  test('a pilot evening is refused before any run', () => {
+    expect(() =>
+      runLearningComparison({ params: tuned, registration: openReg(1), evenings: synthetic(['P1'], 'pilot') }),
+    ).toThrow('Only main_sample evenings are reported.');
+    expect(mockedRun).not.toHaveBeenCalled();
+  });
+
+  test('gate open (synthetic): each policy runs twice per evening, learning on and off, and the pairs are compared', () => {
+    // Learning off rescues 2 kg less per evening for salo, and the same food for the other policies.
+    mockedRun.mockImplementation((_wx: unknown, e: Evening, opts: { policy: PolicyId; learning?: boolean }) => {
+      const r = fakeResult(e.id, opts.policy);
+      if (opts.learning === false && opts.policy === 'salo') return { result: { ...r, foodRescuedKg: 8 } };
+      return { result: r };
+    });
+    const out = runLearningComparison({ params: tuned, registration: openReg(2), evenings: synthetic(['M1', 'M2']) });
+
+    expect(mockedRun).toHaveBeenCalledTimes(16);
+    expect(mockedRun.mock.calls.filter((c) => c[2].learning === true)).toHaveLength(8);
+    expect(mockedRun.mock.calls.filter((c) => c[2].learning === false)).toHaveLength(8);
+    // Salo: learning on minus off is 10 - 8 = 2 kg on each of the two evenings, so the interval is [2, 2] and learning helps.
+    expect(out.salo.evenings).toBe(2);
+    expect(out.salo.mean).toBeCloseTo(2, 12);
+    expect(out.salo.reading).toBe('learning_helps');
+    // The other policies: no difference, so the interval touches zero.
+    expect(out.central_greedy.mean).toBeCloseTo(0, 12);
+    expect(out.central_greedy.reading).toBe('no_clear_difference');
+    expect(out.salo.level).toBe(0.95);
   });
 });

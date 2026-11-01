@@ -5,6 +5,7 @@ import { runEvening } from '../engine/simulate';
 import type { Evening, EveningResult, FrozenParams, PolicyId } from '../engine/types';
 import { indexWorld } from '../engine/world';
 import { compareAll, type Comparison } from './intervals';
+import { learningComparison, type LearningComparison } from './learning';
 import { measureValue, MEASURES, type MeasureId } from './measures';
 import { gateReasons, REGISTRATION, ResultsGateError, type Registration } from './registration';
 import { verdictOf, type Verdict } from './verdict';
@@ -55,16 +56,18 @@ export function summarize(
   return { evenings, cells, comparisons, verdict: verdictOf(pick('foodRescued'), pick('needMet')) };
 }
 
-/**
- * Runs the four policies on the main evenings and summarises them. Refuses (throws) before any evening runs
- * unless the gate is open: pilot run, main-evening count recorded, checksum recorded, real frozen parameters
- * (never UNTUNED_PARAMS), and the count equal to the evenings given.
- */
-export function runMainResults(input: {
+type GateInput = {
   params: FrozenParams;
   registration?: Registration;
   evenings?: readonly Evening[];
-}): MainResults {
+};
+
+/**
+ * The gate, checked before any evening runs. Refuses (throws) unless the pilot has run, the main-evening count and the
+ * checksum are recorded, the parameters are real (never UNTUNED_PARAMS), only main_sample evenings are given, and the
+ * count equals the evenings given.
+ */
+function openGate(input: GateInput): { reg: Registration; evenings: readonly Evening[] } {
   const reg = input.registration ?? REGISTRATION;
   const evenings = input.evenings ?? mainEvenings(EVENINGS);
   const reasons = gateReasons(reg, input.params);
@@ -75,10 +78,38 @@ export function runMainResults(input: {
   if (evenings.length !== reg.mainEveningCount) {
     throw new ResultsGateError(`The recorded count is ${reg.mainEveningCount} but ${evenings.length} evenings were given.`);
   }
+  return { reg, evenings };
+}
+
+/** The four policies on the given evenings, learning on or off (RES-07). Callers run openGate first. */
+function runPolicies(params: FrozenParams, evenings: readonly Evening[], learning: boolean): Record<PolicyId, EveningResult[]> {
   const wx = indexWorld(WORLD);
   const runs = {} as Record<PolicyId, EveningResult[]>;
   for (const policy of POLICY_IDS) {
-    runs[policy] = evenings.map((e) => runEvening(wx, e, { policy, params: input.params }).result);
+    runs[policy] = evenings.map((e) => runEvening(wx, e, { policy, params, learning }).result);
   }
-  return summarize(runs, reg);
+  return runs;
+}
+
+/**
+ * Runs the four policies on the main evenings and summarises them. Refuses (throws) before any evening runs
+ * unless the gate is open (see openGate).
+ */
+export function runMainResults(input: GateInput): MainResults {
+  const { reg, evenings } = openGate(input);
+  return summarize(runPolicies(input.params, evenings, true), reg);
+}
+
+/**
+ * The learning-off comparison (RES-07): each policy on the main evenings with learning on and with learning off (every
+ * driver's estimate fixed at 0.50), compared evening by evening. Supporting evidence only, never a main result.
+ * Same gate as runMainResults.
+ */
+export function runLearningComparison(input: GateInput): Record<PolicyId, LearningComparison> {
+  const { reg, evenings } = openGate(input);
+  const on = runPolicies(input.params, evenings, true);
+  const off = runPolicies(input.params, evenings, false);
+  const out = {} as Record<PolicyId, LearningComparison>;
+  for (const policy of POLICY_IDS) out[policy] = learningComparison(on[policy], off[policy], reg);
+  return out;
 }
