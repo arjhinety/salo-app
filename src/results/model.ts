@@ -5,7 +5,7 @@ import { NOT_MEASURED, RESULTS_COPY as C, SUPPORTING_LABELS } from './copy';
 import { COMPARISONS, type Comparison, type PairSpec } from './intervals';
 import type { LearningComparison } from './learning';
 import { MEASURES, type MeasureId } from './measures';
-import { gateReasons, REGISTRATION, type Registration } from './registration';
+import { gateReasons, MAIN_EVENINGS_IN_DATASET, REGISTRATION, type Registration } from './registration';
 import type { MainResults } from './runner';
 import { VERDICT_LABEL } from './verdict';
 
@@ -15,11 +15,14 @@ export interface Row {
 }
 
 export interface ScreenModel {
-  /** False while the pre-registration gate is closed. Every number then reads "Not measured yet". */
+  /**
+   * True only when the screen shows computed main results (openModel). currentModel never computes them, so it is
+   * false even when the record is complete. Every number then reads "Not measured yet".
+   */
   open: boolean;
-  /** The one plain line that says why the main results are gated; null when open. */
+  /** The one plain line that says why no main result is shown; null only in openModel. */
   gateLine: string | null;
-  /** Why the gate is closed. For tests only: the screen shows just gateLine. */
+  /** Why no main result is shown. For tests only: the screen shows just gateLine. */
   reasons: string[];
   policies: { id: PolicyId; label: string; cells: Row[] }[];
   mainRows: Row[];
@@ -66,15 +69,43 @@ function footer(reg: Registration, checksum: string): Row[] {
 }
 
 /**
- * The gated screen: every cell, interval and verdict reads "Not measured yet". The rows come from the same
- * twelve-comparison table the open screen uses, so the closed screen lists every comparison.
+ * Why no main result is shown: the gate's own reasons, and a recorded count that the dataset cannot meet. The runner
+ * refuses such a count too (openGate: "The recorded count ... evenings were given"), so the screen must not show open.
+ */
+export function screenReasons(reg: Registration, params: FrozenParams | null): string[] {
+  const reasons = gateReasons(reg, params);
+  if (countMismatch(reg)) {
+    reasons.push(`the recorded count is ${reg.mainEveningCount}, not the ${MAIN_EVENINGS_IN_DATASET} main evenings in the dataset`);
+  }
+  return reasons;
+}
+
+/** True when a count is recorded and it is not the number of main evenings in the dataset. */
+function countMismatch(reg: Registration): boolean {
+  return reg.mainEveningCount !== null && reg.mainEveningCount !== MAIN_EVENINGS_IN_DATASET;
+}
+
+/**
+ * The one plain line for a screen with no main results. The record is complete but the count is not the dataset's:
+ * the count line. Some other condition is missing: the gate line. Nothing missing: the pilot-recorded line.
+ */
+function gateLineFor(reg: Registration, params: FrozenParams | null, reasons: readonly string[]): string {
+  if (reasons.length === 0) return C.gateRecordedNoRun;
+  if (gateReasons(reg, params).length === 0 && countMismatch(reg)) return C.gateCountMismatch;
+  return C.gateClosed;
+}
+
+/**
+ * The screen with no main results: every cell, interval and verdict reads "Not measured yet". The rows come from the
+ * same twelve-comparison table the open screen uses, so this screen lists every comparison.
  */
 export function closedModel(reg: Registration = REGISTRATION, params: FrozenParams | null = null): ScreenModel {
   const pending = (label: string): Row => ({ label, value: NOT_MEASURED });
+  const reasons = screenReasons(reg, params);
   return {
     open: false,
-    gateLine: C.gateClosed,
-    reasons: gateReasons(reg, params),
+    gateLine: gateLineFor(reg, params, reasons),
+    reasons,
     policies: POLICY_IDS.map((p) => ({
       id: p,
       label: C.policies[p],
@@ -127,7 +158,10 @@ export function openModel(
   };
 }
 
-/** What the screen shows today: the gate is closed (no pilot and no main-evening count; the frozen parameters are in the build). */
+/**
+ * What the screen shows today: no main result. The pilot is recorded and the count is 44, which dataset v1.2 cannot
+ * meet (10 main evenings), so the screen stays closed. This function never runs an evening, even if the record opens.
+ */
 export function currentModel(): ScreenModel {
   return closedModel(REGISTRATION, FROZEN_PARAMS);
 }

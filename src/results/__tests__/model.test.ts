@@ -6,19 +6,44 @@ import { join } from 'path';
 import type { EveningResult, PolicyId } from '../../engine/types';
 import { RESULTS_COPY, NOT_MEASURED, RESULTS_ROUTE } from '../copy';
 import { formatCell, formatComparison, closedModel, currentModel, openModel } from '../model';
-import { REGISTRATION } from '../registration';
+import { FROZEN_PARAMS } from '../../engine/frozenParams';
+import { REGISTRATION, type Registration } from '../registration';
 import { summarize } from '../runner';
 import { COMPARISONS, type Comparison } from '../intervals';
 
 // Pilot (E01-E20) and tuning ids. None may appear on the Results screen (RES-06). E21-E30 are allowed.
 const PILOT_OR_TUNING_ID = /\bE(0[1-9]|1[0-9]|20)\b/;
 
-describe('closed screen (the gate is shut today)', () => {
+/** The record before the pilot: nothing recorded. A synthetic closed record, to prove the closed-gate copy. */
+const beforePilot: Registration = { ...REGISTRATION, pilotDone: false, mainEveningCount: null };
+
+describe('closed screen today (the pilot is recorded, but the count 44 is not the dataset\'s 10 main evenings)', () => {
   const m = currentModel();
 
-  test('is closed, with the one plain gate line from the stories', () => {
+  test('is closed: no main result is shown, and the line says the count does not match the dataset', () => {
     expect(m.open).toBe(false);
-    expect(m.gateLine).toBe('Main results appear after the pilot has run and the number of main evenings is recorded (guide p.19).');
+    expect(m.gateLine).toBe(
+      'The recorded main-evening count does not match the main evenings in the dataset, so no main result is shown (guide p.19).',
+    );
+    expect(m.reasons).toEqual(['the recorded count is 44, not the 10 main evenings in the dataset']);
+  });
+
+  test('the same screen with the count matching the dataset would say the main evenings have not been run', () => {
+    const m10 = closedModel({ ...REGISTRATION, mainEveningCount: 10 }, FROZEN_PARAMS);
+    expect(m10.open).toBe(false);
+    expect(m10.gateLine).toBe(
+      'The pilot has run and the main-evening count is recorded. The main evenings have not been run, so no main result is shown (guide p.19).',
+    );
+    expect(m10.reasons).toEqual([]);
+    expect(m10.policies.every((p) => p.cells.every((c) => c.value === NOT_MEASURED))).toBe(true);
+    expect(m10.verdict).toBe(NOT_MEASURED);
+  });
+
+  test('before the pilot is recorded, the screen keeps the one plain gate line from the stories, with the two reasons', () => {
+    const before = closedModel(beforePilot, FROZEN_PARAMS);
+    expect(before.open).toBe(false);
+    expect(before.gateLine).toBe('Main results appear after the pilot has run and the number of main evenings is recorded (guide p.19).');
+    expect(before.reasons).toEqual(['the pilot has not run', 'the number of main evenings is not recorded']);
   });
 
   test('every policy cell reads "Not measured yet": four policies by four measures', () => {
@@ -49,10 +74,6 @@ describe('closed screen (the gate is shut today)', () => {
       { label: 'Frozen parameters checksum', value: NOT_MEASURED },
     ]);
     expect(REGISTRATION.frozenParamsChecksum).toBe('sha256:5d0ef9b5bba3bbe441e1a646644bb55ef2413e3925eb94c7783678dfbc10d42e');
-  });
-
-  test('the closed reasons name the two conditions still missing: the pilot and the main-evening count', () => {
-    expect(m.reasons).toEqual(['the pilot has not run', 'the number of main evenings is not recorded']);
   });
 
   test('no pilot or tuning evening id appears anywhere in the screen model or its copy (RES-06)', () => {

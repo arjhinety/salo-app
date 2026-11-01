@@ -4,6 +4,7 @@
 
 
 import { EVENINGS } from '../../data/dataset';
+import { FROZEN_PARAMS } from '../../engine/frozenParams';
 import { UNTUNED_PARAMS } from '../../engine/params';
 import { POLICY_IDS } from '../../engine/policies';
 import { runEvening } from '../../engine/simulate';
@@ -56,19 +57,22 @@ beforeEach(() => {
   mockedRun.mockReset();
 });
 
-describe('the gate is closed today (RES-03, RES-06)', () => {
-  test('the default record and the untuned parameters: throws, and runEvening is never called', () => {
-    expect(() => runMainResults({ params: UNTUNED_PARAMS })).toThrow(ResultsGateError);
+/** The record before the pilot: nothing recorded (a synthetic closed record; the real one is recorded now). */
+const beforePilot: Registration = { ...REGISTRATION, pilotDone: false, mainEveningCount: null };
+
+describe('the gate is closed before the pilot is recorded (RES-03, RES-06), with a synthetic closed record', () => {
+  test('the untuned parameters: throws, and runEvening is never called', () => {
+    expect(() => runMainResults({ params: UNTUNED_PARAMS, registration: beforePilot })).toThrow(ResultsGateError);
     expect(mockedRun).not.toHaveBeenCalled();
   });
 
   test('tuned-looking parameters with the record still closed: throws, and runEvening is never called', () => {
-    expect(() => runMainResults({ params: tuned })).toThrow(ResultsGateError);
+    expect(() => runMainResults({ params: tuned, registration: beforePilot })).toThrow(ResultsGateError);
     expect(mockedRun).not.toHaveBeenCalled();
   });
 
   test('the error says which conditions are missing', () => {
-    expect(() => runMainResults({ params: UNTUNED_PARAMS })).toThrow(/the pilot has not run/);
+    expect(() => runMainResults({ params: UNTUNED_PARAMS, registration: beforePilot })).toThrow(/the pilot has not run/);
   });
 
   test('the default evenings are exactly E21 to E30, and no tuning or pilot evening is selected', () => {
@@ -151,15 +155,26 @@ describe('summarize (no engine call)', () => {
     expect(out.cells.central_greedy.needMet).toBeCloseTo(0.6, 12);
   });
 
-  test('REGISTRATION keeps the gate closed, so the summary is never reached from the runner by accident', () => {
-    expect(REGISTRATION.mainEveningCount).toBeNull();
+});
+
+describe('the recorded state (pilot done, count 44): the runner still refuses the real main evenings', () => {
+  test('the real record and the frozen parameters: the gate checks pass, but 44 is not the 10 evenings given, so it throws before any run', () => {
+    expect(REGISTRATION).toMatchObject({ pilotDone: true, mainEveningCount: 44 });
+    expect(() => runMainResults({ params: FROZEN_PARAMS })).toThrow('The recorded count is 44 but 10 evenings were given.');
+    expect(mockedRun).not.toHaveBeenCalled();
+  });
+
+  test('the real record with the untuned parameters: throws on the parameters, no run', () => {
+    expect(() => runMainResults({ params: UNTUNED_PARAMS })).toThrow(/the parameters are untuned/);
+    expect(mockedRun).not.toHaveBeenCalled();
   });
 });
 
 describe('the learning-off comparison (RES-07) goes through the same gate', () => {
-  test('gate closed (default record, untuned parameters): throws, and runEvening is never called', () => {
-    expect(() => runLearningComparison({ params: UNTUNED_PARAMS })).toThrow(ResultsGateError);
-    expect(() => runLearningComparison({ params: tuned })).toThrow(/the pilot has not run/);
+  test('gate closed (synthetic record before the pilot, untuned parameters): throws, and runEvening is never called', () => {
+    expect(() => runLearningComparison({ params: UNTUNED_PARAMS, registration: beforePilot })).toThrow(ResultsGateError);
+    expect(() => runLearningComparison({ params: tuned, registration: beforePilot })).toThrow(/the pilot has not run/);
+    expect(() => runLearningComparison({ params: FROZEN_PARAMS })).toThrow('The recorded count is 44 but 10 evenings were given.');
     expect(mockedRun).not.toHaveBeenCalled();
   });
 

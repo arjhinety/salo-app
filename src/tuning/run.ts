@@ -36,6 +36,8 @@ export function sweep(
 export interface EveningDetail {
   evening: string;
   foodKg: number;
+  /** Posted kg minus food rescued (the engine's foodWastedKg). */
+  foodWastedKg: number;
   /** null when no pantry needed anything that evening. */
   worstNeedMet: number | null;
   /** Pantries with need > 0 that received no on-time food. */
@@ -47,9 +49,11 @@ export interface EveningDetail {
   totalNeedKg: number;
 }
 
-/** One evening under one policy and one parameter set, with the per-pantry numbers the report shows. */
-export function detailOf(wx: WorldIndex, ev: Evening, policy: PolicyId, params: FrozenParams): EveningDetail {
-  assertTuningEvening(ev);
+/**
+ * One evening under one policy and one parameter set (learning on, the engine default), with the per-pantry numbers the
+ * report shows. Does not check the split: callers check it first (tuning: detailOf; pilot: assertPilotEvening).
+ */
+export function measureEvening(wx: WorldIndex, ev: Evening, policy: PolicyId, params: FrozenParams): EveningDetail {
   const { log, result } = runEvening(wx, ev, { policy, params });
   const onTime = new Map<string, number>();
   for (const { event } of log) {
@@ -64,6 +68,7 @@ export function detailOf(wx: WorldIndex, ev: Evening, policy: PolicyId, params: 
   return {
     evening: ev.id,
     foodKg: result.foodRescuedKg,
+    foodWastedKg: result.foodWastedKg,
     worstNeedMet: result.worstNeedMet,
     pantriesLeftWithZero: needing.filter((n) => (onTime.get(n.pantryId) ?? 0) === 0).length,
     pantriesWithNeed: needing.length,
@@ -115,6 +120,12 @@ export function tunePolicy(
     chosenDetails,
     zeroWorstEvenings: chosenDetails.filter((d) => d.worstNeedMet === 0).length,
   };
+}
+
+/** One tuning evening under one policy and one parameter set (the guard, then measureEvening). */
+export function detailOf(wx: WorldIndex, ev: Evening, policy: PolicyId, params: FrozenParams): EveningDetail {
+  assertTuningEvening(ev);
+  return measureEvening(wx, ev, policy, params);
 }
 
 /** The untuned baselines (nothing to tune): the same per-evening table. */

@@ -1,5 +1,7 @@
 /// <reference types="jest" />
 // The pre-registration gate (RES-03, RES-06). Expected values are written out, not derived from the code under test.
+// The recorded state is checked against the record itself. The gate logic is checked with a synthetic closed record,
+// so the logic keeps being proven after the real record opened.
 
 import { FROZEN_PARAMS } from '../../engine/frozenParams';
 import { UNTUNED_PARAMS } from '../../engine/params';
@@ -26,25 +28,40 @@ const openRegistration = (checksum: string | null): Registration => ({
   seed: 20260927,
 });
 
-describe('REGISTRATION', () => {
-  test('is closed and carries the documented seed and resample count; the checksum is the frozen parameters', () => {
+/** A synthetic record as it stood before the pilot: nothing recorded. Used to prove the gate logic. */
+const closedRegistration: Registration = { ...REGISTRATION, pilotDone: false, mainEveningCount: null };
+
+describe('REGISTRATION (recorded 2026-11-01 after the pilot)', () => {
+  test('the pilot is done, the count is the pilot formula result 44, the checksum is the frozen parameters, and the seed and resamples are fixed', () => {
     expect(REGISTRATION).toEqual({
-      mainEveningCount: null,
-      pilotDone: false,
+      mainEveningCount: 44,
+      pilotDone: true,
       frozenParamsChecksum: 'sha256:5d0ef9b5bba3bbe441e1a646644bb55ef2413e3925eb94c7783678dfbc10d42e',
       resamples: 10000,
       seed: 20260927,
     });
   });
 
-  test('today the gate is closed: the pilot has not run and the main-evening count is not recorded', () => {
+  test('with the frozen parameters the recorded state passes the gate own checks (the screen adds the count check, see model.test.ts)', () => {
+    expect(gateReasons(REGISTRATION, FROZEN_PARAMS)).toEqual([]);
+    expect(gateOpen(REGISTRATION, FROZEN_PARAMS)).toBe(true);
+  });
+
+  test('the recorded state with no parameters in the build is closed, and says so', () => {
     expect(gateOpen(REGISTRATION, null)).toBe(false);
-    expect(gateReasons(REGISTRATION, null)).toEqual([
+    expect(gateReasons(REGISTRATION, null)).toEqual(['no frozen parameters are in the build']);
+  });
+});
+
+describe('the gate logic, with a synthetic closed record (nothing recorded)', () => {
+  test('closed, with the three reasons: the pilot, the count, and the parameters', () => {
+    expect(gateOpen(closedRegistration, null)).toBe(false);
+    expect(gateReasons(closedRegistration, null)).toEqual([
       'the pilot has not run',
       'the number of main evenings is not recorded',
       'no frozen parameters are in the build',
     ]);
-    expect(gateReasons(REGISTRATION, FROZEN_PARAMS)).toEqual([
+    expect(gateReasons(closedRegistration, FROZEN_PARAMS)).toEqual([
       'the pilot has not run',
       'the number of main evenings is not recorded',
     ]);
@@ -68,7 +85,11 @@ describe('REGISTRATION', () => {
   });
 
   test('the pilot flag alone is not enough: the count and checksum must also be recorded', () => {
-    expect(gateOpen({ ...REGISTRATION, pilotDone: true }, tuned)).toBe(false);
+    expect(gateOpen({ ...closedRegistration, pilotDone: true }, tuned)).toBe(false);
+  });
+
+  test('the count alone is not enough: the pilot must also be recorded', () => {
+    expect(gateOpen({ ...closedRegistration, mainEveningCount: 44 }, tuned)).toBe(false);
   });
 });
 

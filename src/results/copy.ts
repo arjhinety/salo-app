@@ -15,6 +15,10 @@ export const RESULTS_COPY = {
   back: 'Back to dashboard',
   /** The one plain gate line. The pilot is named without its evening ids (RES-06: no pilot ids on the screen). */
   gateClosed: 'Main results appear after the pilot has run and the number of main evenings is recorded (guide p.19).',
+  /** The pilot is recorded, but the screen never runs the main evenings itself, so no main result is shown. */
+  gateRecordedNoRun: 'The pilot has run and the main-evening count is recorded. The main evenings have not been run, so no main result is shown (guide p.19).',
+  /** The recorded count is more main evenings than the dataset has. The runner would refuse it, so the screen stays closed. */
+  gateCountMismatch: 'The recorded main-evening count does not match the main evenings in the dataset, so no main result is shown (guide p.19).',
   evenings: 'Evenings reported: E21 to E30 (main_sample).',
   policiesHeading: 'Four policies, same evenings',
   policies: {

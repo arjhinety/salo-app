@@ -5,6 +5,9 @@ import type { Evening, EveningResult, PolicyId } from '../../engine/types';
 import { ceilingCounts, learningComparison, reachedFoodCeiling } from '../learning';
 import { REGISTRATION, ResultsGateError, type Registration } from '../registration';
 
+// The record before the pilot: nothing recorded (a synthetic closed record).
+const beforePilot: Registration = { ...REGISTRATION, pilotDone: false, mainEveningCount: null };
+
 // A record with every condition filled in: the functions run only when the record is complete.
 const openRecord: Registration = { ...REGISTRATION, mainEveningCount: 10, pilotDone: true, frozenParamsChecksum: 'fnv1a32:00000002' };
 
@@ -58,7 +61,7 @@ describe('ceilingCounts', () => {
   test('refuses while the record is closed (RES-07 is gated too)', () => {
     const evenings = [evening('E21', [10, 20])];
     const runs = { salo: [r('E21', 'salo', 30)], fcfs: [r('E21', 'fcfs', 1)], nearest: [r('E21', 'nearest', 1)], central_greedy: [r('E21', 'central_greedy', 1)] };
-    expect(() => ceilingCounts(runs, evenings)).toThrow(ResultsGateError);
+    expect(() => ceilingCounts(runs, evenings, beforePilot)).toThrow(ResultsGateError);
   });
 });
 
@@ -80,7 +83,7 @@ describe('learningComparison (supporting, 95%)', () => {
   });
 
   test('refuses while the record is closed', () => {
-    expect(() => learningComparison([r('E21', 'salo', 1)], [r('E21', 'salo', 1)])).toThrow(ResultsGateError);
+    expect(() => learningComparison([r('E21', 'salo', 1)], [r('E21', 'salo', 1)], beforePilot)).toThrow(ResultsGateError);
   });
 
   test('runs on different evenings are refused', () => {
