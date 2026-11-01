@@ -82,7 +82,7 @@ export const S = {
   /** TalkBack hint on a donor tag. */
   openLot: 'Buksan ang detalye ng lot',
   /** The TalkBack label of the simulated clock on the tarp (the dashboard uses `dash.clockA11y`). */
-  clockA11y: (clock: string) => `Oras sa simulasyon ${clock}. Simulated time ${clock}.`,
+  clockA11y: (clock: string) => `Oras sa simulasyon: ${clock}. Simulated time ${clock}.`,
   /** The sentences a tag reads aloud, by state. The state word is in the sentence where it matters. */
   tagWho: {
     bids: (n: number) => `${n} pantry ang nag-bid.`,

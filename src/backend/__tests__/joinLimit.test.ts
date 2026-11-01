@@ -68,7 +68,7 @@ describe('join attempt limit: the follower', () => {
 describe('join attempt limit: copy', () => {
   test('the limit line is the agreed Filipino · English wording', () => {
     expect(SYNC.join.tooMany).toBe(
-      'Masyadong maraming subok. Maghintay ng 10 minuto. · Too many tries. Wait 10 minutes.',
+      'Masyadong maraming attempt. Maghintay ng 10 minuto. · Too many tries. Wait 10 minutes.',
     );
   });
 });
