@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, TextInput, View, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DraftCards } from '../../components/DraftCards';
 import { MicIcon } from '../../components/icons';
@@ -244,7 +244,7 @@ export default function Post() {
         </Pressable>
 
         {parseSource === 'fallback' ? (
-          <View style={[styles.banner, { backgroundColor: c.tape, borderColor: c.kraftEdge }]} accessibilityRole="alert">
+          <View style={[styles.banner, { backgroundColor: c.tape, borderColor: c.kraftEdge }]} accessibilityRole="alert" accessibilityLiveRegion="polite">
             <Text style={[TYPE.bodyStrong, { color: c.onTape }]}>{S.parsePost.fallbackBanner}</Text>
           </View>
         ) : null}
@@ -344,7 +344,6 @@ export default function Post() {
         <Pressable
           onPress={() => router.back()}
           accessibilityRole="button"
-          accessibilityLabel="Bumalik"
           style={({ pressed }) => [styles.back, { borderColor: c.tarp, opacity: pressed ? 0.8 : 1 }]}
         >
           <Text style={[TYPE.bodyStrong, { color: c.tarp }]}>{S.postScreen.back}</Text>

@@ -15,7 +15,7 @@ import { ThemeProvider, useTheme } from '../theme/theme';
 SplashScreen.preventAutoHideAsync();
 
 function Shell() {
-  const { c } = useTheme();
+  const { c, reduceMotion } = useTheme();
   // The simulated evening keeps its clock across screens, so the ticker lives here, not on one screen.
   useLiveTicker();
   // The backend (sign-in, uploads, outbox) runs for the whole app, next to the clock.
@@ -25,7 +25,8 @@ function Shell() {
   return (
     <>
       <StatusBar style="light" />
-      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: c.ground }, animation: 'fade' }} />
+      {/* Screen changes are a fade, or an instant cut when the phone asks for less motion (CC-10). */}
+      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: c.ground }, animation: reduceMotion ? 'none' : 'fade' }} />
     </>
   );
 }

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { dash, S } from '../i18n/strings';
 import { useTheme } from '../theme/theme';
@@ -28,7 +28,7 @@ export function TarpBar({
   const insets = useSafeAreaInsets();
   const chipText = chip?.text ?? S.simulated.fil.toUpperCase();
   const chipLabel = chip?.label ?? `${S.simulated.fil}. ${S.simulated.en}.`;
-  const clockLabel = english ? dash.clockA11y(clock) : `Oras sa simulasyon ${clock}`;
+  const clockLabel = english ? dash.clockA11y(clock) : S.clockA11y(clock);
   return (
     <View style={[styles.bar, { backgroundColor: c.tarp, paddingTop: insets.top + SPACE.s }]}>
       <View style={styles.row}>

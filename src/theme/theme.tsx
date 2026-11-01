@@ -1,6 +1,6 @@
 import { createContext, useContext, type ReactNode } from 'react';
-import { AccessibilityInfo, useColorScheme } from 'react-native';
-import { useEffect, useState } from 'react';
+import { useColorScheme } from 'react-native';
+import { useReduceMotion } from '../a11y/reduceMotion';
 import { DARK, LIGHT, type Palette } from './tokens';
 
 interface Theme {
@@ -14,12 +14,7 @@ const ThemeContext = createContext<Theme>({ c: LIGHT, dark: false, reduceMotion:
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const scheme = useColorScheme();
-  const [reduceMotion, setReduceMotion] = useState(false);
-  useEffect(() => {
-    AccessibilityInfo.isReduceMotionEnabled().then(setReduceMotion);
-    const sub = AccessibilityInfo.addEventListener('reduceMotionChanged', setReduceMotion);
-    return () => sub.remove();
-  }, []);
+  const reduceMotion = useReduceMotion();
   const dark = scheme === 'dark';
   return <ThemeContext.Provider value={{ c: dark ? DARK : LIGHT, dark, reduceMotion }}>{children}</ThemeContext.Provider>;
 }

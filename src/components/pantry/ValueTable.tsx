@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import { PANTRY_COPY, twoDp } from '../../i18n/pantry';
 import type { ValueParts } from '../../pantry/model';
 import { useTheme } from '../../theme/theme';

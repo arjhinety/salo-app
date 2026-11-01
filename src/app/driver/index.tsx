@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useMemo } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, View, Text } from 'react-native';
 import { Bi, DriverChooser, openDirections, RequestCard, RunCard, spoken } from '../../components/driver/DriverCards';
 import { SimControl } from '../../components/SimControl';
 import { TarpBar } from '../../components/TarpBar';

@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { ScrollView, StyleSheet, useWindowDimensions, View, Text } from 'react-native';
 import { PostFab } from '../../components/PostFab';
 import { SimControl } from '../../components/SimControl';
 import { StallString } from '../../components/StallString';

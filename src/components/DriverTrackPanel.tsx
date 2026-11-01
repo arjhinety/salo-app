@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, View, Text } from 'react-native';
 import { estimateText, type DriverTrack } from '../live/drivers';
 import { dash } from '../i18n/strings';
 import { useTheme } from '../theme/theme';

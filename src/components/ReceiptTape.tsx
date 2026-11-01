@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Animated, Easing, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Animated, Easing, ScrollView, StyleSheet, View, useWindowDimensions, Text } from 'react-native';
 import Svg, { Line, Path } from 'react-native-svg';
 import { barLabel, clock24, type TapeLine, type TapeRow, type TentativeBar } from '../live/tape';
 import { useTheme } from '../theme/theme';

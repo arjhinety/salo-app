@@ -1,6 +1,6 @@
 import { router, type Href } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Pressable, StyleSheet, View, useWindowDimensions, Text } from 'react-native';
 import { databaseStatusLine } from '../../backend/outbox';
 import { startNewRun, useBackendStatus } from '../../backend/runtime';
 import { useDashboardStatus } from '../../backend/useSession';
@@ -94,7 +94,7 @@ export default function Dashboard() {
 
   const header = selected ? (
     <View style={[styles.tag, { backgroundColor: c.kraft, borderColor: c.kraftEdge }]}>
-      <Text style={[TYPE.chipItem, { color: c.marker }]} numberOfLines={2}>
+      <Text style={[TYPE.chipItem, { color: c.marker }]}>
         {selected.items.map((i) => i.foodItem).join(', ')}
       </Text>
       <Text style={[TYPE.small, { color: c.onKraftMuted }]}>

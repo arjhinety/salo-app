@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import Svg, { Circle, Line } from 'react-native-svg';
 import { S } from '../i18n/strings';
 import { useTheme } from '../theme/theme';
@@ -26,7 +26,7 @@ export function JourneyLine({ station, failed = false }: { station: number; fail
           </Svg>
         ))}
       </View>
-      <Text style={[TYPE.small, { color: c.onKraft, marginTop: 2 }]} numberOfLines={1}>
+      <Text style={[TYPE.small, { color: c.onKraft, marginTop: 2 }]}>
         {S.journey[station]}
       </Text>
     </View>

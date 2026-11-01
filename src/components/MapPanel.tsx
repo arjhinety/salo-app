@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View, useWindowDimensions, Text } from 'react-native';
 import Svg, { Circle, Line, Polygon, Rect, Text as SvgText } from 'react-native-svg';
 import { donorPosition, pantryPosition } from '../data/places';
 import { dash } from '../i18n/strings';
+import { layoutLabels } from '../live/labelLayout';
 import { project, FRAME, type PlaceRow, type RouteLeg } from '../live/schematic';
 import { useTheme } from '../theme/theme';
 import { SPACE, TYPE } from '../theme/tokens';
@@ -10,6 +11,8 @@ import { SPACE, TYPE } from '../theme/tokens';
 type MapView = 'map' | 'table';
 const PAD = 28;
 const MAX_H = 420;
+/** Label priority on the map: donors first, then pantries, then drivers (the legend's order). Lower is placed first. */
+const KIND_PRIORITY = { donor: 0, pantry: 1, driver: 2 } as const;
 
 /**
  * The schematic map and its table alternative (DSH-06). Positions come from the bundled coordinates; no tile server,
@@ -52,6 +55,16 @@ function SchematicMap({ places, routes }: { places: readonly PlaceRow[]; routes:
   const W = Math.max(200, width - 2 * SPACE.l);
   const H = Math.min(Math.round(W * 0.8), MAX_H);
   const at = (p: { lat: number; lon: number }) => project(p, FRAME, W, H, PAD);
+  // Labels are placed so they do not overlap each other or a marker (src/live/labelLayout.ts). A label that fits nowhere
+  // is left off the map; the table lists every place.
+  const labels = layoutLabels(
+    places.map((row) => {
+      const { x, y } = at(row.position);
+      return { key: row.key, text: row.id, x, y, priority: KIND_PRIORITY[row.kind] };
+    }),
+    { width: W, height: H, fontSize: 12 },
+  );
+  const idByKey = new Map(places.map((row) => [row.key, row.id] as const));
 
   return (
     <ScrollView contentContainerStyle={styles.mapScroll}>
@@ -89,14 +102,13 @@ function SchematicMap({ places, routes }: { places: readonly PlaceRow[]; routes:
             }
             return <Polygon key={row.key} points={`${x},${y - 8} ${x + 7},${y + 6} ${x - 7},${y + 6}`} fill={c.tarp} />;
           })}
-          {places.map((row) => {
-            const { x, y } = at(row.position);
-            return (
-              <SvgText key={`label-${row.key}`} x={x + 10} y={y + 4} fontSize={12} fill={c.onTape}>
-                {row.id}
+          {labels.map((l) =>
+            l.placement === null ? null : (
+              <SvgText key={`label-${l.key}`} x={l.x} y={l.y} fontSize={12} fill={c.onTape}>
+                {idByKey.get(l.key)}
               </SvgText>
-            );
-          })}
+            ),
+          )}
           <SvgText x={PAD} y={H - 8} fontSize={12} fill={c.textMuted}>
             {dash.schematic}
           </SvgText>
@@ -113,25 +125,25 @@ function Legend() {
   return (
     <View style={styles.legend}>
       <View style={styles.legendRow}>
-        <Svg width={16} height={16}>
+        <Svg width={16} height={16} importantForAccessibility="no" accessibilityElementsHidden>
           <Rect x={2} y={2} width={12} height={12} fill={c.kraft} stroke={c.kraftEdge} strokeWidth={2} />
         </Svg>
         <Text style={[TYPE.small, { color: c.onTape }]}>{dash.legend.donor}</Text>
       </View>
       <View style={styles.legendRow}>
-        <Svg width={16} height={16}>
+        <Svg width={16} height={16} importantForAccessibility="no" accessibilityElementsHidden>
           <Circle cx={8} cy={8} r={6} fill={c.tape} stroke={c.onTape} strokeWidth={2.5} />
         </Svg>
         <Text style={[TYPE.small, { color: c.onTape }]}>{dash.legend.pantry}</Text>
       </View>
       <View style={styles.legendRow}>
-        <Svg width={16} height={16}>
+        <Svg width={16} height={16} importantForAccessibility="no" accessibilityElementsHidden>
           <Polygon points="8,2 14,14 2,14" fill={c.tarp} />
         </Svg>
         <Text style={[TYPE.small, { color: c.onTape }]}>{dash.legend.driver}</Text>
       </View>
       <View style={styles.legendRow}>
-        <Svg width={28} height={16}>
+        <Svg width={28} height={16} importantForAccessibility="no" accessibilityElementsHidden>
           <Line x1={1} y1={8} x2={27} y2={8} stroke={c.onTape} strokeWidth={2.5} strokeDasharray="8 6" />
         </Svg>
         <Text style={[TYPE.small, { color: c.onTape }]}>{dash.legend.tentative}</Text>

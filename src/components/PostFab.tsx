@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, useWindowDimensions } from 'react-native';
+import { Pressable, StyleSheet, useWindowDimensions, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { S } from '../i18n/strings';
 import { useTheme } from '../theme/theme';

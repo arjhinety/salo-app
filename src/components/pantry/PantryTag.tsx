@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View, Text } from 'react-native';
 import { PANTRY_COPY } from '../../i18n/pantry';
 import { lotFacts, tagLabel } from '../../pantry/lotText';
 import type { PantryLotView, PantryStatus } from '../../pantry/model';
@@ -39,7 +39,7 @@ export function PantryTag({ view, onPress }: { view: PantryLotView; onPress: () 
         <View style={styles.stickerRow}>
           <Sticker text={s.sticker} kind={KIND[view.status]} />
         </View>
-        <Text style={[TYPE.item, { color: c.marker }]} numberOfLines={2}>
+        <Text style={[TYPE.item, { color: c.marker }]}>
           {f.item}
         </Text>
         <View style={[styles.rule, { backgroundColor: c.kraftEdge }]} />

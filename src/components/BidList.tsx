@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, View, Text } from 'react-native';
 import type { PolicyId } from '../engine/types';
 import { bidSpoken, bidText, type BidRow } from '../live/bids';
 import { dash } from '../i18n/strings';

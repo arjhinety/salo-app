@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams, type Href } from 'expo-router';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, View, Text } from 'react-native';
 import { PantryTag } from '../../components/pantry/PantryTag';
 import { SessionBanner } from '../../components/SessionBanner';
 import { SimControl } from '../../components/SimControl';

@@ -1,5 +1,5 @@
 import * as WebBrowser from 'expo-web-browser';
-import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Linking, Pressable, StyleSheet, View, Text } from 'react-native';
 import { hhmm } from '../../donor/tonight';
 import { DRV, splitBi } from '../../i18n/driver';
 import { S } from '../../i18n/strings';
@@ -110,8 +110,18 @@ export function RequestCard({
   const { c } = useTheme();
   const before = hhmm(ask.lot.pickupByMinute);
   const left = Math.max(1, ask.closesMinute - now);
+  // The facts of the request, read as one sentence. The buttons below stay separate, so they can still be reached.
+  const requestSpoken = [
+    lotLabel(ask.lot.id),
+    itemsText(ask),
+    `${spoken(DRV.pickupFrom)}: ${donor.name}, ${donor.street}`,
+    `${spoken(DRV.dropoffAt)}: ${pantry.name}, ${pantry.street}`,
+    spoken(DRV.before(before)),
+    spoken(DRV.window(left)),
+  ].join('. ');
   return (
     <View style={[styles.tag, { backgroundColor: c.kraft, borderColor: c.kraftEdge }]}>
+      <View accessible accessibilityLabel={requestSpoken} style={styles.info}>
       <View style={styles.row}>
         <Sticker text={DRV.stickerRequest} kind="live" />
         <Text style={[TYPE.label, { color: c.onKraftMuted }]}>{lotLabel(ask.lot.id).toUpperCase()}</Text>
@@ -124,6 +134,7 @@ export function RequestCard({
       <Slot label={DRV.dropoffAt} value={`${pantry.name}, ${pantry.street}`} />
       <Bi text={DRV.before(before)} strong />
       <Bi text={DRV.window(left)} tone="muted" />
+      </View>
       {offer ? (
         <View style={styles.actions}>
           <Button label={DRV.offer} primary onPress={onOffer} accessibilityHint={spoken(DRV.offered(hhmm(offer.arrive)))} />
@@ -169,7 +180,7 @@ export function RunCard({
   return (
     <View style={[styles.tag, { backgroundColor: c.kraft, borderColor: c.kraftEdge }]}>
       <View style={styles.row}>
-        <Sticker text={sticker.text} kind={sticker.kind} />
+        <Sticker text={sticker.text} kind={sticker.kind} live />
         <Text style={[TYPE.label, { color: c.onKraftMuted }]}>{lotLabel(ask.lot.id).toUpperCase()}</Text>
       </View>
       <Text style={[TYPE.item, { color: c.marker }]} accessibilityRole="header">
@@ -263,7 +274,7 @@ export function DriverChooser({
       <Bi text={DRV.chooserLabel} strong surface="ground" />
       <Bi text={DRV.chooserHint} tone="muted" surface="ground" />
       {locked ? <Bi text={DRV.chooserLocked} tone="muted" surface="ground" /> : null}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
+      <View style={styles.chips}>
         {drivers.map((d) => {
           const on = d.id === selectedId;
           return (
@@ -280,7 +291,7 @@ export function DriverChooser({
             </Pressable>
           );
         })}
-      </ScrollView>
+      </View>
     </View>
   );
 }
@@ -324,6 +335,7 @@ const styles = StyleSheet.create({
   },
   steps: { gap: SPACE.xs },
   chooser: { gap: SPACE.xs },
-  chips: { gap: SPACE.s, paddingVertical: SPACE.xs },
+  info: { gap: SPACE.s },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: SPACE.s, paddingVertical: SPACE.xs },
   chip: { minHeight: 48, justifyContent: 'center', paddingHorizontal: SPACE.m, borderWidth: 2, borderRadius: 4 },
 });

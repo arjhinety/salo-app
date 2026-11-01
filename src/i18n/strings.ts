@@ -80,6 +80,8 @@ export const S = {
   },
   /** TalkBack hint on a donor tag. */
   openLot: 'Buksan ang detalye ng lot',
+  /** The TalkBack label of the simulated clock on the tarp (the dashboard uses `dash.clockA11y`). */
+  clockA11y: (clock: string) => `Oras sa simulasyon ${clock}. Simulated time ${clock}.`,
   /** The sentences a tag reads aloud, by state. The state word is in the sentence where it matters. */
   tagWho: {
     bids: (n: number) => `${n} pantry ang nag-bid.`,
@@ -243,4 +245,30 @@ export const dash = {
   track: (shows: number, runs: number, est: string) => `Showed up ${shows} of ${runs} runs (estimate ${est})`,
   newVolunteer: (est: string) => `New volunteer, no history yet (estimate ${est})`,
   driversEmpty: 'No driver has been asked yet.',
+} as const;
+
+/**
+ * The picker, the first screen (CC-01): who you are tonight, and the writes that were not sent yet. Filipino first, then
+ * English after " · " (the same convention as the other copy).
+ */
+export const PICKER = {
+  title: 'Sino ka ngayong gabi?',
+  subtitle: 'Who are you tonight? Lahat ng pangalan ay kathang-isip.',
+  stranded: {
+    count: (n: number) => `${n} na hindi pa naipapadala · ${n} not sent yet`,
+    keptHere:
+      'Nakatago ang mga ito at ipapadala kapag napili ulit ang tungkulin nila · Kept here; they are sent when you choose that role again.',
+    discard: 'Burahin ang mga ito · Discard them',
+    discardA11y: 'Burahin ang mga hindi pa naipapadala. Discard the writes not sent yet.',
+  },
+  roles: {
+    donor: { fil: 'Donor', en: 'Food business with surplus' },
+    pantry: { fil: 'Pantry', en: 'Community pantry coordinator' },
+    driver: { fil: 'Driver', en: 'Volunteer driver', who: 'Pipiliin sa susunod na screen' },
+    dashboard: { fil: 'Dashboard', en: 'Live view for the panel', who: 'Walang profile na kailangan' },
+  },
+  /** TalkBack label of a role row. The not-ready sentence is kept for a role that is not built yet. */
+  roleA11y: (fil: string, en: string, who: string, ready: boolean) =>
+    `${fil}, ${en}. ${who}.${ready ? '' : ' Darating sa susunod na build.'}`,
+  state: { open: 'PUMASOK', later: 'SA SUSUNOD' },
 } as const;

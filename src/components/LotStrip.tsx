@@ -59,6 +59,8 @@ export function LotStrip({
             accessibilityRole="button"
             accessibilityLabel={dash.chipA11y(item, dash.stateWords[state], lot.id)}
             accessibilityState={{ selected }}
+            // The state is spoken when it changes on its own (a lot's status), not for the clock.
+            accessibilityLiveRegion="polite"
             style={({ pressed }) => [
               styles.chip,
               {
@@ -69,7 +71,7 @@ export function LotStrip({
               },
             ]}
           >
-            <Text style={[TYPE.chipItem, { color: c.marker }]} numberOfLines={1}>
+            <Text style={[TYPE.chipItem, { color: c.marker }]}>
               {item}
             </Text>
             <Sticker text={dash.stateSticker[state]} kind={KIND[state]} />

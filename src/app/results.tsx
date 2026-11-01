@@ -1,6 +1,6 @@
 import { router, type Href } from 'expo-router';
 import type { ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NOT_MEASURED, RESULTS_COPY as C } from '../results/copy';
 import { currentModel, type Row } from '../results/model';

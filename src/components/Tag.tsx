@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View, type LayoutChangeEvent } from 'react-native';
+import { Pressable, StyleSheet, View, type LayoutChangeEvent, Text } from 'react-native';
 import Svg, { Circle, Line, Path } from 'react-native-svg';
 import type { LotView } from '../donor/tonight';
 import { hhmm } from '../donor/tonight';
@@ -32,7 +32,7 @@ function stickerFor(v: LotView): { text: string; kind: StickerKind } {
  */
 export function tagLabel(v: LotView): string {
   const it = v.lot.items[0];
-  const head = `${it.foodItemFil}, ${it.quantity} ${S.units[it.unit]}. Kunin bago ${hhmm(v.lot.pickupByMinute)}.`;
+  const head = `${it.foodItemFil}, ${it.quantity} ${S.units[it.unit]}. ${S.slots.kunin.fil} ${hhmm(v.lot.pickupByMinute)}.`;
   switch (v.state) {
     case 'tentative':
       return `${head} ${S.tagWho.tentative(v.pantryName ?? '')}`;
@@ -65,6 +65,8 @@ export function Tag({ view, onPress }: { view: LotView; onPress?: () => void }) 
       accessibilityRole={onPress ? 'button' : 'text'}
       accessibilityLabel={tagLabel(view)}
       accessibilityHint={onPress ? S.openLot : undefined}
+      // The state is spoken when it changes on its own (tentative, final, delivered), never for the clock.
+      accessibilityLiveRegion="polite"
       style={({ pressed }) => [styles.wrap, { transform: [{ translateY: pressed ? 3 : 0 }] }]}
     >
       {/* the drop of string from the main string to the hole */}
@@ -81,11 +83,11 @@ export function Tag({ view, onPress }: { view: LotView; onPress?: () => void }) 
         <View style={styles.stickerRow}>
           <Sticker text={sticker.text} kind={sticker.kind} />
         </View>
-        <Text style={[TYPE.item, { color: c.marker }]} numberOfLines={2}>
+        <Text style={[TYPE.item, { color: c.marker }]}>
           {it.foodItemFil}
         </Text>
         {it.foodItemFil !== it.foodItem ? (
-          <Text style={[TYPE.small, { color: c.onKraftMuted }]} numberOfLines={1}>{it.foodItem}</Text>
+          <Text style={[TYPE.small, { color: c.onKraftMuted }]}>{it.foodItem}</Text>
         ) : null}
         <View style={[styles.rule, { backgroundColor: c.kraftEdge }]} />
         <Slot label={S.slots.dami.fil} value={`${it.quantity} ${S.units[it.unit]}`} />
@@ -97,7 +99,7 @@ export function Tag({ view, onPress }: { view: LotView; onPress?: () => void }) 
           </View>
         ) : null}
         {view.pantryName ? (
-          <Text style={[TYPE.small, { color: c.onKraft }]} numberOfLines={2}>
+          <Text style={[TYPE.small, { color: c.onKraft }]}>
             → {view.pantryName}
             {view.driverName ? ` · ${view.driverName}` : ''}
           </Text>

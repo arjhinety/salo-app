@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams, type Href } from 'expo-router';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View, Text } from 'react-native';
 import { SimControl } from '../../../components/SimControl';
 import { Sticker, type StickerKind } from '../../../components/Sticker';
 import { TarpBar } from '../../../components/TarpBar';
@@ -69,7 +69,13 @@ export default function PantryLot() {
             </Text>
           </View>
 
-          <View style={styles.statusRow}>
+          {/* The status and its detail read as one sentence; the sticker is hidden on its own, so the group carries it. */}
+          <View
+            style={styles.statusRow}
+            accessible
+            accessibilityLabel={`${PANTRY_COPY.status[view.status].sticker}. ${PANTRY_COPY.status[view.status].detail}`}
+            accessibilityLiveRegion="polite"
+          >
             <Sticker text={PANTRY_COPY.status[view.status].sticker} kind={KIND[view.status]} />
             <Text style={[TYPE.body, { color: c.text, flexShrink: 1 }]}>{PANTRY_COPY.status[view.status].detail}</Text>
           </View>

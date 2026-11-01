@@ -1,4 +1,4 @@
-import { AccessibilityInfo, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { AccessibilityInfo, Pressable, StyleSheet, useWindowDimensions, View, Text } from 'react-native';
 import { catalogKey, estKgFor, type CatalogEntry } from '../donor/catalog';
 import { chooseEntry, reviewLine, type DraftLine, type LineIssue } from '../donor/fromParsed';
 import { clampAmount } from '../donor/postForm';
