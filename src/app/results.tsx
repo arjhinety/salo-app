@@ -175,6 +175,7 @@ export default function Results() {
           >
             {m.verdict}
           </Text>
+          {m.postHocNote ? <Text style={[TYPE.small, { color: c.textMuted }]}>{m.postHocNote}</Text> : null}
         </Section>
 
         <Section title={C.supportingHeading}>

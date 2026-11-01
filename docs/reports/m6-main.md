@@ -29,6 +29,10 @@ Evenings used: 44 for food rescued and 44 for need met (all main_sample).
 Food rescued: the full 97.5% width is 4.57 kg, below the 6 kg gap.
 Fairness: the full 97.5% width is 0.079, below the 0.10 gap.
 
+## 2a. Supporting note, post hoc (added 2026-11-01; not pre-registered)
+
+**Supporting reading only, not pre-registered as an equivalence test.** The verdict above stays "No clear difference". Both 97.5% intervals lie entirely inside plus or minus the smallest difference worth caring about: food rescued [−2.78, +1.79] kg lies inside ±6 kg, and worst-served need met [−0.026, +0.053] lies inside ±0.10. So a difference as large as the smallest one worth caring about is unlikely in either direction, at the confidence the main intervals were built for. This reading was added after the main numbers were seen, and no method or number was changed for it. The fairness limitation in section 1 still applies: 0.10 is about two-thirds of the tuned worst-served level (about 0.15), so smaller real fairness differences are not ruled out.
+
 ## 3. Supporting comparisons (95%): supporting only, never a win on their own
 
 | Measure | Baseline | Mean (Salo minus baseline) | 95% interval | Reading |

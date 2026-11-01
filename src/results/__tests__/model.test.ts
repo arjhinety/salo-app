@@ -62,6 +62,11 @@ describe('the results of a run on the screen (the gate is open and a run is show
     expect(m.supportingRows.every((r) => r.label.endsWith('(95%)'))).toBe(true);
   });
 
+  test('the post-hoc inside-gaps note shows under the unchanged verdict for the recorded main run', () => {
+    expect(m.postHocNote).toBe(RESULTS_COPY.insideGapsNote);
+    expect(m.postHocNote).toContain('not pre-registered as an equivalence test');
+  });
+
   test('the verdict is the pre-registered label, followed by the two intervals it used (RES-04)', () => {
     expect(m.verdict.startsWith(VERDICT_LABEL[record.main.verdict])).toBe(true);
     expect(m.verdict).toContain('food rescued [');
@@ -104,6 +109,7 @@ describe('no result is shown when the gate is closed, whatever run is given', ()
     expect(m.canRun).toBe(false);
     expect(m.policies.every((p) => p.cells.every((c) => c.value === NOT_MEASURED))).toBe(true);
     expect(m.verdict).toBe(NOT_MEASURED);
+    expect(m.postHocNote).toBeNull();
     expect(m.mainRows.every((r) => r.value === NOT_MEASURED)).toBe(true);
     expect(m.ceilingRows.every((r) => r.value === NOT_MEASURED)).toBe(true);
   };
@@ -158,6 +164,7 @@ describe('closed screen: the gate is open and no run has been made yet', () => {
     expect(m.supportingRows).toHaveLength(10);
     expect([...m.mainRows, ...m.supportingRows, ...m.learningRows, ...m.ceilingRows].every((r) => r.value === NOT_MEASURED)).toBe(true);
     expect(m.verdict).toBe(NOT_MEASURED);
+    expect(m.postHocNote).toBeNull();
   });
 
   test('the footer shows the resample count and the seed; the checksum row reads "Not measured yet" while closed', () => {

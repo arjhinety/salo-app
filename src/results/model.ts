@@ -9,6 +9,7 @@ import { MEASURES, type MeasureId } from './measures';
 import type { OnDeviceResults } from './onDevice';
 import { gateReasons, MAIN_EVENINGS_IN_DATASET, REGISTRATION, type Registration } from './registration';
 import { verdictLine } from './verdict';
+import { insideGap } from './width';
 
 export interface Row {
   label: string;
@@ -28,6 +29,8 @@ export interface ScreenModel {
   mainRows: Row[];
   /** The verdict and the two intervals it used (RES-04), or "Not measured yet". */
   verdict: string;
+  /** The post-hoc supporting note under the verdict (both main intervals inside their gaps), or null. */
+  postHocNote: string | null;
   supportingRows: Row[];
   learningRows: Row[];
   ceilingRows: Row[];
@@ -121,6 +124,7 @@ export function closedModel(reg: Registration = REGISTRATION, params: FrozenPara
     })),
     mainRows: COMPARISONS.filter((s) => s.main).map((s) => pending(specLabel(s))),
     verdict: NOT_MEASURED,
+    postHocNote: null,
     supportingRows: COMPARISONS.filter((s) => !s.main).map((s) => pending(`${specLabel(s)} (95%)`)),
     learningRows: POLICY_IDS.map((p) => pending(`${C.policies[p]} · ${C.learningRow}`)),
     ceilingRows: POLICY_IDS.map((p) => pending(C.policies[p])),
@@ -154,6 +158,7 @@ export function openModel(run: OnDeviceResults, reg: Registration = REGISTRATION
     })),
     mainRows,
     verdict: verdictLine({ low: food.low, high: food.high }, { low: fair.low, high: fair.high }),
+    postHocNote: insideGap(food) && insideGap(fair) ? C.insideGapsNote : null,
     supportingRows,
     learningRows: POLICY_IDS.map((p) => ({
       label: `${C.policies[p]} · ${C.learningRow}`,

@@ -60,6 +60,9 @@ export const RESULTS_COPY = {
   ceilingOf: (n: number, total: number) => `${n} of ${total} evenings`,
   dataset: 'Dataset',
   verdictHeading: 'Verdict',
+  /** Shown under the verdict only when both main 97.5% intervals lie inside the gaps. Post hoc, supporting only. */
+  insideGapsNote:
+    'Supporting, post hoc (not pre-registered as an equivalence test): both 97.5% intervals lie entirely inside ±6 kg and ±0.10, the smallest differences worth caring about, so a difference that large is unlikely in either direction. The verdict above is unchanged.',
   noClear: 'No clear difference',
   saloBetter: 'Salo better',
   baselineBetter: 'Baseline better',

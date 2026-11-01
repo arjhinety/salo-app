@@ -15,6 +15,15 @@ export interface WidthCheck {
 }
 
 /** The width check for one main comparison. Throws for a supporting comparison: the check is for the two main results only. */
+/**
+ * Post-hoc supporting reading (Arjhine, decisions.md M6, 2026-11-01), not a pre-registered equivalence test: true when the
+ * main interval lies entirely inside plus or minus its gap, so a difference as large as the gap is unlikely either way.
+ */
+export function insideGap(c: Pick<Comparison, 'measure' | 'low' | 'high' | 'main'>): boolean {
+  const { gap } = widthCheck(c);
+  return c.low > -gap && c.high < gap;
+}
+
 export function widthCheck(c: Pick<Comparison, 'measure' | 'low' | 'high' | 'main'>): WidthCheck {
   if (!c.main) throw new Error('the width check applies to the two main results only');
   const gap = c.measure === 'foodRescued' ? WIDTH_GAP_FOOD_KG : c.measure === 'needMet' ? WIDTH_GAP_NEED_MET : NaN;
