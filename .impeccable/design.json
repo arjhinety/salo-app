@@ -1,0 +1,714 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-01T02:57:47.474Z",
+  "title": "Design System: Salo",
+  "extensions": {
+    "colorMeta": {
+      "tarp-blue": {
+        "role": "primary",
+        "displayName": "Tarp Blue",
+        "canonical": "#1947b8",
+        "tonalRamp": [
+          "#000036",
+          "#001567",
+          "#052f9f",
+          "#2352c4",
+          "#4478ed",
+          "#75a2fe",
+          "#b1cbfe",
+          "#e6efff"
+        ]
+      },
+      "tarp-night": {
+        "role": "primary",
+        "displayName": "Tarp at Night",
+        "canonical": "#0f2f7a",
+        "tonalRamp": [
+          "#00042f",
+          "#011863",
+          "#183985",
+          "#3459a8",
+          "#567dcf",
+          "#78a3f8",
+          "#b1cbfe",
+          "#e6efff"
+        ]
+      },
+      "on-tarp": {
+        "role": "primary",
+        "displayName": "On Tarp White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#808080",
+          "#a4a4a4",
+          "#cacaca",
+          "#eeeeee"
+        ]
+      },
+      "kraft": {
+        "role": "secondary",
+        "displayName": "Kraft Tag",
+        "canonical": "#d6ae7b",
+        "tonalRamp": [
+          "#130900",
+          "#341f00",
+          "#583802",
+          "#795623",
+          "#9e7847",
+          "#c49d6a",
+          "#ecc38f",
+          "#ffebd4"
+        ]
+      },
+      "kraft-edge": {
+        "role": "secondary",
+        "displayName": "Kraft Edge",
+        "canonical": "#b68e5c",
+        "tonalRamp": [
+          "#130800",
+          "#341f01",
+          "#593801",
+          "#7a5523",
+          "#9f7846",
+          "#c59c6a",
+          "#ecc28f",
+          "#feebd5"
+        ]
+      },
+      "kraft-edge-night": {
+        "role": "secondary",
+        "displayName": "Kraft Edge at Night",
+        "canonical": "#9c764a",
+        "tonalRamp": [
+          "#140800",
+          "#351e00",
+          "#593705",
+          "#795529",
+          "#9e784c",
+          "#c49c6f",
+          "#ecc294",
+          "#feebd6"
+        ]
+      },
+      "on-kraft": {
+        "role": "secondary",
+        "displayName": "Ink on Kraft",
+        "canonical": "#161616",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#808080",
+          "#a4a4a4",
+          "#cacaca",
+          "#eeeeee"
+        ]
+      },
+      "on-kraft-muted": {
+        "role": "secondary",
+        "displayName": "Pencil on Kraft",
+        "canonical": "#4a3520",
+        "tonalRamp": [
+          "#150800",
+          "#331f0a",
+          "#503b26",
+          "#6f5943",
+          "#937b64",
+          "#b99f88",
+          "#e0c5ad",
+          "#ffebd8"
+        ]
+      },
+      "on-kraft-alert": {
+        "role": "tertiary",
+        "displayName": "Tag Alert Red",
+        "canonical": "#8f110b",
+        "tonalRamp": [
+          "#1f0000",
+          "#4b0101",
+          "#7d0001",
+          "#a52b21",
+          "#ce5345",
+          "#f87968",
+          "#ffb5aa",
+          "#fee9e5"
+        ]
+      },
+      "marker-ink": {
+        "role": "secondary",
+        "displayName": "Marker Ink",
+        "canonical": "#161616",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#808080",
+          "#a4a4a4",
+          "#cacaca",
+          "#eeeeee"
+        ]
+      },
+      "sticker-lime": {
+        "role": "tertiary",
+        "displayName": "Sticker Lime",
+        "canonical": "#d6ff3d",
+        "tonalRamp": [
+          "#090d00",
+          "#1f2800",
+          "#394600",
+          "#546701",
+          "#748c05",
+          "#95b402",
+          "#b7dd09",
+          "#deff7e"
+        ]
+      },
+      "on-lime": {
+        "role": "tertiary",
+        "displayName": "Ink on Lime",
+        "canonical": "#161616",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#808080",
+          "#a4a4a4",
+          "#cacaca",
+          "#eeeeee"
+        ]
+      },
+      "receipt-paper": {
+        "role": "neutral",
+        "displayName": "Receipt Paper",
+        "canonical": "#fbf8f0",
+        "tonalRamp": [
+          "#0d0b06",
+          "#26241e",
+          "#424039",
+          "#605d57",
+          "#838079",
+          "#a7a49d",
+          "#cdcac3",
+          "#f1eee6"
+        ]
+      },
+      "receipt-paper-night": {
+        "role": "neutral",
+        "displayName": "Receipt Paper at Night",
+        "canonical": "#ece5d2",
+        "tonalRamp": [
+          "#0f0b01",
+          "#292415",
+          "#453f30",
+          "#635d4d",
+          "#86806f",
+          "#aba492",
+          "#d1cab8",
+          "#f5eedb"
+        ]
+      },
+      "on-tape": {
+        "role": "neutral",
+        "displayName": "Tape Ink",
+        "canonical": "#161616",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#808080",
+          "#a4a4a4",
+          "#cacaca",
+          "#eeeeee"
+        ]
+      },
+      "on-tape-night": {
+        "role": "neutral",
+        "displayName": "Tape Ink at Night",
+        "canonical": "#141414",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#808080",
+          "#a4a4a4",
+          "#cacaca",
+          "#eeeeee"
+        ]
+      },
+      "marker-red": {
+        "role": "tertiary",
+        "displayName": "Marker Red",
+        "canonical": "#a8150f",
+        "tonalRamp": [
+          "#1f0000",
+          "#4b0000",
+          "#7c0202",
+          "#ac1b14",
+          "#d6493b",
+          "#ff7362",
+          "#ffb5aa",
+          "#fee9e5"
+        ]
+      },
+      "marker-red-night": {
+        "role": "tertiary",
+        "displayName": "Marker Red at Night",
+        "canonical": "#ff7a6b",
+        "tonalRamp": [
+          "#1f0000",
+          "#4b0102",
+          "#7d0004",
+          "#a72720",
+          "#d05044",
+          "#fb7667",
+          "#feb5ab",
+          "#fee9e6"
+        ]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Tarp-Lit Ground",
+        "canonical": "#e6ecf6",
+        "tonalRamp": [
+          "#080b12",
+          "#20242b",
+          "#3b4048",
+          "#595e66",
+          "#7b8089",
+          "#9fa5ae",
+          "#c5cbd5",
+          "#e9eff9"
+        ]
+      },
+      "ground-raised": {
+        "role": "neutral",
+        "displayName": "Raised Ground",
+        "canonical": "#f3f6fb",
+        "tonalRamp": [
+          "#090b0e",
+          "#222428",
+          "#3d4044",
+          "#5b5e62",
+          "#7e8085",
+          "#a2a5a9",
+          "#c8cbcf",
+          "#eceff4"
+        ]
+      },
+      "ground-night": {
+        "role": "neutral",
+        "displayName": "Night Canopy",
+        "canonical": "#0b1328",
+        "tonalRamp": [
+          "#040a1e",
+          "#1a233a",
+          "#353f58",
+          "#525d77",
+          "#74809b",
+          "#98a4c1",
+          "#bdcae8",
+          "#e8effe"
+        ]
+      },
+      "ground-raised-night": {
+        "role": "neutral",
+        "displayName": "Raised Night Canopy",
+        "canonical": "#132042",
+        "tonalRamp": [
+          "#020727",
+          "#152244",
+          "#2f3e63",
+          "#4c5d84",
+          "#6d80a9",
+          "#91a4cf",
+          "#b6caf7",
+          "#e7effe"
+        ]
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#161616",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#808080",
+          "#a4a4a4",
+          "#cacaca",
+          "#eeeeee"
+        ]
+      },
+      "text-muted": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "canonical": "#3a4a66",
+        "tonalRamp": [
+          "#020a20",
+          "#15243d",
+          "#30405b",
+          "#4d5e7b",
+          "#6f81a0",
+          "#93a5c6",
+          "#b8cced",
+          "#e6efff"
+        ]
+      },
+      "text-night": {
+        "role": "neutral",
+        "displayName": "Night Ink",
+        "canonical": "#e6ecf6",
+        "tonalRamp": [
+          "#080b12",
+          "#20242b",
+          "#3b4048",
+          "#595e66",
+          "#7b8089",
+          "#9fa5ae",
+          "#c5cbd5",
+          "#e9eff9"
+        ]
+      },
+      "text-muted-night": {
+        "role": "neutral",
+        "displayName": "Muted Night Ink",
+        "canonical": "#aebbd4",
+        "tonalRamp": [
+          "#040a1b",
+          "#1a2437",
+          "#354054",
+          "#525e74",
+          "#748198",
+          "#98a5bd",
+          "#becbe4",
+          "#e7effe"
+        ]
+      },
+      "zinc": {
+        "role": "neutral",
+        "displayName": "Zinc String",
+        "canonical": "#8c99a8",
+        "tonalRamp": [
+          "#040c16",
+          "#1b2531",
+          "#36414e",
+          "#535f6d",
+          "#758290",
+          "#99a6b5",
+          "#beccdc",
+          "#e4f0fe"
+        ]
+      },
+      "zinc-night": {
+        "role": "neutral",
+        "displayName": "Zinc String at Night",
+        "canonical": "#7f8ca3",
+        "tonalRamp": [
+          "#040b1b",
+          "#1a2436",
+          "#354054",
+          "#525e73",
+          "#748197",
+          "#98a5bd",
+          "#bdcbe4",
+          "#e7effe"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "canonical": "#c3cddc",
+        "tonalRamp": [
+          "#060b15",
+          "#1d2430",
+          "#38404c",
+          "#565e6b",
+          "#78818f",
+          "#9ca5b4",
+          "#c1cbda",
+          "#e5efff"
+        ]
+      },
+      "rule-night": {
+        "role": "neutral",
+        "displayName": "Rule at Night",
+        "canonical": "#2a3a63",
+        "tonalRamp": [
+          "#02062a",
+          "#132148",
+          "#2e3e67",
+          "#4a5c88",
+          "#6c7fad",
+          "#8fa4d4",
+          "#b4cafc",
+          "#e7effe"
+        ]
+      },
+      "scrim": {
+        "role": "neutral",
+        "displayName": "Scrim",
+        "canonical": "rgba(15, 47, 122, 0.45)"
+      },
+      "scrim-night": {
+        "role": "neutral",
+        "displayName": "Night Scrim",
+        "canonical": "rgba(0, 0, 0, 0.6)"
+      }
+    },
+    "typographyMeta": {
+      "wordmark": {
+        "displayName": "Wordmark",
+        "purpose": "\"Salo\" on the tarp bar and the results title."
+      },
+      "item": {
+        "displayName": "Item",
+        "purpose": "Food name on a price tag."
+      },
+      "chip-item": {
+        "displayName": "Chip Item",
+        "purpose": "Lot name on a lot-strip chip and the tape header."
+      },
+      "sticker": {
+        "displayName": "Sticker",
+        "purpose": "State stamps."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Screen and section headings, the clock, the sheet title."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Reading lines."
+      },
+      "body-strong": {
+        "displayName": "Body Strong",
+        "purpose": "Slot values and button labels."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Uppercase slot labels, the simulated chip, role-state labels."
+      },
+      "small": {
+        "displayName": "Small",
+        "purpose": "English subtitles, hints, secondary lines."
+      },
+      "tape-type": {
+        "displayName": "Tape Type",
+        "purpose": "Contract-net message types in caps on the tape."
+      },
+      "tape-body": {
+        "displayName": "Tape Body",
+        "purpose": "The rest of a tape line."
+      }
+    },
+    "shadows": [
+      {
+        "name": "fab-lift",
+        "value": "0 4px 8px rgba(15, 47, 122, 0.25)",
+        "purpose": "Post FAB only (Android elevation 6)."
+      }
+    ],
+    "motion": [
+      {
+        "name": "tape-bar-grow",
+        "value": "320ms cubic-bezier(0.19, 1, 0.22, 1)",
+        "purpose": "An open TENTATIVE bar grows one minute at a time (Easing.out(Easing.exp)); instant under reduced motion."
+      },
+      {
+        "name": "screen-transition",
+        "value": "fade",
+        "purpose": "Stack transition; 'none' under reduced motion."
+      },
+      {
+        "name": "sheet-transition",
+        "value": "fade",
+        "purpose": "Policy bottom sheet; 'none' under reduced motion."
+      },
+      {
+        "name": "auto-scroll",
+        "value": "animated scrollToEnd",
+        "purpose": "Tape and lot strip follow the newest entry; instant under reduced motion."
+      },
+      {
+        "name": "press",
+        "value": "opacity 0.7-0.88; tag translateY 3px",
+        "purpose": "Pressed feedback; no scale."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "tags-two-up",
+        "value": "360dp (width / fontScale)",
+        "purpose": "Donor tags hang two per row at or above, one below."
+      },
+      {
+        "name": "fab-icon-only",
+        "value": "fontScale >= 1.5",
+        "purpose": "Post FAB becomes a 56dp round icon button."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one filled tarp action in an area (Replay with baseline, Offer).",
+      "html": "<button class=\"ds-btn-primary\">Replay with baseline</button>",
+      "css": ".ds-btn-primary { background: #1947b8; color: #ffffff; font: 600 16px/22px Archivo, sans-serif; min-height: 52px; padding: 0 12px; border: none; border-radius: 4px; cursor: pointer; transition: opacity 0.12s; } .ds-btn-primary:hover { opacity: 0.92; } .ds-btn-primary:active { opacity: 0.85; } .ds-btn-primary:focus-visible { outline: 3px solid #0f2f7a; outline-offset: 2px; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary and destructive actions; the destructive variant is marker red.",
+      "html": "<div style=\"display:flex;gap:8px\"><button class=\"ds-btn-outline\">Bids</button><button class=\"ds-btn-outline ds-danger\">Cancel driver</button></div>",
+      "css": ".ds-btn-outline { background: transparent; color: #161616; font: 600 16px/22px Archivo, sans-serif; min-height: 48px; padding: 0 12px; border: 1.5px solid #161616; border-radius: 4px; cursor: pointer; } .ds-btn-outline:hover { background: #f3f6fb; } .ds-btn-outline:active { opacity: 0.7; } .ds-btn-outline:focus-visible { outline: 3px solid #0f2f7a; outline-offset: 2px; } .ds-btn-outline.ds-danger { color: #a8150f; border-color: #a8150f; }"
+    },
+    {
+      "name": "Post FAB",
+      "kind": "button",
+      "refersTo": "fab-post",
+      "description": "The donor's one primary action, pinned bottom-right; icon-only at 150% font scale.",
+      "html": "<button class=\"ds-fab\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\"><rect x=\"9\" y=\"3\" width=\"6\" height=\"11\" rx=\"3\" stroke=\"#fff\" stroke-width=\"2\"/><path d=\"M5 11a7 7 0 0 0 14 0M12 18v3\" stroke=\"#fff\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>I-post ang tira</button>",
+      "css": ".ds-fab { display: inline-flex; align-items: center; gap: 8px; background: #1947b8; color: #fff; font: 600 16px/22px Archivo, sans-serif; min-height: 56px; padding: 0 20px; border: none; border-radius: 16px; box-shadow: 0 4px 8px rgba(15,47,122,0.25); cursor: pointer; } .ds-fab:hover { opacity: 0.94; } .ds-fab:active { opacity: 0.88; } .ds-fab:focus-visible { outline: 3px solid #0f2f7a; outline-offset: 2px; }"
+    },
+    {
+      "name": "Choice Chip",
+      "kind": "chip",
+      "refersTo": "chip-choice",
+      "description": "Donor post-form choices (pickup time, items); selected turns tarp.",
+      "html": "<div style=\"display:flex;gap:8px;flex-wrap:wrap\"><button class=\"ds-chip ds-on\">Kunin bago 6:30 PM</button><button class=\"ds-chip\">Kunin bago 6:45 PM</button></div>",
+      "css": ".ds-chip { background: #f3f6fb; color: #161616; font: 600 16px/22px Archivo, sans-serif; min-height: 48px; padding: 8px 12px; border: 1px solid #c3cddc; border-radius: 8px; cursor: pointer; } .ds-chip.ds-on { background: #1947b8; border-color: #1947b8; color: #fff; } .ds-chip:hover { border-color: #1947b8; } .ds-chip:active { opacity: 0.8; } .ds-chip:focus-visible { outline: 3px solid #0f2f7a; outline-offset: 2px; }"
+    },
+    {
+      "name": "Composer",
+      "kind": "input",
+      "refersTo": "input-composer",
+      "description": "The text-like post box with the round mic inside.",
+      "html": "<div class=\"ds-composer\"><textarea placeholder=\"May 3 tray ng adobo pa, kunin bago mag-8\"></textarea><button class=\"ds-mic\" aria-label=\"Mic\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\"><rect x=\"9\" y=\"3\" width=\"6\" height=\"11\" rx=\"3\" stroke=\"#3a4a66\" stroke-width=\"2\"/><path d=\"M5 11a7 7 0 0 0 14 0M12 18v3\" stroke=\"#3a4a66\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg></button></div>",
+      "css": ".ds-composer { display: flex; gap: 8px; padding: 8px; background: #f3f6fb; border: 1px solid #c3cddc; border-radius: 8px; } .ds-composer textarea { flex: 1; min-height: 96px; border: none; background: transparent; font: 400 16px/22px Archivo, sans-serif; color: #161616; resize: none; caret-color: #1947b8; } .ds-composer textarea:focus-visible { outline: none; } .ds-composer:focus-within { border-color: #1947b8; } .ds-mic { width: 48px; height: 48px; border-radius: 24px; border: 1px solid #c3cddc; background: transparent; display: grid; place-items: center; cursor: pointer; } .ds-mic:hover { border-color: #1947b8; } .ds-mic:focus-visible { outline: 3px solid #0f2f7a; outline-offset: 2px; }"
+    },
+    {
+      "name": "Tarp Bar",
+      "kind": "nav",
+      "refersTo": "tarp-bar",
+      "description": "The canopy on every screen: wordmark, simulated chip, clock.",
+      "html": "<header class=\"ds-tarp\"><div class=\"ds-tarp-row\"><span class=\"ds-wordmark\">Salo</span><span class=\"ds-sim\">SIMULASYON</span><span class=\"ds-clock\">6:51 PM</span></div><div class=\"ds-tarp-sub\">Karinderya ni Aling Oning · Aurora Boulevard</div></header>",
+      "css": ".ds-tarp { position: relative; background: #1947b8; color: #fff; padding: 8px 16px 12px; } .ds-tarp::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(255,255,255,0.18); } .ds-tarp-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; } .ds-wordmark { font: 400 26px/32px 'Permanent Marker', cursive; margin-right: auto; } .ds-sim { font: 600 13px/16px 'Archivo Narrow', sans-serif; letter-spacing: 0.4px; border: 1.5px solid #fff; border-radius: 4px; padding: 2px 8px; } .ds-clock { font: 700 20px/26px Archivo, sans-serif; } .ds-tarp-sub { font: 500 13px/17px 'Archivo Narrow', sans-serif; opacity: 0.92; }"
+    },
+    {
+      "name": "Price Tag",
+      "kind": "card",
+      "refersTo": "price-tag",
+      "description": "One lot as a kraft tag hung from the zinc string, with sticker, slots and journey line.",
+      "html": "<div class=\"ds-tag\"><span class=\"ds-hole\"></span><span class=\"ds-stk\">TENTATIVE</span><div class=\"ds-item\">Adobong Baboy</div><div class=\"ds-gloss\">pork adobo</div><hr class=\"ds-rule\"><div class=\"ds-slot\"><span>DAMI</span><b>2 tray</b></div><div class=\"ds-slot\"><span>KUNIN BAGO</span><b>7:15 PM</b></div></div>",
+      "css": ".ds-tag { position: relative; width: 200px; padding: 32px 12px 12px; background: #d6ae7b; color: #161616; clip-path: polygon(22px 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%, 0 22px); transition: transform 0.12s; } .ds-tag:hover { transform: translateY(1px); } .ds-tag:active { transform: translateY(3px); } .ds-hole { position: absolute; top: 10px; left: 50%; margin-left: -6px; width: 12px; height: 12px; border-radius: 6px; border: 2px solid #b68e5c; background: #e6ecf6; box-sizing: border-box; } .ds-stk { float: right; font: 400 15px/18px 'Permanent Marker', cursive; background: #d6ff3d; border: 2px solid #161616; border-radius: 3px; padding: 2px 6px; transform: rotate(-4deg); } .ds-item { clear: both; font: 400 24px/30px 'Permanent Marker', cursive; } .ds-gloss { font: 500 13px/17px 'Archivo Narrow', sans-serif; color: #4a3520; } .ds-rule { border: none; height: 1px; background: #b68e5c; opacity: 0.6; margin: 8px 0; } .ds-slot { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; } .ds-slot span { font: 600 13px/16px 'Archivo Narrow', sans-serif; letter-spacing: 0.4px; color: #4a3520; } .ds-slot b { font: 600 16px/22px Archivo, sans-serif; }"
+    },
+    {
+      "name": "Sticker",
+      "kind": "chip",
+      "refersTo": "sticker-live",
+      "description": "State stamp; lime only for TENTATIVE, outlines for the rest.",
+      "html": "<div style=\"display:flex;gap:12px;background:#d6ae7b;padding:12px\"><span class=\"ds-sticker ds-live\">TENTATIVE</span><span class=\"ds-sticker\">NAIHATID</span><span class=\"ds-sticker ds-problem\">HINDI NAIHATID</span></div>",
+      "css": ".ds-sticker { display: inline-block; font: 400 15px/18px 'Permanent Marker', cursive; color: #161616; border: 2px solid #161616; border-radius: 3px; padding: 2px 6px; transform: rotate(-4deg); } .ds-sticker.ds-live { background: #d6ff3d; } .ds-sticker.ds-problem { color: #8f110b; border-color: #8f110b; }"
+    },
+    {
+      "name": "Receipt Tape",
+      "kind": "custom",
+      "refersTo": "receipt-tape",
+      "description": "The dashboard trace: torn paper, one message per line, lime TENTATIVE bars 44dp per minute.",
+      "html": "<div class=\"ds-tape\"><div class=\"ds-line\">18:02  <b>PROPOSE</b>  Hiraya Pantry · 3 shares</div><div class=\"ds-line\">18:04  <b>TENTATIVE_ACCEPT</b>  Hiraya Pantry</div><div class=\"ds-bar\" style=\"width:132px\"></div><div class=\"ds-line\">18:07  <b class=\"ds-alert\">FAILURE</b>  Driver W. Lopez · cancelled</div></div>",
+      "css": ".ds-tape { position: relative; background: #fbf8f0; color: #161616; padding: 12px 16px 8px; margin-top: 10px; font: 400 16px/22px Archivo, sans-serif; } .ds-tape::before { content: ''; position: absolute; left: 0; right: 0; top: -10px; height: 10px; background: #fbf8f0; clip-path: polygon(0 100%, 0 0, 10px 100%, 20px 0, 30px 100%, 40px 0, 50px 100%, 60px 0, 70px 100%, 80px 0, 90px 100%, 100px 0, 110px 100%, 120px 0, 130px 100%, 140px 0, 150px 100%, 160px 0, 170px 100%, 180px 0, 190px 100%, 200px 0, 210px 100%, 220px 0, 230px 100%, 240px 0, 250px 100%, 260px 0, 270px 100%, 280px 0, 290px 100%, 300px 0, 310px 100%, 320px 0, 330px 100%, 340px 0, 350px 100%, 360px 0, 100% 100%); } .ds-line { padding: 6px 0; border-bottom: 1px solid rgba(22,22,22,0.18); white-space: pre-wrap; } .ds-line b { font: 600 15px/20px 'Archivo Narrow', sans-serif; letter-spacing: 0.6px; } .ds-line b.ds-alert { color: #8f110b; } .ds-bar { height: 14px; margin: 8px 0 8px 4px; background: #d6ff3d; border: 1.5px solid #161616; border-radius: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Palengke Price Board",
+    "overview": "Salo is a market stall at closing time, drawn as an Android app. A tarp-blue canopy runs across the top of every screen and carries the wordmark, the simulated clock, and a SIMULASYON / SIMULATED chip. Under it, the ground is pale tarp-lit blue by day and a navy night canopy after dark. Each lot is a physical object: a kraft price tag hung from a sagging zinc string, a kraft chip in the dashboard's lot strip, or a line printed on an off-white receipt tape with a torn top edge. State is shown the way a vendor would mark it: a rotated sticker on the tag, a marker-red strike, and a lime bar whose length is the minutes it waited.\n\nThe density is calm and readable at arm's length and on a projector. Type is large and set by role, every touch target is at least 48dp, and layouts reflow rather than truncate at 200% font scale. The physical objects (kraft, tape, marker ink) look the same in light and dark, because they are the same tag under a different light. Only the ground, the canopy, and screen text change with the theme.\n\nFilipino comes first on donor, pantry and driver screens, with English set smaller and muted underneath or after a \" · \". The dashboard and results are in English. The visual consequence is that every heading is really a pair: a title line plus a small muted subtitle.",
+    "keyCharacteristics": [
+      "A tarp-blue canopy bar on every screen; content sits on a flat pale ground.",
+      "Lots are kraft objects (tags, chips, cards) with hand-lettered Permanent Marker names.",
+      "Lime marks the one live state, TENTATIVE. Nothing else is lime.",
+      "Message traces print on receipt paper, with Archivo Narrow caps for message types.",
+      "Flat surfaces. Depth comes from hanging, punching and tearing, not from shadows.",
+      "Bilingual pairs: a Filipino title line, then English in small muted Archivo Narrow.",
+      "Follows the system theme, 200% font scale, TalkBack, and Android's \"Remove animations\"."
+    ],
+    "rules": [
+      {
+        "name": "The One Live Stamp Rule",
+        "body": "Lime means TENTATIVE (held until a driver commits) and nothing else. Every other sticker is marker ink on kraft, which is how lime keeps its meaning.",
+        "section": "colors"
+      },
+      {
+        "name": "The Kraft Stays Kraft Rule",
+        "body": "Kraft, marker ink, tag-alert red and on-lime are identical in light and dark. Tape paper shifts only slightly. Physical objects do not follow the theme; the ground and canopy do.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ink Follows The Surface Rule",
+        "body": "On kraft or paper, use the on-kraft, on-tape and on-kraft-alert inks. Theme text and theme red belong on the ground only.",
+        "section": "colors"
+      },
+      {
+        "name": "The Marker Is For Names Rule",
+        "body": "Permanent Marker is used only for the wordmark, item names, lot chips and stickers. It never sets a sentence, a heading, or a number someone must read precisely.",
+        "section": "typography"
+      },
+      {
+        "name": "The Roles Not Sizes Rule",
+        "body": "Every text uses a type role from the theme. Never hand-pick a size on a screen.",
+        "section": "typography"
+      },
+      {
+        "name": "The Bilingual Pair Rule",
+        "body": "On donor, pantry and driver screens, Filipino leads in Title or Body Strong and English follows in Small, muted, or after a \" · \" on the same line. The dashboard and results are English only.",
+        "section": "typography"
+      },
+      {
+        "name": "The Hung, Not Lifted Rule",
+        "body": "Objects show depth by how they hang, punch or tear, never by a drop shadow. A new surface that seems to need a shadow should become kraft, paper, or an outlined box instead.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Board Corner Rule",
+        "body": "New boxes and buttons use 4dp. Use 8dp only for donor form controls and larger radii only for the Material FAB and sheet.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do put every lot on a physical surface (kraft tag, kraft chip, or tape line), and give its name in Permanent Marker.",
+      "Do keep lime for TENTATIVE only, on the sticker and the tape bar.",
+      "Do use on-kraft, on-tape and on-kraft-alert ink on kraft and paper, in both themes.",
+      "Do pair every donor, pantry and driver heading as a Filipino line followed by small muted English.",
+      "Do make every touchable at least 48dp, with primary actions at 52–56dp and list rows at 64dp.",
+      "Do let text wrap and containers grow; check every new surface at 200% font scale.",
+      "Do read `reduceMotion` from the theme for every animation, auto-scroll and transition, and replace motion with instant cuts.",
+      "Do make state changes polite live regions, and speak one complete sentence per tag, row or card.",
+      "Do carry state in words (sticker text, station name, struck count read as \"was N\") as well as in color.",
+      "Do label simulated data on the tarp bar with the SIMULASYON / SIMULATED chip."
+    ],
+    "donts": [
+      "Don't use gradients.",
+      "Don't use generic elevated white cards or KPI tiles. Containers are kraft, paper, or flat outlined boxes.",
+      "Don't add drop shadows to anything except the post FAB.",
+      "Don't use lime for emphasis, selection, success or delivered.",
+      "Don't set sentences, headings or numbers in Permanent Marker.",
+      "Don't hand-pick font sizes, or truncate essential text with `numberOfLines`.",
+      "Don't put theme red or theme text on kraft or tape paper.",
+      "Don't make the clock a live region; only state changes are announced.",
+      "Don't use text characters as icons. Draw a 2dp stroke SVG instead.",
+      "Don't scale the tape's minute bars with the font setting. Bar length is time."
+    ]
+  }
+}
