@@ -162,9 +162,9 @@ select is(
 select pg_temp.become('00000000-0000-4000-8000-00000000d002', 'authenticated');
 
 select is(
-  pg_temp.err_state($$ select public.join_session('NOPE00') $$),
-  'P0002',
-  'a join with an unknown code is refused'
+  public.join_session('NOPE00'),
+  null::uuid,
+  'a join with an unknown code returns no session (NULL), so the failed try is recorded'
 );
 select is(public.join_session('k7q2mx'), '60000000-0000-4000-8000-000000000001'::uuid,
   'a donor joins with the code (case and spacing do not matter)');

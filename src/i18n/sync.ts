@@ -9,6 +9,7 @@ export const SYNC = {
     placeholder: 'ABC123',
     a11y: 'Kodigo ng gabi, anim na letra o numero. Evening code, six letters or digits.',
     badCode: 'Anim na letra o numero ang kodigo · The code has six letters or digits.',
+    tooMany: 'Masyadong maraming subok. Maghintay ng 10 minuto. · Too many tries. Wait 10 minutes.',
   },
   state: {
     connecting: 'Kumokonekta… · Connecting…',

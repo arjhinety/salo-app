@@ -9,7 +9,10 @@ import type { RealtimeChannel, SupabaseClient } from '@supabase/supabase-js';
 import type { DriverId, EngineInput, PolicyId } from '../engine/types';
 import type { SessionInput, SharedClock } from '../live/evening';
 
-export type SessionErrorKind = 'network' | 'refused' | 'not-found';
+export type SessionErrorKind = 'network' | 'refused' | 'not-found' | 'limited';
+
+/** The join attempt limit (migration 20261101100000): the device made too many failed joins in the last 10 minutes. */
+export const JOIN_LIMIT_MESSAGE = 'join_session: too many attempts';
 
 export class SessionError extends Error {
   constructor(
@@ -105,6 +108,7 @@ export function toSessionError(error: unknown, context: string): SessionError {
   const e = error as { code?: unknown; message?: unknown } | null;
   const code = typeof e?.code === 'string' ? e.code : '';
   const message = typeof e?.message === 'string' ? e.message : String(error);
+  if (message.includes(JOIN_LIMIT_MESSAGE)) return new SessionError('limited', `${context}: ${message}`);
   if (code === 'P0002') return new SessionError('not-found', `${context}: ${message}`);
   if (code !== '' && !code.startsWith('PGRST000')) return new SessionError('refused', `${context}: ${message}`);
   if (NETWORK_MARKERS.test(message) || error instanceof TypeError) return new SessionError('network', `${context}: ${message}`);
@@ -166,10 +170,12 @@ const REQUEST_COLUMNS = 'id, session_id, device_id, input, status, applied_seq, 
 export function makeSupabaseSessionApi(client: SupabaseClient, userId: () => string | null): SessionApi {
   return {
     async join(code) {
-      const id = await check<string>(
+      const id = await check<string | null>(
         'join_session',
-        client.rpc('join_session', { p_code: code }) as unknown as PromiseLike<{ data: string; error: unknown }>,
+        client.rpc('join_session', { p_code: code }) as unknown as PromiseLike<{ data: string | null; error: unknown }>,
       );
+      // join_session returns NULL (no error) for an unknown code, so that the failed try can be recorded.
+      if (id === null) throw new SessionError('not-found', 'join_session: no session has that code');
       return id;
     },
 

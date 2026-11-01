@@ -26,7 +26,9 @@ export function SessionBanner() {
   }
   if (status.state === 'refused') {
     const bad = (status.message ?? '').includes('six');
-    lines.push({ key: 'ref', text: bad ? SYNC.join.badCode : SYNC.state.refused, tone: 'alert' });
+    const limited = (status.message ?? '').startsWith('Too many');
+    const text = bad ? SYNC.join.badCode : limited ? SYNC.join.tooMany : SYNC.state.refused;
+    lines.push({ key: 'ref', text, tone: 'alert' });
   }
   if (status.state === 'live' && status.watchOnly) lines.push({ key: 'watch', text: SYNC.state.watchOnly, tone: 'muted' });
   for (const r of status.requests) {
@@ -37,10 +39,13 @@ export function SessionBanner() {
   if (lines.length === 0) return null;
 
   return (
-    <View style={[styles.box, { borderColor: c.rule, backgroundColor: c.groundRaised }]} accessibilityLiveRegion="polite">
+    <View style={[styles.box, { borderColor: c.rule, backgroundColor: c.groundRaised }]}>
       {lines.map((l) => (
         <Text
           key={l.key}
+          // Each status line is its own live region: a new message (the code limit, the code not found, a request
+          // that failed) is spoken once, and the others are not repeated.
+          accessibilityLiveRegion="polite"
           style={[
             l.tone === 'strong' ? TYPE.bodyStrong : TYPE.small,
             { color: l.tone === 'alert' ? c.red : l.tone === 'muted' ? c.textMuted : c.text },

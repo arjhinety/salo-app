@@ -187,6 +187,12 @@ export class Follower {
         if (this.opts.live.isFollower()) this.opts.live.leaveFollow();
         this.state = 'refused';
         this.message = 'No session has that code.';
+      } else if (error instanceof SessionError && error.kind === 'limited') {
+        // Locked out: stop trying on the loop (each try would be another attempt). The phone must be given the code again.
+        this.code = null;
+        if (this.opts.live.isFollower()) this.opts.live.leaveFollow();
+        this.state = 'refused';
+        this.message = 'Too many tries. Wait 10 minutes.';
       } else if (error instanceof SessionError && error.kind === 'refused') {
         // Usually: the device is not registered yet. Try again on the next pass.
         this.state = 'joining';
