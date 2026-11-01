@@ -1,3 +1,4 @@
+import { frozenParamsChecksum } from '../engine/frozenParams';
 import { UNTUNED_PARAMS } from '../engine/params';
 import type { FrozenParams } from '../engine/types';
 
@@ -24,34 +25,17 @@ export interface Registration {
 export const REGISTRATION: Registration = {
   mainEveningCount: null,
   pilotDone: false,
-  frozenParamsChecksum: null,
+  frozenParamsChecksum: 'sha256:5d0ef9b5bba3bbe441e1a646644bb55ef2413e3925eb94c7783678dfbc10d42e',
   resamples: RESAMPLES,
   seed: BOOTSTRAP_SEED,
 };
 
-/** FNV-1a (32-bit) over a string. A checksum for the record, not a security hash. Uses only Math.imul. */
-function fnv1a32(text: string): number {
-  let h = 0x811c9dc5;
-  for (let i = 0; i < text.length; i++) {
-    h ^= text.charCodeAt(i);
-    h = Math.imul(h, 0x01000193);
-  }
-  return h >>> 0;
-}
-
-/** JSON with object keys sorted, so the same parameters always give the same text. */
-function stableStringify(value: unknown): string {
-  if (Array.isArray(value)) return `[${value.map(stableStringify).join(',')}]`;
-  if (value !== null && typeof value === 'object') {
-    const keys = Object.keys(value as Record<string, unknown>).sort();
-    return `{${keys.map((k) => `${JSON.stringify(k)}:${stableStringify((value as Record<string, unknown>)[k])}`).join(',')}}`;
-  }
-  return JSON.stringify(value);
-}
-
-/** The checksum written to the registration when the frozen parameters are recorded. */
+/**
+ * The checksum recorded when the frozen parameters are recorded: "sha256:" + SHA-256 of their canonical JSON
+ * (src/engine/frozenParams.ts). The gate compares the recorded value with this function's output.
+ */
 export function checksumParams(params: FrozenParams): string {
-  return `fnv1a32:${fnv1a32(stableStringify(params)).toString(16).padStart(8, '0')}`;
+  return frozenParamsChecksum(params);
 }
 
 /**

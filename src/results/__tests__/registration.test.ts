@@ -1,6 +1,7 @@
 /// <reference types="jest" />
 // The pre-registration gate (RES-03, RES-06). Expected values are written out, not derived from the code under test.
 
+import { FROZEN_PARAMS } from '../../engine/frozenParams';
 import { UNTUNED_PARAMS } from '../../engine/params';
 import type { FrozenParams } from '../../engine/types';
 import { checksumParams, gateOpen, gateReasons, REGISTRATION, type Registration } from '../registration';
@@ -26,23 +27,26 @@ const openRegistration = (checksum: string | null): Registration => ({
 });
 
 describe('REGISTRATION', () => {
-  test('is closed and carries the documented seed and resample count', () => {
+  test('is closed and carries the documented seed and resample count; the checksum is the frozen parameters', () => {
     expect(REGISTRATION).toEqual({
       mainEveningCount: null,
       pilotDone: false,
-      frozenParamsChecksum: null,
+      frozenParamsChecksum: 'sha256:5d0ef9b5bba3bbe441e1a646644bb55ef2413e3925eb94c7783678dfbc10d42e',
       resamples: 10000,
       seed: 20260927,
     });
   });
 
-  test('today the gate is closed for every reason, with no frozen parameters in the build', () => {
+  test('today the gate is closed: the pilot has not run and the main-evening count is not recorded', () => {
     expect(gateOpen(REGISTRATION, null)).toBe(false);
     expect(gateReasons(REGISTRATION, null)).toEqual([
       'the pilot has not run',
       'the number of main evenings is not recorded',
-      'the frozen parameters checksum is not recorded',
       'no frozen parameters are in the build',
+    ]);
+    expect(gateReasons(REGISTRATION, FROZEN_PARAMS)).toEqual([
+      'the pilot has not run',
+      'the number of main evenings is not recorded',
     ]);
   });
 
@@ -81,9 +85,9 @@ describe('checksumParams', () => {
     expect(checksumParams(shuffled)).toBe(checksumParams(tuned));
   });
 
-  test('a change to one weight changes the checksum, and the format is fnv1a32 with 8 hex digits', () => {
+  test('a change to one weight changes the checksum, and the format is sha256 with 64 hex digits', () => {
     const changed = { ...tuned, salo: { ...tuned.salo, utilityWeights: { ...tuned.salo.utilityWeights, need: 0.51 } } };
     expect(checksumParams(changed)).not.toBe(checksumParams(tuned));
-    expect(checksumParams(tuned)).toMatch(/^fnv1a32:[0-9a-f]{8}$/);
+    expect(checksumParams(tuned)).toMatch(/^sha256:[0-9a-f]{64}$/);
   });
 });

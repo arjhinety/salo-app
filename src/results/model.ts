@@ -1,3 +1,4 @@
+import { FROZEN_PARAMS } from '../engine/frozenParams';
 import { POLICY_IDS } from '../engine/policies';
 import type { FrozenParams, PolicyId } from '../engine/types';
 import { NOT_MEASURED, RESULTS_COPY as C, SUPPORTING_LABELS } from './copy';
@@ -126,7 +127,7 @@ export function openModel(
   };
 }
 
-/** What the screen shows today: the gate is closed (no pilot, no count, no checksum, no frozen parameters). */
+/** What the screen shows today: the gate is closed (no pilot and no main-evening count; the frozen parameters are in the build). */
 export function currentModel(): ScreenModel {
-  return closedModel(REGISTRATION, null);
+  return closedModel(REGISTRATION, FROZEN_PARAMS);
 }

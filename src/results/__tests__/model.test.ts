@@ -42,17 +42,17 @@ describe('closed screen (the gate is shut today)', () => {
     expect(m.verdict).toBe(NOT_MEASURED);
   });
 
-  test('the footer shows the resample count, the seed and the checksum; the checksum is not recorded yet', () => {
+  test('the footer shows the resample count and the seed; the checksum row reads "Not measured yet" while closed', () => {
     expect(m.footer).toEqual([
       { label: 'Resamples', value: '10,000' },
       { label: 'Random seed', value: '20260927' },
       { label: 'Frozen parameters checksum', value: NOT_MEASURED },
     ]);
-    expect(REGISTRATION.frozenParamsChecksum).toBeNull();
+    expect(REGISTRATION.frozenParamsChecksum).toBe('sha256:5d0ef9b5bba3bbe441e1a646644bb55ef2413e3925eb94c7783678dfbc10d42e');
   });
 
-  test('the closed reasons cover all four missing conditions', () => {
-    expect(m.reasons).toHaveLength(4);
+  test('the closed reasons name the two conditions still missing: the pilot and the main-evening count', () => {
+    expect(m.reasons).toEqual(['the pilot has not run', 'the number of main evenings is not recorded']);
   });
 
   test('no pilot or tuning evening id appears anywhere in the screen model or its copy (RES-06)', () => {

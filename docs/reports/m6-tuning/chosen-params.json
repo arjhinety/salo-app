@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "frozenOn": "2026-11-01",
+  "tuningEvenings": [
+    "E01",
+    "E02",
+    "E03",
+    "E04",
+    "E05",
+    "E06",
+    "E07",
+    "E08",
+    "E09",
+    "E10"
+  ],
+  "salo": {
+    "utilityWeights": {
+      "need": 0.6155568974164789,
+      "storage": 0.08379152570179661,
+      "distance": 0.11344764073735084,
+      "freshness": 0.1872039361443737
+    },
+    "shareBudgetPerEvening": 40,
+    "shareBid": {
+      "kind": "linear",
+      "scale": 12
+    }
+  },
+  "centralGreedy": {
+    "utilityWeights": {
+      "need": 0.5069961300230563,
+      "storage": 0.032098571651955066,
+      "distance": 0.12292468077091723,
+      "freshness": 0.3379806175540714
+    },
+    "transportPenaltyPerMinute": 0.004237279463559389
+  }
+}
