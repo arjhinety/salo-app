@@ -10,6 +10,22 @@ import type { NotifyEvent } from './events';
 
 export const CHANNEL_ID = 'salo-live';
 
+/**
+ * Tells expo-notifications to show what the app schedules. The app schedules each notification from its own running
+ * process, and expo-notifications presents those only through a handler (found on the vel_phone release build, 2026-11-01:
+ * with no handler, nothing appeared in the foreground or the background). The decision is the same for every event.
+ */
+export function installHandler(): void {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowBanner: true,
+      shouldShowList: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+    }),
+  });
+}
+
 /** Creates the Android channel. Safe to call more than once; a no-op on other platforms. */
 export async function setupChannel(): Promise<void> {
   if (Platform.OS !== 'android') return;

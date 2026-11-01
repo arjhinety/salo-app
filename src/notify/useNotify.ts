@@ -15,7 +15,7 @@ import { roleState } from '../backend/session';
 import { useFollowStatus } from '../backend/useSession';
 import { liveEvening, useLiveSnapshot } from '../live/useLive';
 import { NOTIFY } from '../i18n/notify';
-import { announce, setupChannel } from './deliver';
+import { announce, installHandler, setupChannel } from './deliver';
 import { notifyEvents, type NotifyEvent } from './events';
 import { attachTapRouting, openLastTap } from './tap';
 import { NotifyTracker } from './tracker';
@@ -70,6 +70,7 @@ export function useNotifications(): void {
 
   // Channel, permission state, the stored flag, and the tap routing (warm and cold start).
   useEffect(() => {
+    installHandler();
     void (async () => {
       try {
         await setupChannel();

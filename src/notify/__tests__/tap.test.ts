@@ -3,7 +3,7 @@
  */
 import * as Notifications from 'expo-notifications';
 import { attachTapRouting, hrefFromData, openLastTap } from '../tap';
-import { announce } from '../deliver';
+import { announce, installHandler } from '../deliver';
 import { shouldAskInContext } from '../permission';
 import type { NotifyEvent } from '../events';
 
@@ -11,6 +11,7 @@ jest.mock('expo-notifications', () => ({
   addNotificationResponseReceivedListener: jest.fn(),
   getLastNotificationResponse: jest.fn(),
   scheduleNotificationAsync: jest.fn(async () => 'id-1'),
+  setNotificationHandler: jest.fn(),
   setNotificationChannelAsync: jest.fn(async () => null),
   AndroidImportance: { DEFAULT: 3 },
 }));
@@ -23,6 +24,16 @@ const mocked = Notifications as unknown as {
 
 const response = (id: string, data: unknown) => ({
   notification: { request: { identifier: id, content: { data } } },
+});
+
+describe('foreground and background presentation', () => {
+  it('installs a handler that shows the banner and the list entry, so scheduled notifications appear', async () => {
+    const set = (Notifications as unknown as { setNotificationHandler: jest.Mock }).setNotificationHandler;
+    installHandler();
+    expect(set).toHaveBeenCalledTimes(1);
+    const behavior = await set.mock.calls[0][0].handleNotification({});
+    expect(behavior).toEqual({ shouldShowBanner: true, shouldShowList: true, shouldPlaySound: true, shouldSetBadge: false });
+  });
 });
 
 describe('tap routing', () => {
