@@ -20,7 +20,46 @@ export function reachedFoodCeiling(result: EveningResult, needs: readonly Pantry
   return total > 0 && result.foodRescuedKg >= total - TOLERANCE_KG;
 }
 
-/** Evenings that reached the food ceiling, per policy. Each policy's runs must cover the same evenings. */
+/** Tolerance of the second ceiling definition, in kg. */
+export const POSTED_CEILING_TOLERANCE_KG = 0.001;
+
+/** Total posted kg of an evening: the sum of its lots' estimated kg (the engine's own postedKg, simulate.ts). */
+export function postedKgOf(evening: Pick<Evening, 'lots'>): number {
+  return evening.lots.reduce((s, l) => s + l.estKg, 0);
+}
+
+/**
+ * Second definition of the food ceiling (RES-07, added 2026-11-01 after the main run): ceiling hit = all posted food was
+ * rescued that evening, i.e. food rescued equals total posted kg within 0.001 kg. Supporting diagnostic only.
+ * The first definition (reachedFoodCeiling) is kept: it cannot be reached when posted food is below total need.
+ */
+export function reachedPostedCeiling(result: EveningResult, postedKg: number): boolean {
+  return Math.abs(result.foodRescuedKg - postedKg) <= POSTED_CEILING_TOLERANCE_KG;
+}
+
+/** Evenings where all posted food was rescued (second definition), per policy. Each policy's runs must cover the same evenings. */
+export function postedCeilingCounts(
+  runs: Record<PolicyId, readonly EveningResult[]>,
+  evenings: readonly Evening[],
+  reg: Registration = REGISTRATION,
+): Record<PolicyId, number> {
+  requireRecordOpen(reg);
+  const posted = new Map(evenings.map((e) => [e.id, postedKgOf(e)]));
+  const count = (rs: readonly EveningResult[]) =>
+    rs.filter((r) => {
+      const kg = posted.get(r.evening);
+      if (kg === undefined) throw new Error(`no evening ${r.evening}`);
+      return reachedPostedCeiling(r, kg);
+    }).length;
+  return {
+    salo: count(runs.salo),
+    fcfs: count(runs.fcfs),
+    nearest: count(runs.nearest),
+    central_greedy: count(runs.central_greedy),
+  };
+}
+
+/** Evenings that reached the food ceiling (first definition: every pantry's need fully met), per policy. Each policy's runs must cover the same evenings. */
 export function ceilingCounts(
   runs: Record<PolicyId, readonly EveningResult[]>,
   evenings: readonly Evening[],

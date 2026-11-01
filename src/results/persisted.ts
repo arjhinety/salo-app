@@ -4,10 +4,9 @@ import type { MainResults } from './runner';
 import type { FrozenParams, PolicyId } from '../engine/types';
 
 /**
- * The stored main results (RES-01 to RES-07, decisions.md "Main run done"). Written by the gated test
- * src/tuning/__tests__/m6-main-run.test.ts (M6_MAIN=1) into src/results/mainResults.generated.ts, committed.
- * The Results screen reads this record. It never runs an evening. It shows the record only when persistedMismatch is
- * empty, so a stale record (other parameters, other dataset, other count, other seed) cannot show.
+ * The stored main results: the record of the gated main run (M6_MAIN=1), kept as a test fixture at
+ * docs/reports/m6-main/record.json. The app does not import it (src/results/__tests__/record-imports.test.ts); the on-device
+ * path is checked against it (src/results/__tests__/onDevice.test.ts), and persistedMismatch is checked in persisted.test.ts.
  */
 export interface PersistedMainResults {
   schema: 1;

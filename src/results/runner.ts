@@ -36,20 +36,17 @@ function cellValue(results: readonly EveningResult[], m: MeasureId): number | nu
 }
 
 /**
- * Folds finished runs into the screen's numbers: per-evening means, the twelve paired comparisons and the verdict.
- * Pure: no engine call. Every policy must cover the same evenings in the same order.
+ * Folds finished runs and their twelve comparisons into the screen's numbers: per-evening means and the verdict.
+ * Pure: no engine call and no bootstrap. Every policy must cover the same evenings in the same order.
+ * The on-device path (onDevice.ts) computes the comparisons in chunks and folds them here, so both paths share this code.
  */
-export function summarize(
-  runs: Record<PolicyId, readonly EveningResult[]>,
-  reg: Pick<Registration, 'resamples' | 'seed'> = REGISTRATION,
-): MainResults {
+export function foldResults(runs: Record<PolicyId, readonly EveningResult[]>, comparisons: Comparison[]): MainResults {
   const evenings = runs.salo.map((r) => r.evening);
   const cells = {} as MainResults['cells'];
   for (const p of POLICY_IDS) {
     cells[p] = {} as Record<MeasureId, number | null>;
     for (const m of MEASURES) cells[p][m] = cellValue(runs[p], m);
   }
-  const comparisons = compareAll(runs, reg.resamples, reg.seed);
   const pick = (m: MeasureId) => {
     const c = comparisons.find((x) => x.main && x.measure === m);
     if (!c) throw new Error(`missing main comparison for ${m}`);
@@ -60,7 +57,18 @@ export function summarize(
   return { evenings, perEvening, cells, comparisons, verdict: verdictOf(pick('foodRescued'), pick('needMet')) };
 }
 
-type GateInput = {
+/**
+ * Folds finished runs into the screen's numbers: per-evening means, the twelve paired comparisons and the verdict.
+ * Pure: no engine call. Every policy must cover the same evenings in the same order.
+ */
+export function summarize(
+  runs: Record<PolicyId, readonly EveningResult[]>,
+  reg: Pick<Registration, 'resamples' | 'seed'> = REGISTRATION,
+): MainResults {
+  return foldResults(runs, compareAll(runs, reg.resamples, reg.seed));
+}
+
+export type GateInput = {
   params: FrozenParams;
   registration?: Registration;
   evenings?: readonly Evening[];
@@ -69,9 +77,9 @@ type GateInput = {
 /**
  * The gate, checked before any evening runs. Refuses (throws) unless the pilot has run, the main-evening count and the
  * checksum are recorded, the parameters are real (never UNTUNED_PARAMS), only main_sample evenings are given, and the
- * count equals the evenings given.
+ * count equals the evenings given. Exported for the on-device path (onDevice.ts), which uses the same check.
  */
-function openGate(input: GateInput): { reg: Registration; evenings: readonly Evening[] } {
+export function openGate(input: GateInput): { reg: Registration; evenings: readonly Evening[] } {
   const reg = input.registration ?? REGISTRATION;
   const evenings = input.evenings ?? mainEvenings(EVENINGS);
   const reasons = gateReasons(reg, input.params);

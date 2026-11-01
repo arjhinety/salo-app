@@ -1,17 +1,21 @@
 /// <reference types="jest" />
-// The screen model (RES-01, RES-03, RES-04, RES-06, RES-07) and the Results screen source. No React rendering: the model is pure.
+// The screen model (RES-01, RES-03, RES-04, RES-06, RES-07) and the Results screen source. No React rendering: the model is
+// pure. The open screen is checked with the record's numbers (test fixture) and with synthetic runs.
 
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { EVENINGS } from '../../data/dataset';
+import { FROZEN_PARAMS } from '../../engine/frozenParams';
 import type { EveningResult, PolicyId } from '../../engine/types';
 import { RESULTS_COPY, NOT_MEASURED, RESULTS_ROUTE } from '../copy';
-import { formatCell, formatComparison, closedModel, currentModel, openModel } from '../model';
-import { FROZEN_PARAMS } from '../../engine/frozenParams';
-import { PERSISTED_MAIN_RESULTS } from '../mainResults.generated';
-import { REGISTRATION, type Registration } from '../registration';
-import { summarize } from '../runner';
 import { COMPARISONS, type Comparison } from '../intervals';
+import { postedCeilingCounts } from '../learning';
+import { formatCell, formatComparison, closedModel, currentModel, openModel } from '../model';
+import { type OnDeviceResults } from '../onDevice';
+import { REGISTRATION, type Registration } from '../registration';
+import { mainEvenings, summarize } from '../runner';
 import { VERDICT_LABEL } from '../verdict';
+import { loadRecord } from './recordFixture';
 
 // Pilot (E01-E20) and tuning ids. None may appear on the Results screen (RES-06). E21-E64 are allowed.
 const PILOT_OR_TUNING_ID = /\bE(0[1-9]|1[0-9]|20)\b/;
@@ -19,23 +23,35 @@ const PILOT_OR_TUNING_ID = /\bE(0[1-9]|1[0-9]|20)\b/;
 /** The record before the pilot: nothing recorded. A synthetic closed record, to prove the closed-gate copy. */
 const beforePilot: Registration = { ...REGISTRATION, pilotDone: false, mainEveningCount: null };
 
-describe('the stored main results on the screen (the gate is open and the record matches)', () => {
-  const m = currentModel();
-  const stored = PERSISTED_MAIN_RESULTS;
+/** The results of a run, as the on-device path returns them, built from the stored record (the record is a test fixture). */
+function recordRun(): OnDeviceResults {
+  const record = loadRecord();
+  return {
+    main: record.main,
+    learning: record.learning,
+    postedCeilings: postedCeilingCounts(record.main.perEvening, mainEvenings(EVENINGS)),
+  };
+}
 
-  test('is open: the stored results are shown, with no gate line and no reason', () => {
+describe('the results of a run on the screen (the gate is open and a run is shown)', () => {
+  const run = recordRun();
+  const m = currentModel(run);
+  const record = loadRecord();
+
+  test('is open: the run is shown, with no gate line, no reason, and no run button', () => {
     expect(m.open).toBe(true);
+    expect(m.canRun).toBe(false);
     expect(m.gateLine).toBeNull();
     expect(m.reasons).toEqual([]);
   });
 
-  test('every policy cell is the stored value, formatted (no cell reads "Not measured yet")', () => {
+  test('every policy cell is the run value, formatted (no cell reads "Not measured yet")', () => {
     expect(m.policies.map((p) => p.label)).toEqual(['Agents (Salo)', 'First come first served', 'Nearest pantry', 'Central greedy']);
     for (const p of m.policies) {
       expect(p.cells.map((c) => c.label)).toEqual(['Food rescued', 'Food wasted', 'Need met, worst-served pantry', 'Stranded awards']);
     }
-    expect(m.policies[0].cells[0].value).toBe(formatCell('foodRescued', stored.main.cells.salo.foodRescued));
-    expect(m.policies[3].cells[2].value).toBe(formatCell('needMet', stored.main.cells.central_greedy.needMet));
+    expect(m.policies[0].cells[0].value).toBe(formatCell('foodRescued', record.main.cells.salo.foodRescued));
+    expect(m.policies[3].cells[2].value).toBe(formatCell('needMet', record.main.cells.central_greedy.needMet));
     expect(m.policies.flatMap((p) => p.cells).some((c) => c.value === NOT_MEASURED)).toBe(false);
   });
 
@@ -47,18 +63,22 @@ describe('the stored main results on the screen (the gate is open and the record
   });
 
   test('the verdict is the pre-registered label, followed by the two intervals it used (RES-04)', () => {
-    expect(m.verdict.startsWith(VERDICT_LABEL[stored.main.verdict])).toBe(true);
+    expect(m.verdict.startsWith(VERDICT_LABEL[record.main.verdict])).toBe(true);
     expect(m.verdict).toContain('food rescued [');
     expect(m.verdict).toContain('worst-served need met [');
   });
 
-  test('learning off and the ceiling counts are present, labelled as supporting by their headings', () => {
+  test('learning off and the ceiling row are present, labelled as supporting', () => {
     expect(m.learningRows).toHaveLength(4);
     expect(m.learningRows.every((r) => r.label.includes(RESULTS_COPY.learningRow))).toBe(true);
     expect(m.learningRows.some((r) => r.value === NOT_MEASURED)).toBe(false);
-    expect(m.ceilingRows.map((r) => r.value)).toEqual(['0 of 44 evenings', '0 of 44 evenings', '0 of 44 evenings', '0 of 44 evenings']);
     expect(RESULTS_COPY.learningHeading).toBe('Supporting: learning off');
-    expect(RESULTS_COPY.ceilingHeading).toBe('Supporting: evenings that reached the food ceiling');
+  });
+
+  test('the ceiling row is the second definition (all posted food rescued): 0 of 44 for every policy, as computed on the record', () => {
+    expect(m.ceilingRows.map((r) => r.value)).toEqual(['0 of 44 evenings', '0 of 44 evenings', '0 of 44 evenings', '0 of 44 evenings']);
+    expect(RESULTS_COPY.ceilingHeading).toBe('Supporting: food ceiling hit (all posted food rescued)');
+    expect(RESULTS_COPY.ceilingNote).toBe('Supporting diagnostic only. The main result does not depend on it.');
   });
 
   test('the footer shows the dataset version, the resamples, the seed and the frozen parameters checksum', () => {
@@ -77,78 +97,53 @@ describe('the stored main results on the screen (the gate is open and the record
   });
 });
 
-describe('the stored results never show when the gate or the record is not right', () => {
-  const stored = PERSISTED_MAIN_RESULTS;
+describe('no result is shown when the gate is closed, whatever run is given', () => {
+  const run = recordRun();
   const expectClosed = (m: ReturnType<typeof currentModel>) => {
     expect(m.open).toBe(false);
+    expect(m.canRun).toBe(false);
     expect(m.policies.every((p) => p.cells.every((c) => c.value === NOT_MEASURED))).toBe(true);
     expect(m.verdict).toBe(NOT_MEASURED);
     expect(m.mainRows.every((r) => r.value === NOT_MEASURED)).toBe(true);
+    expect(m.ceilingRows.every((r) => r.value === NOT_MEASURED)).toBe(true);
   };
 
-  test('the gate closed (no pilot recorded): closed, with the gate line', () => {
-    const m = currentModel(stored, beforePilot, FROZEN_PARAMS);
+  test('the gate closed (no pilot recorded): closed, no button, with the gate line', () => {
+    const m = currentModel(run, beforePilot, FROZEN_PARAMS);
     expectClosed(m);
     expect(m.gateLine).toBe('Main results appear after the pilot has run and the number of main evenings is recorded (guide p.19).');
   });
 
   test('no frozen parameters in the build: closed', () => {
-    expectClosed(currentModel(stored, REGISTRATION, null));
+    expectClosed(currentModel(run, REGISTRATION, null));
   });
 
-  test('a stored checksum that is not the frozen parameters checksum: closed, with the stale line, and the reason says why', () => {
-    const m = currentModel({ ...stored, frozenParamsChecksum: 'sha256:' + '0'.repeat(64) }, REGISTRATION, FROZEN_PARAMS);
+  test('a recorded count that differs from the dataset is closed with the count line', () => {
+    const mismatch = { ...REGISTRATION, mainEveningCount: 10 };
+    const m = currentModel(run, mismatch, FROZEN_PARAMS);
     expectClosed(m);
-    expect(m.gateLine).toBe(RESULTS_COPY.gateStale);
-    expect(m.reasons.length).toBeGreaterThan(0);
-  });
-
-  test('a stored record from another dataset version: closed', () => {
-    expectClosed(currentModel({ ...stored, dataset: { ...stored.dataset, version: 'v1.2' } }, REGISTRATION, FROZEN_PARAMS));
-  });
-
-  test('a stored record with a different seed: closed', () => {
-    expectClosed(currentModel({ ...stored, seed: 1 }, REGISTRATION, FROZEN_PARAMS));
-  });
-
-  test('a recorded count that differs from the dataset is closed with the count line, whatever is stored', () => {
-    const mismatch = closedModel({ ...REGISTRATION, mainEveningCount: 10 }, FROZEN_PARAMS);
-    expect(mismatch.open).toBe(false);
-    expect(mismatch.gateLine).toBe(
+    expect(m.gateLine).toBe(
       'The recorded main-evening count does not match the main evenings in the dataset, so no main result is shown (guide p.19).',
     );
-    expect(mismatch.reasons).toEqual(['the recorded count is 10, not the 44 main evenings in the dataset']);
-    expectClosed(currentModel(stored, { ...REGISTRATION, mainEveningCount: 10 }, FROZEN_PARAMS));
+    expect(m.reasons).toEqual(['the recorded count is 10, not the 44 main evenings in the dataset']);
   });
 
-  test('the screen source never imports the runner or the engine: nothing is computed when it opens', () => {
+  test('the screen source never imports the runner or the engine: the model computes nothing', () => {
     const model = readFileSync(join(__dirname, '../model.ts'), 'utf8');
-    expect(model).not.toMatch(/runMainResults|runEvening|runLearningComparison|engine\/simulate/);
+    expect(model).not.toMatch(/runMainResults|runEvening|runLearningComparison|runOnDevice|engine\/simulate/);
   });
 });
 
-describe('closed screen (the closed model with the pilot recorded and the count matching the dataset)', () => {
-  const m = closedModel(REGISTRATION, FROZEN_PARAMS);
+describe('closed screen: the gate is open and no run has been made yet', () => {
+  const m = currentModel(null);
 
-  test('is closed: no main result is shown, and the line says the main evenings have not been run', () => {
+  test('is closed with the run button offered; the line says the main evenings are not run yet', () => {
     expect(m.open).toBe(false);
+    expect(m.canRun).toBe(true);
     expect(m.gateLine).toBe(
-      'The pilot has run and the main-evening count is recorded. The main evenings have not been run, so no main result is shown (guide p.19).',
+      'The pilot has run and the main-evening count is recorded. No main result is shown until the main evenings are run on this phone (guide p.19).',
     );
     expect(m.reasons).toEqual([]);
-  });
-
-  test('a recorded count that differs from the dataset is still refused, with the count reason', () => {
-    const mismatch = closedModel({ ...REGISTRATION, mainEveningCount: 10 }, FROZEN_PARAMS);
-    expect(mismatch.open).toBe(false);
-    expect(mismatch.reasons).toEqual(['the recorded count is 10, not the 44 main evenings in the dataset']);
-  });
-
-  test('before the pilot is recorded, the screen keeps the one plain gate line from the stories, with the two reasons', () => {
-    const before = closedModel(beforePilot, FROZEN_PARAMS);
-    expect(before.open).toBe(false);
-    expect(before.gateLine).toBe('Main results appear after the pilot has run and the number of main evenings is recorded (guide p.19).');
-    expect(before.reasons).toEqual(['the pilot has not run', 'the number of main evenings is not recorded']);
   });
 
   test('every policy cell reads "Not measured yet": four policies by four measures', () => {
@@ -172,6 +167,18 @@ describe('closed screen (the closed model with the pilot recorded and the count 
       { label: 'Frozen parameters checksum', value: NOT_MEASURED },
     ]);
   });
+
+  test('before the pilot is recorded, the screen shows the one plain gate line, with the two reasons', () => {
+    const before = closedModel(beforePilot, FROZEN_PARAMS);
+    expect(before.open).toBe(false);
+    expect(before.canRun).toBe(false);
+    expect(before.gateLine).toBe('Main results appear after the pilot has run and the number of main evenings is recorded (guide p.19).');
+    expect(before.reasons).toEqual(['the pilot has not run', 'the number of main evenings is not recorded']);
+  });
+
+  test('the closed model names no pilot id', () => {
+    expect(JSON.stringify(closedModel())).not.toMatch(PILOT_OR_TUNING_ID);
+  });
 });
 
 describe('the Results screen source (src/app/results.tsx)', () => {
@@ -181,13 +188,31 @@ describe('the Results screen source (src/app/results.tsx)', () => {
     expect(screen).not.toMatch(PILOT_OR_TUNING_ID);
   });
 
-  test('never imports the runner or the engine: the screen cannot start an evening', () => {
-    expect(screen).not.toMatch(/runMainResults|runEvening|engine\//);
+  test('computes only through the on-device path (onDevice.ts) and never imports the engine directly', () => {
+    expect(screen).toContain("from '../results/onDevice'");
+    expect(screen).toContain('runOnDevice(');
+    expect(screen).not.toMatch(/runMainResults|runEvening|runLearningComparison|engine\/simulate/);
+  });
+
+  test('the run button is offered by the model only while the gate is open; the screen reads currentModel(results)', () => {
+    expect(screen).toContain('currentModel(results)');
+    expect(screen).toContain('m.canRun');
+    expect(screen).toContain('C.runButton');
   });
 
   test('is registered at the route the dashboard links to', () => {
     expect(RESULTS_ROUTE).toBe('/results');
-    expect(screen).toContain('currentModel()');
+  });
+});
+
+describe('the run copy (src/results/copy.ts)', () => {
+  test('the button, progress, cancelled and in-memory lines are as listed in the handoff', () => {
+    expect(RESULTS_COPY.runButton).toBe('Run the main evenings');
+    expect(RESULTS_COPY.runProgress(12, 44)).toBe('Evening 12 of 44 …');
+    expect(RESULTS_COPY.runIntervals).toBe('Working out the intervals and the verdict …');
+    expect(RESULTS_COPY.runCancel).toBe('Cancel run');
+    expect(RESULTS_COPY.runCancelled).toBe('The run was cancelled. No main result is shown.');
+    expect(RESULTS_COPY.runInMemory).toBe('The numbers are computed on this phone when you run them, and kept in memory for this session only.');
   });
 });
 
@@ -241,10 +266,20 @@ describe('open screen (with synthetic runs, never real evenings)', () => {
     nearest: [r('E21', 'nearest', 9, 0.6), r('E22', 'nearest', 9, 0.6)],
     central_greedy: [r('E21', 'central_greedy', 9, 0.6), r('E22', 'central_greedy', 9, 0.6)],
   } as Record<PolicyId, EveningResult[]>;
+  const synthetic: OnDeviceResults = {
+    main: summarize(runs, { resamples: 200, seed: 20260927 }),
+    learning: Object.fromEntries(
+      (['salo', 'fcfs', 'nearest', 'central_greedy'] as PolicyId[]).map((p) => [
+        p,
+        { evenings: 2, mean: 0, low: -1, high: 1, level: 0.95, reading: 'no_clear_difference', offFoodKg: [8, 8] },
+      ]),
+    ) as OnDeviceResults['learning'],
+    postedCeilings: { salo: 1, fcfs: 0, nearest: 0, central_greedy: 2 },
+  };
 
-  test('fills every cell and interval from the summary, and gives the verdict its label', () => {
-    const main = summarize(runs, { resamples: 200, seed: 20260927 } as const);
-    const m = openModel(main, { ...REGISTRATION, mainEveningCount: 2, pilotDone: true, frozenParamsChecksum: 'fnv1a32:00000001', resamples: 200 }, 'fnv1a32:00000001');
+  test('fills every cell and interval from the run, and gives the verdict its label', () => {
+    const reg = { ...REGISTRATION, mainEveningCount: 2, pilotDone: true, frozenParamsChecksum: 'sha256:' + '1'.repeat(64), resamples: 200 };
+    const m = openModel(synthetic, reg);
     expect(m.open).toBe(true);
     expect(m.gateLine).toBeNull();
     expect(m.verdict.startsWith('Salo better')).toBe(true);
@@ -252,11 +287,11 @@ describe('open screen (with synthetic runs, never real evenings)', () => {
     expect(m.policies[0].cells[2].value).toBe('80%');
     expect(m.mainRows).toHaveLength(2);
     expect(m.supportingRows).toHaveLength(10);
-    expect(m.learningRows[0].value).toBe(NOT_MEASURED);
-    expect(m.footer[2].value).toBe('fnv1a32:00000001');
+    expect(m.footer[3].value).toBe('sha256:' + '1'.repeat(64));
   });
 
-  test('the closed model with a recorded checksum still names no pilot id', () => {
-    expect(JSON.stringify(closedModel())).not.toMatch(PILOT_OR_TUNING_ID);
+  test('the ceiling row counts come from the run, out of the evenings it covers', () => {
+    const m = openModel(synthetic, { ...REGISTRATION, mainEveningCount: 2, resamples: 200 });
+    expect(m.ceilingRows.map((x) => x.value)).toEqual(['1 of 2 evenings', '0 of 2 evenings', '0 of 2 evenings', '2 of 2 evenings']);
   });
 });

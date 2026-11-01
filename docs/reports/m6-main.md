@@ -68,13 +68,13 @@ Assumption (decisions.md, Results screen defaults): the ceiling is reached when 
 | First come, first served | 0 of 44 evenings |
 | Nearest pantry | 0 of 44 evenings |
 
-**Read the ceiling counts with the supply in mind.** Posted food is below total need on every main evening: the ratio of posted kg to need kg runs from 0.60 to 0.88 across E21–E64 (44 of 44 evenings below 1.00). Under the assumption above, the ceiling cannot be reached on any of these evenings, so the zero counts follow from the definition, not from the policies. A different ceiling definition is an open question for Arjhine.
+**Read the ceiling counts with the supply in mind.** Posted food is below total need on every main evening: the ratio of posted kg to need kg runs from 0.60 to 0.88 across E21–E64 (44 of 44 evenings below 1.00). Under the assumption above, the ceiling cannot be reached on any of these evenings, so the zero counts follow from the definition, not from the policies. A second definition (all posted food rescued) is in section 7.
 
 ## 6. Per-evening tables (main_sample, E21–E64)
 
 ### Agents (Salo)
 
-| Evening | Food rescued (kg) | Food wasted (kg) | Worst-served need met | Stranded awards | Food ceiling hit |
+| Evening | Food rescued (kg) | Food wasted (kg) | Worst-served need met | Stranded awards | Food ceiling hit (first definition) |
 |---|---|---|---|---|---|
 | E21 | 132.78 | 9.83 | 0.000 | 1 | no |
 | E22 | 180.38 | 29.84 | 0.120 | 0 | no |
@@ -123,7 +123,7 @@ Assumption (decisions.md, Results screen defaults): the ceiling is reached when 
 
 ### Central greedy
 
-| Evening | Food rescued (kg) | Food wasted (kg) | Worst-served need met | Stranded awards | Food ceiling hit |
+| Evening | Food rescued (kg) | Food wasted (kg) | Worst-served need met | Stranded awards | Food ceiling hit (first definition) |
 |---|---|---|---|---|---|
 | E21 | 139.49 | 3.12 | 0.162 | 0 | no |
 | E22 | 181.50 | 28.72 | 0.141 | 0 | no |
@@ -172,7 +172,7 @@ Assumption (decisions.md, Results screen defaults): the ceiling is reached when 
 
 ### First come, first served
 
-| Evening | Food rescued (kg) | Food wasted (kg) | Worst-served need met | Stranded awards | Food ceiling hit |
+| Evening | Food rescued (kg) | Food wasted (kg) | Worst-served need met | Stranded awards | Food ceiling hit (first definition) |
 |---|---|---|---|---|---|
 | E21 | 108.06 | 34.55 | 0.000 | 0 | no |
 | E22 | 148.57 | 61.65 | 0.000 | 0 | no |
@@ -221,7 +221,7 @@ Assumption (decisions.md, Results screen defaults): the ceiling is reached when 
 
 ### Nearest pantry
 
-| Evening | Food rescued (kg) | Food wasted (kg) | Worst-served need met | Stranded awards | Food ceiling hit |
+| Evening | Food rescued (kg) | Food wasted (kg) | Worst-served need met | Stranded awards | Food ceiling hit (first definition) |
 |---|---|---|---|---|---|
 | E21 | 115.16 | 27.45 | 0.000 | 1 | no |
 | E22 | 156.93 | 53.29 | 0.000 | 0 | no |
@@ -321,7 +321,22 @@ Assumption (decisions.md, Results screen defaults): the ceiling is reached when 
 
 - Dataset v1.3: bundled tables sha256 sha256:a5aab7a57dc438b02f1a7b0e6ce2db8771eb393486b3c98b58adb465167f833b; dataset repo manifest sha256:e183b81d595437d1d9c1f9e7f98ed6bdbb777ea8ab3ce7484bbfd941c023bc24.
 - Main evenings: E21, E22, E23, E24, E25, E26, E27, E28, E29, E30, E31, E32, E33, E34, E35, E36, E37, E38, E39, E40, E41, E42, E43, E44, E45, E46, E47, E48, E49, E50, E51, E52, E53, E54, E55, E56, E57, E58, E59, E60, E61, E62, E63, E64 (44 recorded).
-- Runtime of the gated run: 19.2 s (four policies, learning on and off, sequential).
-- Food ceiling: the assumption in section 5.
+- Runtime of the gated run: 19.3 s (four policies, learning on and off, sequential).
+- Food ceiling: the assumption in section 5 and the second definition in section 7.
 - No pilot or tuning evening appears in this report. The tuning and pilot numbers are not results.
 - The numbers are simulated (Salo Evening Dataset). They say nothing about real pantries.
+## 7. Food ceiling under two definitions (supporting diagnostic, added 2026-11-01)
+
+The first definition (section 5) cannot be reached on these evenings: posted food is below total need. The guide (p.13) asks how often each method reaches the ceiling, and that is where capped food rescued cannot rise further. The second definition therefore asks whether all posted food was rescued that evening: food rescued equals total posted kg within 0.001 kg. It is a supporting diagnostic only. The main result (section 1) does not depend on it.
+
+| Group | Evenings | Posted kg over need kg | Agents (Salo), first | Central greedy, first | First come, first served, first | Nearest pantry, first | Agents (Salo), second | Central greedy, second | First come, first served, second | Nearest pantry, second |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Tuning E01–E10 (in-sample) | 10 | 0.65 to 0.84 | 0 of 10 evenings | 0 of 10 evenings | 0 of 10 evenings | 0 of 10 evenings | 0 of 10 evenings | 0 of 10 evenings | 0 of 10 evenings | 0 of 10 evenings |
+| Pilot E11–E20 | 10 | 0.63 to 0.85 | 0 of 10 evenings | 0 of 10 evenings | 0 of 10 evenings | 0 of 10 evenings | 0 of 10 evenings | 0 of 10 evenings | 0 of 10 evenings | 0 of 10 evenings |
+| Main E21–E64 | 44 | 0.60 to 0.88 | 0 of 44 evenings | 0 of 44 evenings | 0 of 44 evenings | 0 of 44 evenings | 0 of 44 evenings | 0 of 44 evenings | 0 of 44 evenings | 0 of 44 evenings |
+
+Closest approach on main E21–E64, the smallest food wasted in kg on any evening (at most 0.001 kg means the ceiling was hit): Agents (Salo) 4.52 kg, Central greedy 1.30 kg, First come, first served 21.99 kg, Nearest pantry 12.18 kg.
+
+No evening in any group reaches either definition, for any policy.
+
+Counts are per policy, frozen parameters, learning on. Tuning (E01–E10) and pilot (E11–E20) evenings appear here only as ceiling counts, which the guide (p.13) allows. Their other numbers are not results.

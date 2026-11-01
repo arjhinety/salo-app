@@ -1,7 +1,7 @@
 /// <reference types="node" />
 /// <reference types="jest" />
-// The stored main results (src/results/mainResults.generated.ts, written by the gated run M6_MAIN=1) are checked on every
-// normal test run: against the registration, the frozen parameters, the bundled dataset files, and by recomputing every
+// The stored main results (docs/reports/m6-main/record.json, a test fixture written by the gated run M6_MAIN=1) are checked on
+// every normal test run: against the registration, the frozen parameters, the bundled dataset files, and by recomputing every
 // number from the stored per-evening runs with the runner's own summarize, learningComparison and ceilingCounts. So a
 // stale or edited record cannot pass, and nothing here runs an evening.
 import { createHash } from 'node:crypto';
@@ -14,8 +14,8 @@ import { FROZEN_PARAMS } from '../../engine/frozenParams';
 import type { PolicyId } from '../../engine/types';
 import { pairedDiffs } from '../intervals';
 import { ceilingCounts, learningComparison } from '../learning';
-import { PERSISTED_MAIN_RESULTS } from '../mainResults.generated';
 import { persistedMismatch } from '../persisted';
+import { loadRecord } from './recordFixture';
 import { checksumParams, REGISTRATION } from '../registration';
 import { summarize } from '../runner';
 
@@ -23,7 +23,7 @@ const ROOT = join(__dirname, '..', '..', '..');
 const DATA = join(ROOT, 'data', 'salo-evening-dataset');
 const MAIN_IDS = Array.from({ length: 44 }, (_, i) => `E${21 + i}`);
 const mainEvenings = EVENINGS.filter((e) => e.split === 'main_sample');
-const stored = PERSISTED_MAIN_RESULTS;
+const stored = loadRecord();
 const sha = (buf: Buffer) => `sha256:${createHash('sha256').update(buf).digest('hex')}`;
 
 describe('the record against the registration and the frozen parameters', () => {

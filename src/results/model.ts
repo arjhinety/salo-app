@@ -1,15 +1,13 @@
-import { DATASET_VERSION, EVENINGS } from '../data/dataset';
+import { DATASET_VERSION } from '../data/dataset';
 import { FROZEN_PARAMS } from '../engine/frozenParams';
 import { POLICY_IDS } from '../engine/policies';
 import type { FrozenParams, PolicyId } from '../engine/types';
 import { NOT_MEASURED, RESULTS_COPY as C, SUPPORTING_LABELS } from './copy';
-import { PERSISTED_MAIN_RESULTS } from './mainResults.generated';
 import { COMPARISONS, type Comparison, type PairSpec } from './intervals';
 import type { LearningComparison } from './learning';
 import { MEASURES, type MeasureId } from './measures';
+import type { OnDeviceResults } from './onDevice';
 import { gateReasons, MAIN_EVENINGS_IN_DATASET, REGISTRATION, type Registration } from './registration';
-import { persistedMismatch, type PersistedMainResults } from './persisted';
-import type { MainResults } from './runner';
 import { verdictLine } from './verdict';
 
 export interface Row {
@@ -18,12 +16,10 @@ export interface Row {
 }
 
 export interface ScreenModel {
-  /**
-   * True only when the screen shows the stored main results (openModel). currentModel shows them only when the gate is
-   * open and the stored record matches the registration, the frozen parameters and the dataset. Otherwise every number
-   * reads "Not measured yet".
-   */
+  /** True only when the screen shows the results of this session (openModel). Every number reads "Not measured yet" otherwise. */
   open: boolean;
+  /** True when the run button shows: the gate is open and no result is shown yet. */
+  canRun: boolean;
   /** The one plain line that says why no main result is shown; null only when open. */
   gateLine: string | null;
   /** Why no main result is shown. For tests only: the screen shows just gateLine. */
@@ -81,7 +77,7 @@ function footer(reg: Registration, checksum: string): Row[] {
 
 /**
  * Why no main result is shown: the gate's own reasons, and a recorded count that the dataset cannot meet. The runner
- * refuses such a count too (openGate: "The recorded count ... evenings were given"), so the screen must not show open.
+ * refuses such a count too (openGate: "The recorded count ... evenings were given"), so the screen must not offer a run.
  */
 export function screenReasons(reg: Registration, params: FrozenParams | null): string[] {
   const reasons = gateReasons(reg, params);
@@ -107,14 +103,15 @@ function gateLineFor(reg: Registration, params: FrozenParams | null, reasons: re
 }
 
 /**
- * The screen with no main results: every cell, interval and verdict reads "Not measured yet". The rows come from the
- * same twelve-comparison table the open screen uses, so this screen lists every comparison.
+ * The screen with no results: every cell, interval and verdict reads "Not measured yet". With the gate open, the run
+ * button is offered (canRun). The rows come from the same twelve-comparison table the open screen uses.
  */
 export function closedModel(reg: Registration = REGISTRATION, params: FrozenParams | null = null): ScreenModel {
   const pending = (label: string): Row => ({ label, value: NOT_MEASURED });
   const reasons = screenReasons(reg, params);
   return {
     open: false,
+    canRun: reasons.length === 0,
     gateLine: gateLineFor(reg, params, reasons),
     reasons,
     policies: POLICY_IDS.map((p) => ({
@@ -132,15 +129,11 @@ export function closedModel(reg: Registration = REGISTRATION, params: FrozenPara
 }
 
 /**
- * The screen with the stored main results. Reached only when the gate is open and the stored record matches (see
- * currentModel). Every number comes from `main`, the stored summary; nothing is computed here.
+ * The screen with the results of this session (onDevice.ts). Every number is formatted from `run`; nothing is computed
+ * here. The footer names the dataset, the resamples, the seed and the frozen parameters checksum.
  */
-export function openModel(
-  main: MainResults,
-  reg: Registration,
-  checksum: string,
-  extras: { learning?: Record<PolicyId, LearningComparison>; ceilings?: Record<PolicyId, number>; dataset?: string } = {},
-): ScreenModel {
+export function openModel(run: OnDeviceResults, reg: Registration = REGISTRATION): ScreenModel {
+  const { main } = run;
   const mainRows = main.comparisons.filter((c) => c.main).map((c) => ({ label: specLabel(c), value: formatComparison(c) }));
   const supportingRows = main.comparisons
     .filter((c) => !c.main)
@@ -151,6 +144,7 @@ export function openModel(
   const total = main.evenings.length;
   return {
     open: true,
+    canRun: false,
     gateLine: null,
     reasons: [],
     policies: POLICY_IDS.map((p) => ({
@@ -163,37 +157,26 @@ export function openModel(
     supportingRows,
     learningRows: POLICY_IDS.map((p) => ({
       label: `${C.policies[p]} · ${C.learningRow}`,
-      value: extras.learning ? learningText(extras.learning[p]) : NOT_MEASURED,
+      value: learningText(run.learning[p]),
     })),
     ceilingRows: POLICY_IDS.map((p) => ({
       label: C.policies[p],
-      value: extras.ceilings ? C.ceilingOf(extras.ceilings[p], total) : NOT_MEASURED,
+      value: C.ceilingOf(run.postedCeilings[p], total),
     })),
-    footer: [
-      ...(extras.dataset ? [{ label: C.dataset, value: extras.dataset }] : []),
-      ...footer(reg, checksum),
-    ],
+    footer: [{ label: C.dataset, value: DATASET_VERSION }, ...footer(reg, reg.frozenParamsChecksum ?? NOT_MEASURED)],
   };
 }
 
 /**
- * What the Results screen shows. It reads the stored main results (src/results/mainResults.generated.ts) and shows them
- * only when the gate is open and the stored record matches the registration, the frozen parameters and the dataset
- * (persistedMismatch). It never runs an evening, so nothing is computed at app start. Otherwise the screen is closed.
+ * What the Results screen shows. `run` is the results of this session, or null when none has been run. The screen shows
+ * them only while the gate is open (screenReasons is empty). With no run, or a closed gate, every number reads "Not
+ * measured yet". Nothing is stored in the build and nothing is computed here.
  */
 export function currentModel(
-  stored: PersistedMainResults = PERSISTED_MAIN_RESULTS,
+  run: OnDeviceResults | null,
   reg: Registration = REGISTRATION,
   params: FrozenParams | null = FROZEN_PARAMS,
 ): ScreenModel {
-  const reasons = screenReasons(reg, params);
-  if (reasons.length) return closedModel(reg, params);
-  const mainIds = EVENINGS.filter((e) => e.split === 'main_sample').map((e) => e.id);
-  const stale = persistedMismatch(stored, reg, params, mainIds, DATASET_VERSION);
-  if (stale.length) return { ...closedModel(reg, params), gateLine: C.gateStale, reasons: stale };
-  return openModel(stored.main, reg, stored.frozenParamsChecksum, {
-    learning: stored.learning,
-    ceilings: stored.ceilings,
-    dataset: stored.dataset.version,
-  });
+  if (screenReasons(reg, params).length || run === null) return closedModel(reg, params);
+  return openModel(run, reg);
 }

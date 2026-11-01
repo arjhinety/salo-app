@@ -194,7 +194,7 @@ Computed per (evening, policy) from the log (`EveningResult` in `types.ts`):
 - **Worst-served need met:** `min over pantries with need > 0 of min(1, on-time kg / need)`. `null` if no pantry needed anything that evening, and such an evening is left out of the fairness average (guide page 14).
 - **Stranded awards:** awards that end with no `DELIVERY`.
 
-Comparisons (`PairedDifference`): Salo minus each baseline, paired evening by evening over the main_sample evenings E21 to E30 only, with a bootstrap interval. The Results screen reports these evenings and no others: "Pilot and tuning evenings stay out of the reported results, and main evenings are never used for tuning" (guide page 19). Two main results (food rescued and worst-served need met, against central greedy) use 97.5%. The other ten use 95% and are supporting only (guide page 19).
+Comparisons (`PairedDifference`): Salo minus each baseline, paired evening by evening over the main_sample evenings E21 to E64 (dataset v1.3; E21 to E30 in v1.2) only, with a bootstrap interval. The Results screen reports these evenings and no others: "Pilot and tuning evenings stay out of the reported results, and main evenings are never used for tuning" (guide page 19). Two main results (food rescued and worst-served need met, against central greedy) use 97.5%. The other ten use 95% and are supporting only (guide page 19).
 
 ### 2.11 Running 30 evenings x 4 policies on the phone without blocking the UI
 
@@ -214,7 +214,7 @@ Mechanics:
 
 ### 2.12 Tuning is offline (laptop), results are frozen
 
-Tuning the weights, the share-bid scale, and the central greedy's penalty happens on the **tuning** evenings E01 to E10, with the tuning target from guide page 12, on the laptop. The same tuning evenings are the only ones that driver reliability is learned on (guide page 15). The pilot evenings (E11 to E20) are used only for pilot checks: they set the number of main evenings (guide page 19) and measure how often each method hits the need ceiling (guide page 13). The main_sample evenings (E21 to E30) are the only evenings the Results screen reports, and they are never used for tuning. This keeps the reported evenings apart from every evening a setting was chosen on. Dwork et al. (2014, arXiv 1411.2664, guide page 21) show that reusing the same data to choose new analyses breaks the usual validity guarantees; Salo does not use their technique and simply avoids reusing evenings.
+Tuning the weights, the share-bid scale, and the central greedy's penalty happens on the **tuning** evenings E01 to E10, with the tuning target from guide page 12, on the laptop. The same tuning evenings are the only ones that driver reliability is learned on (guide page 15). The pilot evenings (E11 to E20) are used only for pilot checks: they set the number of main evenings (guide page 19) and measure how often each method hits the need ceiling (guide page 13). The main_sample evenings (E21 to E64 (dataset v1.3; E21 to E30 in v1.2)) are the only evenings the Results screen reports, and they are never used for tuning. This keeps the reported evenings apart from every evening a setting was chosen on. Dwork et al. (2014, arXiv 1411.2664, guide page 21) show that reusing the same data to choose new analyses breaks the usual validity guarantees; Salo does not use their technique and simply avoids reusing evenings.
 
 **Decision D-11 (tuning runs on the laptop; the phone only runs results).** Reason: the frozen values must exist and be written down before the pilot (guide page 11). Keeping tuning out of the app means a reviewer can see in the diff that the phone uses frozen values only. The tuning script runs the same engine code, under Jest's TypeScript transform, so no extra runner is needed. This is confirmed when the test setup is added.
 
@@ -559,7 +559,7 @@ Each item says what is undecided, the options, and a recommendation. None of the
 - (b) Every bid spends shares. Pantries that bid on many lots run out sooner.
 - Recommendation: (a), and the guide's "bidding spends shares" changed to "winning bids spend shares".
 
-**O-8 How many evenings the phone runs (blocks results).** The dataset has 10 tuning evenings (E01 to E10), 10 pilot evenings (E11 to E20) and **10** main evenings (E21 to E30). The brief asks for 30 evenings x 4 policies on the phone. The guide says "30 to start; the pilot sets the final count".
+**O-8 How many evenings the phone runs (blocks results).** The dataset has 10 tuning evenings (E01 to E10), 10 pilot evenings (E11 to E20) and **10** main evenings (E21 to E30). The brief asks for 30 evenings x 4 policies on the phone. The guide says "30 to start; the pilot sets the final count". **Update 2026-11-01:** the pilot set the count at 44, so dataset v1.3 has 44 main evenings (E21 to E64), all run on the phone from the Results screen.
 - (a) Run the 10 main evenings only. The dataset as it is.
 - (b) Regenerate the dataset with more main evenings, then run the count the pilot sets. This is the guide's rule.
 - (c) Include pilot evenings in the results. Not recommended: it breaks the held-out rule (guide p.12, D-11).

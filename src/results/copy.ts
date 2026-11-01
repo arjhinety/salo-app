@@ -15,12 +15,10 @@ export const RESULTS_COPY = {
   back: 'Back to dashboard',
   /** The one plain gate line. The pilot is named without its evening ids (RES-06: no pilot ids on the screen). */
   gateClosed: 'Main results appear after the pilot has run and the number of main evenings is recorded (guide p.19).',
-  /** The pilot is recorded, but the screen never runs the main evenings itself, so no main result is shown. */
-  gateRecordedNoRun: 'The pilot has run and the main-evening count is recorded. The main evenings have not been run, so no main result is shown (guide p.19).',
+  /** The gate is open and no run has been made yet this session: the button below runs the main evenings on this phone. */
+  gateRecordedNoRun: 'The pilot has run and the main-evening count is recorded. No main result is shown until the main evenings are run on this phone (guide p.19).',
   /** The recorded count is more main evenings than the dataset has. The runner would refuse it, so the screen stays closed. */
   gateCountMismatch: 'The recorded main-evening count does not match the main evenings in the dataset, so no main result is shown (guide p.19).',
-  /** The gate is open, but the stored results do not match the registration, the parameters or the dataset (RES-06). */
-  gateStale: 'The stored main results do not match the current registration, parameters or dataset, so no main result is shown (guide p.19).',
   evenings: 'Evenings reported: E21 to E64 (main_sample).',
   policiesHeading: 'Four policies, same evenings',
   policies: {
@@ -42,7 +40,22 @@ export const RESULTS_COPY = {
   learningHeading: 'Supporting: learning off',
   /** One row per policy: "<policy> · Food rescued, learning on minus off (95%)". Supporting only. */
   learningRow: 'Food rescued, learning on minus off (95%)',
-  ceilingHeading: 'Supporting: evenings that reached the food ceiling',
+  ceilingHeading: 'Supporting: food ceiling hit (all posted food rescued)',
+  /** The ceiling row is a supporting diagnostic only. The first definition (every need met) is in the report, section 5. */
+  ceilingNote: 'Supporting diagnostic only. The main result does not depend on it.',
+  /** The button that starts the main run on this phone. Shown only when the gate is open and no result is shown yet. */
+  runButton: 'Run the main evenings',
+  /** Progress line while the run goes: evening `done` of `total` is running. */
+  runProgress: (done: number, total: number) => `Evening ${done} of ${total} …`,
+  /** Shown after the last evening while the intervals and the verdict are worked out. */
+  runIntervals: 'Working out the intervals and the verdict …',
+  runCancel: 'Cancel run',
+  /** Shown when the user cancels the run. Nothing is kept. */
+  runCancelled: 'The run was cancelled. No main result is shown.',
+  /** Shown if the run stops with an error. Nothing is kept. */
+  runFailed: 'The run stopped with an error. No main result is shown.',
+  /** Under the button: where the numbers live. */
+  runInMemory: 'The numbers are computed on this phone when you run them, and kept in memory for this session only.',
   /** "2 of 44 evenings" for a ceiling count. */
   ceilingOf: (n: number, total: number) => `${n} of ${total} evenings`,
   dataset: 'Dataset',
