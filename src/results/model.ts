@@ -1,13 +1,16 @@
+import { DATASET_VERSION, EVENINGS } from '../data/dataset';
 import { FROZEN_PARAMS } from '../engine/frozenParams';
 import { POLICY_IDS } from '../engine/policies';
 import type { FrozenParams, PolicyId } from '../engine/types';
 import { NOT_MEASURED, RESULTS_COPY as C, SUPPORTING_LABELS } from './copy';
+import { PERSISTED_MAIN_RESULTS } from './mainResults.generated';
 import { COMPARISONS, type Comparison, type PairSpec } from './intervals';
 import type { LearningComparison } from './learning';
 import { MEASURES, type MeasureId } from './measures';
 import { gateReasons, MAIN_EVENINGS_IN_DATASET, REGISTRATION, type Registration } from './registration';
+import { persistedMismatch, type PersistedMainResults } from './persisted';
 import type { MainResults } from './runner';
-import { VERDICT_LABEL } from './verdict';
+import { verdictLine } from './verdict';
 
 export interface Row {
   label: string;
@@ -16,16 +19,18 @@ export interface Row {
 
 export interface ScreenModel {
   /**
-   * True only when the screen shows computed main results (openModel). currentModel never computes them, so it is
-   * false even when the record is complete. Every number then reads "Not measured yet".
+   * True only when the screen shows the stored main results (openModel). currentModel shows them only when the gate is
+   * open and the stored record matches the registration, the frozen parameters and the dataset. Otherwise every number
+   * reads "Not measured yet".
    */
   open: boolean;
-  /** The one plain line that says why no main result is shown; null only in openModel. */
+  /** The one plain line that says why no main result is shown; null only when open. */
   gateLine: string | null;
   /** Why no main result is shown. For tests only: the screen shows just gateLine. */
   reasons: string[];
   policies: { id: PolicyId; label: string; cells: Row[] }[];
   mainRows: Row[];
+  /** The verdict and the two intervals it used (RES-04), or "Not measured yet". */
   verdict: string;
   supportingRows: Row[];
   learningRows: Row[];
@@ -58,6 +63,12 @@ export function formatComparison(c: Comparison): string {
   const reading =
     c.reading === 'salo_better' ? C.saloBetter : c.reading === 'baseline_better' ? C.baselineBetter : C.noClear;
   return `${fmtVal(c.mean)}${unit} [${fmtVal(c.low)}, ${fmtVal(c.high)}] · ${reading}`;
+}
+
+/** One policy's learning-off comparison (supporting, RES-07): mean and bounds in kg, and the reading. */
+function learningText(l: LearningComparison): string {
+  const reading = l.reading === 'learning_helps' ? 'learning helps' : l.reading === 'learning_hurts' ? 'learning hurts' : C.noClear;
+  return `${signed(l.mean, 1)} kg [${signed(l.low, 1)}, ${signed(l.high, 1)}] · ${reading}`;
 }
 
 function footer(reg: Registration, checksum: string): Row[] {
@@ -114,29 +125,30 @@ export function closedModel(reg: Registration = REGISTRATION, params: FrozenPara
     mainRows: COMPARISONS.filter((s) => s.main).map((s) => pending(specLabel(s))),
     verdict: NOT_MEASURED,
     supportingRows: COMPARISONS.filter((s) => !s.main).map((s) => pending(`${specLabel(s)} (95%)`)),
-    learningRows: [pending('Food rescued, learning on minus off (95%)')],
+    learningRows: POLICY_IDS.map((p) => pending(`${C.policies[p]} · ${C.learningRow}`)),
     ceilingRows: POLICY_IDS.map((p) => pending(C.policies[p])),
     footer: footer(reg, NOT_MEASURED),
   };
 }
 
-/** The screen once the gate is open and the runs are summarised. Reached only after the pre-registration is written. */
+/**
+ * The screen with the stored main results. Reached only when the gate is open and the stored record matches (see
+ * currentModel). Every number comes from `main`, the stored summary; nothing is computed here.
+ */
 export function openModel(
   main: MainResults,
   reg: Registration,
   checksum: string,
-  extras: { learning?: LearningComparison; ceilings?: Record<PolicyId, number> } = {},
+  extras: { learning?: Record<PolicyId, LearningComparison>; ceilings?: Record<PolicyId, number>; dataset?: string } = {},
 ): ScreenModel {
   const mainRows = main.comparisons.filter((c) => c.main).map((c) => ({ label: specLabel(c), value: formatComparison(c) }));
   const supportingRows = main.comparisons
     .filter((c) => !c.main)
     .map((c) => ({ label: `${specLabel(c)} (95%)`, value: formatComparison(c) }));
-  const learning = extras.learning;
-  const learningValue = learning
-    ? `${signed(learning.mean, 1)} kg [${signed(learning.low, 1)}, ${signed(learning.high, 1)}] · ${
-        learning.reading === 'learning_helps' ? 'learning helps' : learning.reading === 'learning_hurts' ? 'learning hurts' : C.noClear
-      }`
-    : NOT_MEASURED;
+  const food = main.comparisons.find((c) => c.main && c.measure === 'foodRescued');
+  const fair = main.comparisons.find((c) => c.main && c.measure === 'needMet');
+  if (!food || !fair) throw new Error('the open screen needs both main comparisons');
+  const total = main.evenings.length;
   return {
     open: true,
     gateLine: null,
@@ -147,21 +159,41 @@ export function openModel(
       cells: MEASURES.map((m) => ({ label: C.measures[m], value: formatCell(m, main.cells[p][m]) })),
     })),
     mainRows,
-    verdict: VERDICT_LABEL[main.verdict],
+    verdict: verdictLine({ low: food.low, high: food.high }, { low: fair.low, high: fair.high }),
     supportingRows,
-    learningRows: [{ label: 'Food rescued, learning on minus off (95%)', value: learningValue }],
+    learningRows: POLICY_IDS.map((p) => ({
+      label: `${C.policies[p]} · ${C.learningRow}`,
+      value: extras.learning ? learningText(extras.learning[p]) : NOT_MEASURED,
+    })),
     ceilingRows: POLICY_IDS.map((p) => ({
       label: C.policies[p],
-      value: extras.ceilings ? String(extras.ceilings[p]) : NOT_MEASURED,
+      value: extras.ceilings ? C.ceilingOf(extras.ceilings[p], total) : NOT_MEASURED,
     })),
-    footer: footer(reg, checksum),
+    footer: [
+      ...(extras.dataset ? [{ label: C.dataset, value: extras.dataset }] : []),
+      ...footer(reg, checksum),
+    ],
   };
 }
 
 /**
- * What the screen shows today: no main result. The pilot is recorded and the count is 44, which dataset v1.3 matches
- * (44 main evenings), so the gate's checks pass, but no main evening has been run. This function never runs an evening.
+ * What the Results screen shows. It reads the stored main results (src/results/mainResults.generated.ts) and shows them
+ * only when the gate is open and the stored record matches the registration, the frozen parameters and the dataset
+ * (persistedMismatch). It never runs an evening, so nothing is computed at app start. Otherwise the screen is closed.
  */
-export function currentModel(): ScreenModel {
-  return closedModel(REGISTRATION, FROZEN_PARAMS);
+export function currentModel(
+  stored: PersistedMainResults = PERSISTED_MAIN_RESULTS,
+  reg: Registration = REGISTRATION,
+  params: FrozenParams | null = FROZEN_PARAMS,
+): ScreenModel {
+  const reasons = screenReasons(reg, params);
+  if (reasons.length) return closedModel(reg, params);
+  const mainIds = EVENINGS.filter((e) => e.split === 'main_sample').map((e) => e.id);
+  const stale = persistedMismatch(stored, reg, params, mainIds, DATASET_VERSION);
+  if (stale.length) return { ...closedModel(reg, params), gateLine: C.gateStale, reasons: stale };
+  return openModel(stored.main, reg, stored.frozenParamsChecksum, {
+    learning: stored.learning,
+    ceilings: stored.ceilings,
+    dataset: stored.dataset.version,
+  });
 }

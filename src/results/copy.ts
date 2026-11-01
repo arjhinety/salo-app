@@ -19,6 +19,8 @@ export const RESULTS_COPY = {
   gateRecordedNoRun: 'The pilot has run and the main-evening count is recorded. The main evenings have not been run, so no main result is shown (guide p.19).',
   /** The recorded count is more main evenings than the dataset has. The runner would refuse it, so the screen stays closed. */
   gateCountMismatch: 'The recorded main-evening count does not match the main evenings in the dataset, so no main result is shown (guide p.19).',
+  /** The gate is open, but the stored results do not match the registration, the parameters or the dataset (RES-06). */
+  gateStale: 'The stored main results do not match the current registration, parameters or dataset, so no main result is shown (guide p.19).',
   evenings: 'Evenings reported: E21 to E64 (main_sample).',
   policiesHeading: 'Four policies, same evenings',
   policies: {
@@ -38,7 +40,12 @@ export const RESULTS_COPY = {
   supportingNote:
     'Food wasted mirrors food rescued (the same kg is posted under every policy), so its intervals are not independent support.',
   learningHeading: 'Supporting: learning off',
+  /** One row per policy: "<policy> · Food rescued, learning on minus off (95%)". Supporting only. */
+  learningRow: 'Food rescued, learning on minus off (95%)',
   ceilingHeading: 'Supporting: evenings that reached the food ceiling',
+  /** "2 of 44 evenings" for a ceiling count. */
+  ceilingOf: (n: number, total: number) => `${n} of ${total} evenings`,
+  dataset: 'Dataset',
   verdictHeading: 'Verdict',
   noClear: 'No clear difference',
   saloBetter: 'Salo better',

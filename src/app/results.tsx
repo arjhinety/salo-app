@@ -8,8 +8,10 @@ import { useTheme } from '../theme/theme';
 import { SPACE, TYPE } from '../theme/tokens';
 
 /**
- * The Results screen (RES-01 to RES-07). Gated: while the pre-registration gate is closed, every number reads
- * "Not measured yet" and only E21 to E64 are named (RES-06). English, simulated data, labelled.
+ * The Results screen (RES-01 to RES-07). Shows the stored main results (src/results/mainResults.generated.ts) only while
+ * the pre-registration gate is open and the stored record matches the registration, the frozen parameters and the
+ * dataset. Otherwise every number reads "Not measured yet". It never runs an evening. Only E21 to E64 are named (RES-06).
+ * English, simulated data, labelled.
  */
 export default function Results() {
   const { c } = useTheme();

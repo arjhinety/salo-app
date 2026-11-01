@@ -14,6 +14,8 @@ export { ResultsGateError };
 
 export interface MainResults {
   evenings: string[];
+  /** The finished runs behind the numbers, per policy, in evening order. Kept for the stored record and its tests. */
+  perEvening: Record<PolicyId, EveningResult[]>;
   /** Mean per evening of each measure, by policy. Null when no evening has a value. */
   cells: Record<PolicyId, Record<MeasureId, number | null>>;
   /** Twelve comparisons: the two main ones (97.5%) and ten supporting ones (95%). */
@@ -53,7 +55,9 @@ export function summarize(
     if (!c) throw new Error(`missing main comparison for ${m}`);
     return { low: c.low, high: c.high };
   };
-  return { evenings, cells, comparisons, verdict: verdictOf(pick('foodRescued'), pick('needMet')) };
+  const perEvening = {} as Record<PolicyId, EveningResult[]>;
+  for (const p of POLICY_IDS) perEvening[p] = [...runs[p]];
+  return { evenings, perEvening, cells, comparisons, verdict: verdictOf(pick('foodRescued'), pick('needMet')) };
 }
 
 type GateInput = {

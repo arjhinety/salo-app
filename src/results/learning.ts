@@ -51,6 +51,8 @@ export interface LearningComparison {
   /** Supporting: 95%, never a main result. */
   level: 0.95;
   reading: 'learning_helps' | 'learning_hurts' | 'no_clear_difference';
+  /** Food rescued per evening with learning off, in evening order (kg). Kept so the stored result can be re-derived. */
+  offFoodKg: number[];
 }
 
 /** Evening-by-evening comparison of the same policy with learning on and off (paired bootstrap, supporting). */
@@ -65,5 +67,5 @@ export function learningComparison(
   const { mean, low, high } = pairedInterval(diffs, bootstrapIndices(diffs.length, reg.resamples, reg.seed), 0.95);
   const r = readingOf('foodRescued', low, high);
   const reading = r === 'salo_better' ? 'learning_helps' : r === 'baseline_better' ? 'learning_hurts' : 'no_clear_difference';
-  return { evenings: diffs.length, mean, low, high, level: 0.95, reading };
+  return { evenings: diffs.length, mean, low, high, level: 0.95, reading, offFoodKg: off.map((r) => r.foodRescuedKg) };
 }
