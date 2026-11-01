@@ -6,7 +6,7 @@ import { hhmm } from '../donor/tonight';
 import { S } from '../i18n/strings';
 import { useTheme } from '../theme/theme';
 import { SPACE, TYPE } from '../theme/tokens';
-import { FridgeIcon } from './icons';
+import { ArrowIcon, FridgeIcon } from './icons';
 import { JourneyLine } from './JourneyLine';
 import { Sticker, type StickerKind } from './Sticker';
 
@@ -99,10 +99,13 @@ export function Tag({ view, onPress }: { view: LotView; onPress?: () => void }) 
           </View>
         ) : null}
         {view.pantryName ? (
-          <Text style={[TYPE.small, { color: c.onKraft }]}>
-            → {view.pantryName}
-            {view.driverName ? ` · ${view.driverName}` : ''}
-          </Text>
+          <View style={styles.destination}>
+            <ArrowIcon color={c.onKraft} />
+            <Text style={[TYPE.small, { color: c.onKraft, flexShrink: 1 }]}>
+              {view.pantryName}
+              {view.driverName ? ` · ${view.driverName}` : ''}
+            </Text>
+          </View>
         ) : null}
         <View style={{ marginTop: SPACE.s }}>
           <JourneyLine station={view.station} failed={failed} />
@@ -131,4 +134,5 @@ const styles = StyleSheet.create({
   rule: { height: 1, marginVertical: SPACE.s, opacity: 0.6 },
   slot: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', gap: SPACE.s, flexWrap: 'wrap' },
   fridge: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
+  destination: { flexDirection: 'row', alignItems: 'center', gap: 6 },
 });

@@ -203,8 +203,8 @@ export default function Post() {
             placeholder={S.postScreen.placeholder}
             placeholderTextColor={c.textMuted}
             style={[TYPE.body, styles.input, { color: c.text }]}
-            selectionColor={c.tarp}
-            cursorColor={c.tarp}
+            selectionColor={c.tarpInk}
+            cursorColor={c.tarpInk}
           />
           <Pressable
             onPress={onMic}
@@ -212,9 +212,9 @@ export default function Post() {
             accessibilityRole="button"
             accessibilityState={{ disabled: !speech.hasModule, busy: speech.listening }}
             accessibilityLabel={speech.listening ? voiceStrings.stop : voiceStrings.tapToSpeak}
-            style={({ pressed }) => [styles.mic, { borderColor: speech.listening ? c.tarp : c.rule, opacity: !speech.hasModule ? 0.4 : pressed ? 0.7 : 1 }]}
+            style={({ pressed }) => [styles.mic, { borderColor: speech.listening ? c.tarpInk : c.rule, opacity: !speech.hasModule ? 0.4 : pressed ? 0.7 : 1 }]}
           >
-            <MicIcon color={speech.listening ? c.tarp : c.textMuted} />
+            <MicIcon color={speech.listening ? c.tarpInk : c.textMuted} />
           </Pressable>
         </View>
         <Text style={[TYPE.small, { color: c.textMuted }]} accessibilityLiveRegion="polite">
@@ -344,9 +344,9 @@ export default function Post() {
         <Pressable
           onPress={() => router.back()}
           accessibilityRole="button"
-          style={({ pressed }) => [styles.back, { borderColor: c.tarp, opacity: pressed ? 0.8 : 1 }]}
+          style={({ pressed }) => [styles.back, { borderColor: c.tarpInk, opacity: pressed ? 0.8 : 1 }]}
         >
-          <Text style={[TYPE.bodyStrong, { color: c.tarp }]}>{S.postScreen.back}</Text>
+          <Text style={[TYPE.bodyStrong, { color: c.tarpInk }]}>{S.postScreen.back}</Text>
         </Pressable>
       </ScrollView>
     </View>
@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
   mic: { width: 48, height: 48, borderRadius: 24, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   send: {
     minHeight: 56,
-    borderRadius: 12,
+    borderRadius: 4,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
   },
   post: {
     minHeight: 56,
-    borderRadius: 12,
+    borderRadius: 4,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: SPACE.xl,
@@ -398,7 +398,7 @@ const styles = StyleSheet.create({
     marginTop: SPACE.xl,
     minHeight: 48,
     borderWidth: 2,
-    borderRadius: 12,
+    borderRadius: 4,
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'flex-start',

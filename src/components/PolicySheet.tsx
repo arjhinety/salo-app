@@ -50,8 +50,8 @@ export function PolicySheet({
                   accessibilityLabel={`${copy.name}. ${copy.how}`}
                   style={({ pressed }) => [styles.option, { backgroundColor: pressed ? c.ground : 'transparent' }]}
                 >
-                  <View style={[styles.radio, { borderColor: selected ? c.tarp : c.textMuted }]}>
-                    {selected ? <View style={[styles.dot, { backgroundColor: c.tarp }]} /> : null}
+                  <View style={[styles.radio, { borderColor: selected ? c.tarpInk : c.textMuted }]}>
+                    {selected ? <View style={[styles.dot, { backgroundColor: c.tarpInk }]} /> : null}
                   </View>
                   <View style={styles.optionText}>
                     <Text style={[TYPE.bodyStrong, { color: c.text }]}>{copy.name}</Text>
@@ -67,7 +67,7 @@ export function PolicySheet({
             accessibilityLabel={dash.close}
             style={({ pressed }) => [styles.close, { opacity: pressed ? 0.7 : 1 }]}
           >
-            <Text style={[TYPE.label, { color: c.tarp }]}>{dash.close.toUpperCase()}</Text>
+            <Text style={[TYPE.label, { color: c.tarpInk }]}>{dash.close.toUpperCase()}</Text>
           </Pressable>
         </View>
       </View>

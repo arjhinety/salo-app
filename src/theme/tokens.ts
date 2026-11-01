@@ -8,6 +8,10 @@ export interface Palette {
   text: string;
   textMuted: string;
   tarp: string;
+  /** Tarp as ink on the ground or raised ground (role-state labels, CLOSE, back link, radio ring). Lighter at night. */
+  tarpInk: string;
+  /** tarp-night in both themes: the post FAB's shadow colour. */
+  tarpNight: string;
   onTarp: string;
   kraft: string;
   kraftEdge: string;
@@ -34,6 +38,8 @@ export const LIGHT: Palette = {
   text: '#161616',
   textMuted: '#3a4a66',
   tarp: '#1947b8',
+  tarpInk: '#1947b8',
+  tarpNight: '#0f2f7a',
   onTarp: '#ffffff',
   kraft: '#d6ae7b',
   kraftEdge: '#b68e5c',
@@ -59,6 +65,9 @@ export const DARK: Palette = {
   text: '#e6ecf6',
   textMuted: '#aebbd4',
   tarp: '#0f2f7a',
+  // tarp-night reads at 1.3 to 1.5:1 on the night canopy, so tarp-as-ink uses the next step of the tarp-night ramp.
+  tarpInk: '#78a3f8',
+  tarpNight: '#0f2f7a',
   onTarp: '#ffffff',
   kraft: '#d6ae7b',
   kraftEdge: '#9c764a',

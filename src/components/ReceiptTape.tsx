@@ -105,7 +105,7 @@ function TornEdge({ width, color }: { width: number; color: string }) {
 function LineRow({ line, strikeMinutes }: { line: TapeLine; strikeMinutes: number | null }) {
   const { c } = useTheme();
   return (
-    <View style={styles.lineWrap}>
+    <View style={[styles.lineWrap, { borderBottomColor: c.rule }]}>
       <Text style={[TYPE.tapeBody, { color: c.onTape }]} accessibilityRole="text">
         <Text style={[TYPE.tapeBody, { color: c.onTape }]}>{clock24(line.minute)}</Text>
         <Text>{'  '}</Text>
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   list: { paddingVertical: SPACE.s, gap: 2 },
   empty: { flex: 1, justifyContent: 'center', paddingVertical: SPACE.xl },
-  lineWrap: { paddingVertical: 6, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: 'rgba(22, 22, 22, 0.18)' },
+  lineWrap: { paddingVertical: 6, borderBottomWidth: StyleSheet.hairlineWidth },
   barWrap: { paddingVertical: SPACE.s, paddingLeft: SPACE.xs, gap: 4 },
   strikeCopy: { paddingTop: 4, paddingBottom: 2 },
   bar: { position: 'absolute', left: 0, top: 0, height: BAR_H, borderWidth: 1.5, borderRadius: 2 },

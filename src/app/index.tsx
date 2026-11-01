@@ -60,7 +60,7 @@ export default function Picker() {
 
         {stranded.count > 0 ? (
           // The count is announced when it changes; the explanation and the discard button are read in order after it.
-          <View style={[styles.stranded, { borderColor: c.tarp }]}>
+          <View style={[styles.stranded, { borderColor: c.tarpInk }]}>
             <Text style={[TYPE.bodyStrong, { color: c.text }]} accessibilityLiveRegion="polite">
               {PICKER.stranded.count(stranded.count)}
             </Text>
@@ -113,7 +113,7 @@ export default function Picker() {
                 </Text>
                 <Text style={[TYPE.small, { color: c.textMuted }]}>{r.who}</Text>
               </View>
-              <Text style={[TYPE.label, { color: r.ready ? c.tarp : c.textMuted }]}>
+              <Text style={[TYPE.label, { color: r.ready ? c.tarpInk : c.textMuted }]}>
                 {r.ready ? PICKER.state.open : PICKER.state.later}
               </Text>
             </Pressable>

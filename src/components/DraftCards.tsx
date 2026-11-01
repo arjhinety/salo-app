@@ -5,7 +5,7 @@ import { clampAmount } from '../donor/postForm';
 import { S } from '../i18n/strings';
 import { useTheme } from '../theme/theme';
 import { SPACE, TYPE } from '../theme/tokens';
-import { FridgeIcon } from './icons';
+import { CloseIcon, FridgeIcon, MinusIcon, PlusIcon } from './icons';
 
 /** Below this width (after font scale) the stepper and its label stack vertically, as the donor home does. */
 const STACK_BELOW = 360;
@@ -92,7 +92,7 @@ function LineCard({
           accessibilityLabel={S.postForm.removeA11y(title, entry?.foodItem ?? line.rawText)}
           style={({ pressed }) => [styles.remove, { borderColor: c.kraftEdge, opacity: pressed ? 0.7 : 1 }]}
         >
-          <Text style={[TYPE.bodyStrong, { color: c.onKraft }]}>×</Text>
+          <CloseIcon color={c.onKraft} />
         </Pressable>
       </View>
 
@@ -135,7 +135,7 @@ function LineCard({
                 accessibilityLabel={S.postForm.decreaseA11y(entry.foodItemFil, entry.foodItem)}
                 style={({ pressed }) => [styles.step, { backgroundColor: c.tape, borderColor: c.kraftEdge, opacity: q !== null && q <= 1 ? 0.4 : pressed ? 0.7 : 1 }]}
               >
-                <Text style={[TYPE.bodyStrong, { color: c.onTape }]}>−</Text>
+                <MinusIcon color={c.onTape} />
               </Pressable>
               <Text style={[TYPE.bodyStrong, styles.value, { color: c.onKraft }]}>
                 {q === null ? '—' : `${q} ${unitFil}`}
@@ -148,7 +148,7 @@ function LineCard({
                 accessibilityLabel={S.postForm.increaseA11y(entry.foodItemFil, entry.foodItem)}
                 style={({ pressed }) => [styles.step, { backgroundColor: c.tape, borderColor: c.kraftEdge, opacity: q !== null && q >= entry.maxQty ? 0.4 : pressed ? 0.7 : 1 }]}
               >
-                <Text style={[TYPE.bodyStrong, { color: c.onTape }]}>+</Text>
+                <PlusIcon color={c.onTape} />
               </Pressable>
             </View>
           </View>

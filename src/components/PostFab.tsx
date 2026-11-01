@@ -25,7 +25,7 @@ export function PostFab({ onPress }: { onPress: () => void }) {
       style={({ pressed }) => [
         styles.fab,
         iconOnly ? styles.round : null,
-        { backgroundColor: c.tarp, bottom: insets.bottom + SPACE.l, opacity: pressed ? 0.88 : 1 },
+        { backgroundColor: c.tarp, shadowColor: c.tarpNight, bottom: insets.bottom + SPACE.l, opacity: pressed ? 0.88 : 1 },
       ]}
     >
       <MicIcon color={c.onTarp} size={iconOnly ? 26 : 24} />
@@ -45,7 +45,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: SPACE.s,
     elevation: 6,
-    shadowColor: '#0f2f7a',
     shadowOpacity: 0.25,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },

@@ -36,10 +36,10 @@ export function MapPanel({ places, routes }: { places: readonly PlaceRow[]; rout
               accessibilityLabel={label}
               style={({ pressed }) => [
                 styles.segment,
-                { borderColor: c.onTape, backgroundColor: on ? c.onTape : 'transparent', opacity: pressed ? 0.7 : 1 },
+                { borderColor: c.text, backgroundColor: on ? c.text : 'transparent', opacity: pressed ? 0.7 : 1 },
               ]}
             >
-              <Text style={[TYPE.bodyStrong, { color: on ? c.tape : c.onTape }]}>{label}</Text>
+              <Text style={[TYPE.bodyStrong, { color: on ? c.ground : c.text }]}>{label}</Text>
             </Pressable>
           );
         })}
@@ -62,7 +62,7 @@ function SchematicMap({ places, routes }: { places: readonly PlaceRow[]; routes:
       const { x, y } = at(row.position);
       return { key: row.key, text: row.id, x, y, priority: KIND_PRIORITY[row.kind] };
     }),
-    { width: W, height: H, fontSize: 12 },
+    { width: W, height: H, fontSize: TYPE.small.fontSize },
   );
   const idByKey = new Map(places.map((row) => [row.key, row.id] as const));
 
@@ -104,18 +104,25 @@ function SchematicMap({ places, routes }: { places: readonly PlaceRow[]; routes:
           })}
           {labels.map((l) =>
             l.placement === null ? null : (
-              <SvgText key={`label-${l.key}`} x={l.x} y={l.y} fontSize={12} fill={c.onTape}>
+              <SvgText
+                key={`label-${l.key}`}
+                x={l.x}
+                y={l.y}
+                fontFamily={TYPE.small.fontFamily}
+                fontSize={TYPE.small.fontSize}
+                fill={c.onTape}
+              >
                 {idByKey.get(l.key)}
               </SvgText>
             ),
           )}
-          <SvgText x={PAD} y={H - 8} fontSize={12} fill={c.textMuted}>
+          <SvgText x={PAD} y={H - 8} fontFamily={TYPE.small.fontFamily} fontSize={TYPE.small.fontSize} fill={c.onTape}>
             {dash.schematic}
           </SvgText>
         </Svg>
       </View>
       <Legend />
-      {places.length === 0 ? <Text style={[TYPE.small, { color: c.onTape }]}>{dash.noPlaces}</Text> : null}
+      {places.length === 0 ? <Text style={[TYPE.small, { color: c.text }]}>{dash.noPlaces}</Text> : null}
     </ScrollView>
   );
 }
@@ -128,27 +135,27 @@ function Legend() {
         <Svg width={16} height={16} importantForAccessibility="no" accessibilityElementsHidden>
           <Rect x={2} y={2} width={12} height={12} fill={c.kraft} stroke={c.kraftEdge} strokeWidth={2} />
         </Svg>
-        <Text style={[TYPE.small, { color: c.onTape }]}>{dash.legend.donor}</Text>
+        <Text style={[TYPE.small, { color: c.text }]}>{dash.legend.donor}</Text>
       </View>
       <View style={styles.legendRow}>
         <Svg width={16} height={16} importantForAccessibility="no" accessibilityElementsHidden>
           <Circle cx={8} cy={8} r={6} fill={c.tape} stroke={c.onTape} strokeWidth={2.5} />
         </Svg>
-        <Text style={[TYPE.small, { color: c.onTape }]}>{dash.legend.pantry}</Text>
+        <Text style={[TYPE.small, { color: c.text }]}>{dash.legend.pantry}</Text>
       </View>
       <View style={styles.legendRow}>
         <Svg width={16} height={16} importantForAccessibility="no" accessibilityElementsHidden>
-          <Polygon points="8,2 14,14 2,14" fill={c.tarp} />
+          <Polygon points="8,2 14,14 2,14" fill={c.tarpInk} />
         </Svg>
-        <Text style={[TYPE.small, { color: c.onTape }]}>{dash.legend.driver}</Text>
+        <Text style={[TYPE.small, { color: c.text }]}>{dash.legend.driver}</Text>
       </View>
       <View style={styles.legendRow}>
         <Svg width={28} height={16} importantForAccessibility="no" accessibilityElementsHidden>
-          <Line x1={1} y1={8} x2={27} y2={8} stroke={c.onTape} strokeWidth={2.5} strokeDasharray="8 6" />
+          <Line x1={1} y1={8} x2={27} y2={8} stroke={c.text} strokeWidth={2.5} strokeDasharray="8 6" />
         </Svg>
-        <Text style={[TYPE.small, { color: c.onTape }]}>{dash.legend.tentative}</Text>
+        <Text style={[TYPE.small, { color: c.text }]}>{dash.legend.tentative}</Text>
       </View>
-      <Text style={[TYPE.small, { color: c.onTape }]}>{dash.legendNote}</Text>
+      <Text style={[TYPE.small, { color: c.text }]}>{dash.legendNote}</Text>
     </View>
   );
 }
@@ -159,13 +166,13 @@ function PlacesTable({ places }: { places: readonly PlaceRow[] }) {
   const h = dash.tableHead;
   return (
     <ScrollView contentContainerStyle={styles.tableList}>
-      {places.length === 0 ? <Text style={[TYPE.small, { color: c.onTape }]}>{dash.noPlaces}</Text> : null}
+      {places.length === 0 ? <Text style={[TYPE.small, { color: c.text }]}>{dash.noPlaces}</Text> : null}
       {places.map((row) => {
         const role = dash.role[row.kind];
         const label = dash.rowA11y(row.name, role, row.street, row.rightNow, row.from);
         return (
           <View key={row.key} accessible accessibilityRole="text" accessibilityLabel={label} style={[styles.tableRow, { borderBottomColor: c.rule }]}>
-            <Text style={[TYPE.bodyStrong, { color: c.onTape }]}>{row.name}</Text>
+            <Text style={[TYPE.bodyStrong, { color: c.text }]}>{row.name}</Text>
             <Field label={h.role} value={role} />
             <Field label={h.where} value={row.street} />
             <Field label={h.rightNow} value={row.rightNow || '-'} />
@@ -180,7 +187,7 @@ function PlacesTable({ places }: { places: readonly PlaceRow[] }) {
 function Field({ label, value }: { label: string; value: string }) {
   const { c } = useTheme();
   return (
-    <Text style={[TYPE.small, { color: c.onTape }]}>
+    <Text style={[TYPE.small, { color: c.text }]}>
       <Text style={{ fontWeight: '700' }}>{`${label}: `}</Text>
       {value}
     </Text>

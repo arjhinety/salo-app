@@ -4,6 +4,8 @@ description: A palengke price board that catches tonight's surplus food; kraft t
 colors:
   tarp-blue: "#1947b8"
   tarp-night: "#0f2f7a"
+  tarp-ink: "#1947b8"
+  tarp-ink-night: "#78a3f8"
   on-tarp: "#ffffff"
   kraft: "#d6ae7b"
   kraft-edge: "#b68e5c"
@@ -219,7 +221,8 @@ Filipino comes first on donor, pantry and driver screens, with English set small
 A saturated canopy blue and warm kraft brown, punctuated by one acid lime and marker red, over cool pale neutrals.
 
 ### Primary
-- **Tarp Blue** (tarp-blue; night: tarp-night): the canopy. Used for the top bar, the results band, the post FAB, filled primary actions (Replay with baseline, a driver's Offer), selected choice chips, the selected dashboard view, radio dots, and link-weight labels such as PUMASOK and CLOSE. Text on it is always white (on-tarp).
+- **Tarp Blue** (tarp-blue; night: tarp-night): the canopy. Used for the top bar, the results band, the post FAB, filled primary actions (Replay with baseline, a driver's Offer), and selected choice chips and dashboard views. Text on it is always white (on-tarp).
+- **Tarp Ink** (tarp-ink; night: tarp-ink-night): tarp as ink on the ground or raised ground, for the link-weight labels (PUMASOK, CLOSE, the role-state label), the back link, radio rings and dots, the listening mic, the composer caret, and the dashed outline of a stranded box. The night tarp-night reads at about 1.3:1 on the night canopy, so night uses the next step of the tarp-night ramp (#78a3f8, 6.4 to 7.4:1).
 
 ### Secondary
 - **Kraft Tag** (kraft, with kraft-edge for outline, rule and punched-hole stroke): every lot as a physical object, including donor and pantry tags, driver request and run cards, draft cards on the post screen, the dashboard header tag, and lot-strip chips. It stays kraft in both themes. Ink on kraft is on-kraft, with on-kraft-muted for slot labels and English glosses.
@@ -235,7 +238,7 @@ A saturated canopy blue and warm kraft brown, punctuated by one acid lime and ma
 - **Receipt Paper** (receipt-paper; night: receipt-paper-night): the dashboard tape, the bid list, the results paper, the offline-parse banner, and the stepper buttons on draft cards. Ink is on-tape.
 - **Ink** (text, text-night) and **Muted Ink** (text-muted, text-muted-night): screen text, English subtitles, and hints.
 - **Zinc String** (zinc, zinc-night): the stall string, tag drops, the evening ruler, the dashed outline of empty states, the sheet handle, and the border of a disabled action.
-- **Rule** (rule, rule-night): hairline list dividers, field and chip outlines, and the fill of a disabled primary button.
+- **Rule** (rule, rule-night): hairline list dividers (on the ground and on receipt paper), field and chip outlines, and the fill of a disabled primary button.
 - **Scrim** (scrim, scrim-night): behind the bottom sheet.
 
 ### Named Rules
@@ -350,11 +353,11 @@ A full-width zinc baseline from 17:00 to 21:30, with half-hour ticks, hour label
 ### Navigation
 - **Tarp bar:** the wordmark on the left; on the right, the simulated chip (1.5dp white outline) and the clock in Title. Below them are a subtitle in Small and optional controls, finished with a 3dp hem of white at 18% opacity.
 - **Bottom sheet:** raised ground with 28dp top corners, a 32 by 4dp zinc handle, and 64dp radio rows (22dp ring, tarp dot). A CLOSE label button sits at the end, over a scrim.
-- **Role list:** 64dp rows divided by rules. Each row shows the Filipino role, then a muted "· English" line and a state label in tarp.
+- **Role list:** 64dp rows divided by rules. Each row shows the Filipino role, then a muted "· English" line and a state label in tarp ink.
 - **Screen transitions:** a fade, or no transition under reduced motion.
 
 ### Icons
-These are authored SVG stroke icons with a single 2dp stroke weight on a 24 grid, with round caps (mic, fridge, play, pause). They are hidden from TalkBack because their button carries the label.
+These are authored SVG stroke icons with a single 2dp stroke weight on a 24 grid, with round caps (mic, fridge, play, pause, the donor tag's arrow, the stepper's minus and plus, and the remove cross). They are hidden from TalkBack because their button carries the label.
 
 ## Do's and Don'ts
 

@@ -20,7 +20,7 @@ export function DriverTrackPanel({ tracks }: { tracks: readonly DriverTrack[] })
         tracks.map((t) => {
           const line = t.newVolunteer ? dash.newVolunteer(estimateText(t.estimate)) : dash.track(t.shows, t.runs, estimateText(t.estimate));
           return (
-            <View key={t.id} accessible accessibilityRole="text" accessibilityLabel={`${t.name}. ${line}`} style={styles.row}>
+            <View key={t.id} accessible accessibilityRole="text" accessibilityLabel={`${t.name}. ${line}`} style={[styles.row, { borderBottomColor: c.rule }]}>
               <Text style={[TYPE.bodyStrong, { color: c.onTape }]}>{t.name}</Text>
               <Text style={[TYPE.tapeBody, { color: c.onTape }]}>{line}</Text>
             </View>
@@ -34,5 +34,5 @@ export function DriverTrackPanel({ tracks }: { tracks: readonly DriverTrack[] })
 const styles = StyleSheet.create({
   paper: { flex: 1 },
   list: { padding: SPACE.l, gap: SPACE.m },
-  row: { gap: 2, paddingBottom: SPACE.s, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#0000001f' },
+  row: { gap: 2, paddingBottom: SPACE.s, borderBottomWidth: StyleSheet.hairlineWidth },
 });

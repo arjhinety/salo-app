@@ -34,6 +34,16 @@
           "#e6efff"
         ]
       },
+      "tarp-ink": {
+        "role": "primary",
+        "displayName": "Tarp Ink",
+        "canonical": "#1947b8"
+      },
+      "tarp-ink-night": {
+        "role": "primary",
+        "displayName": "Tarp Ink at Night",
+        "canonical": "#78a3f8"
+      },
       "on-tarp": {
         "role": "primary",
         "displayName": "On Tarp White",

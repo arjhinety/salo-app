@@ -28,12 +28,12 @@ function BidRowView({ row, policy }: { row: BidRow; policy: PolicyId }) {
   const { c } = useTheme();
   const t = bidText(row, policy);
   return (
-    <View accessible accessibilityRole="text" accessibilityLabel={bidSpoken(row, policy)} style={styles.row}>
+    <View accessible accessibilityRole="text" accessibilityLabel={bidSpoken(row, policy)} style={[styles.row, { borderBottomColor: c.rule }]}>
       {t.refused ? (
         <Text style={[TYPE.tapeBody, { color: c.onTape }]}>
           {t.name}
           {'  '}
-          <Text style={[TYPE.tapeType, { color: c.red }]}>{t.refused.tag}</Text>
+          <Text style={[TYPE.tapeType, { color: c.onKraftAlert }]}>{t.refused.tag}</Text>
           {`  ${t.refused.reason}`}
         </Text>
       ) : (
@@ -42,14 +42,14 @@ function BidRowView({ row, policy }: { row: BidRow; policy: PolicyId }) {
           {t.shares !== null ? (
             <>
               {' · '}
-              <Text style={[t.struck ? styles.struck : null, t.struck ? { color: c.red } : null]}>{dash.sharesCount(t.shares)}</Text>
+              <Text style={[t.struck ? styles.struck : null, t.struck ? { color: c.onKraftAlert } : null]}>{dash.sharesCount(t.shares)}</Text>
             </>
           ) : null}
           {t.facts.map((f) => ` · ${f}`).join('')}
         </Text>
       )}
       {t.remark ? (
-        <Text style={[TYPE.small, { color: c.red, marginTop: 2 }]} importantForAccessibility="no">
+        <Text style={[TYPE.small, { color: c.onKraftAlert, marginTop: 2 }]} importantForAccessibility="no">
           {t.remark}
         </Text>
       ) : null}
@@ -60,6 +60,6 @@ function BidRowView({ row, policy }: { row: BidRow; policy: PolicyId }) {
 const styles = StyleSheet.create({
   paper: { flex: 1 },
   list: { padding: SPACE.l, gap: SPACE.m },
-  row: { gap: 2, paddingBottom: SPACE.s, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#0000001f' },
+  row: { gap: 2, paddingBottom: SPACE.s, borderBottomWidth: StyleSheet.hairlineWidth },
   struck: { textDecorationLine: 'line-through' },
 });
