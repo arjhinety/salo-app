@@ -136,3 +136,20 @@ The post screen sends each message to the laptop's LLM proxy (`POST /parse`, arc
 ```
 
 This writes `android:usesCleartextTraffic="true"` into the generated `AndroidManifest.xml` (it applies to all build types, release included). After any change to `app.json`, run `npx expo prebuild --platform android --no-install` before the gradle build. `android/` is generated and gitignored, so it is not edited by hand. The SDK 57 docs for `expo-build-properties` do not say the key can be limited to release builds, so it is set for every build type.
+
+## Release build 2026-11-01 (Supabase backend, all features)
+
+**Superseded above:** the laptop-proxy address settings (`EXPO_PUBLIC_SALO_SERVER`, cleartext for the LAN) no longer matter for parsing. Since 2026-10-26 the app parses through the Supabase Edge Function `parse` on project `salo`, over HTTPS. The Supabase URL and the publishable key are read from the git-ignored root `.env` (`EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY`) at bundle time, so the shell that runs gradle must be in the repo with that `.env` present.
+
+- **Command** (memory-capped, because the laptop had about 1 GB free):
+
+  ```
+  export ANDROID_HOME="$LOCALAPPDATA/Android/Sdk"
+  cd android && ./gradlew assembleRelease -x lintVitalAnalyzeRelease --no-daemon --max-workers=2 "-Dorg.gradle.jvmargs=-Xmx1536m -XX:MaxMetaspaceSize=384m"
+  ```
+
+  `android/` was regenerated with `npx expo prebuild --platform android --no-install` during the device check (notification icon and plugins from `app.json`).
+- **Result:** BUILD SUCCESSFUL in 33m 4s, from commit `8435d66` plus docs. APK `android/app/build/outputs/apk/release/app-release.apk`, 120,478,384 bytes, sha256 starts `3d6227f4473a3092`. Signed with the debug keystore (class demos only; no store upload, no paid builds).
+- **Bundle checks (no secrets printed):** the Hermes bundle contains the salo Supabase host once and one publishable key (the publishable key is meant to ship in the app; the secret key and the Claude key never do), the Results "Run the main evenings" code, and no laptop proxy address (`10.0.2.2:8787` / `127.0.0.1:8787`: 0).
+- **Not yet done:** installing this APK on vel_phone and on Arjhine's phone and running it with the laptop off. The emulator could not boot with the laptop's free memory on 2026-11-01 (MuMu Player, Chrome and VS Code open). Offline expectations: the one-phone evening runs fully offline; donor parsing falls back to the rule parser and shows the offline banner; two-phone sync and the online parser need internet (Supabase), not the laptop.
+- **Install:** `adb -s <vel_phone serial> install -r android/app/build/outputs/apk/release/app-release.apk`, or copy the APK to the phone and open it (allow installs from that source).
