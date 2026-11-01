@@ -9,7 +9,7 @@ import { SPACE, TYPE } from '../theme/tokens';
 
 /**
  * The Results screen (RES-01 to RES-07). Gated: while the pre-registration gate is closed, every number reads
- * "Not measured yet" and only E21 to E30 are named (RES-06). English, simulated data, labelled.
+ * "Not measured yet" and only E21 to E64 are named (RES-06). English, simulated data, labelled.
  */
 export default function Results() {
   const { c } = useTheme();

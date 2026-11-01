@@ -3,7 +3,7 @@
 Decision "Hidden true show rate" (docs/decisions.md): the simulated world draws driver behaviour from
 these rates, while the agents only ever learn from the tuning counts.
 
-How: copy the pinned dataset build (build_dataset.py v1.2) into a temporary folder, add read-only
+How: copy the pinned dataset build (build_dataset.py v1.3) into a temporary folder, add read-only
 instrumentation that records p_show per driver (no extra random draws), run it, and check that every
 CSV it writes is byte-identical to the bundled data/salo-evening-dataset files. Only then write
 src/engine/hiddenTruth.generated.ts. R. Dizon's history was hand-set in the generator (no p_show), so he

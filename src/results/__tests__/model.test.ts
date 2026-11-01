@@ -7,29 +7,38 @@ import type { EveningResult, PolicyId } from '../../engine/types';
 import { RESULTS_COPY, NOT_MEASURED, RESULTS_ROUTE } from '../copy';
 import { formatCell, formatComparison, closedModel, currentModel, openModel } from '../model';
 import { FROZEN_PARAMS } from '../../engine/frozenParams';
-import { REGISTRATION, type Registration } from '../registration';
+import { MAIN_EVENINGS_IN_DATASET, REGISTRATION, type Registration } from '../registration';
 import { summarize } from '../runner';
 import { COMPARISONS, type Comparison } from '../intervals';
 
-// Pilot (E01-E20) and tuning ids. None may appear on the Results screen (RES-06). E21-E30 are allowed.
+// Pilot (E01-E20) and tuning ids. None may appear on the Results screen (RES-06). E21-E64 are allowed.
 const PILOT_OR_TUNING_ID = /\bE(0[1-9]|1[0-9]|20)\b/;
 
 /** The record before the pilot: nothing recorded. A synthetic closed record, to prove the closed-gate copy. */
 const beforePilot: Registration = { ...REGISTRATION, pilotDone: false, mainEveningCount: null };
 
-describe('closed screen today (the pilot is recorded, but the count 44 is not the dataset\'s 10 main evenings)', () => {
+describe('closed screen today (the pilot is recorded, the count 44 matches the dataset\'s 44 main evenings)', () => {
   const m = currentModel();
 
-  test('is closed: no main result is shown, and the line says the count does not match the dataset', () => {
+  test('is closed: no main result is shown, and the line says the main evenings have not been run', () => {
     expect(m.open).toBe(false);
     expect(m.gateLine).toBe(
+      'The pilot has run and the main-evening count is recorded. The main evenings have not been run, so no main result is shown (guide p.19).',
+    );
+    expect(m.reasons).toEqual([]);
+  });
+
+  test('a recorded count that differs from the dataset is still refused, with the count reason', () => {
+    const mismatch = closedModel({ ...REGISTRATION, mainEveningCount: 10 }, FROZEN_PARAMS);
+    expect(mismatch.open).toBe(false);
+    expect(mismatch.gateLine).toBe(
       'The recorded main-evening count does not match the main evenings in the dataset, so no main result is shown (guide p.19).',
     );
-    expect(m.reasons).toEqual(['the recorded count is 44, not the 10 main evenings in the dataset']);
+    expect(mismatch.reasons).toEqual(['the recorded count is 10, not the 44 main evenings in the dataset']);
   });
 
   test('the same screen with the count matching the dataset would say the main evenings have not been run', () => {
-    const m10 = closedModel({ ...REGISTRATION, mainEveningCount: 10 }, FROZEN_PARAMS);
+    const m10 = closedModel({ ...REGISTRATION, mainEveningCount: MAIN_EVENINGS_IN_DATASET }, FROZEN_PARAMS);
     expect(m10.open).toBe(false);
     expect(m10.gateLine).toBe(
       'The pilot has run and the main-evening count is recorded. The main evenings have not been run, so no main result is shown (guide p.19).',
@@ -79,7 +88,7 @@ describe('closed screen today (the pilot is recorded, but the count 44 is not th
   test('no pilot or tuning evening id appears anywhere in the screen model or its copy (RES-06)', () => {
     const text = JSON.stringify(m) + JSON.stringify(RESULTS_COPY);
     expect(text).not.toMatch(PILOT_OR_TUNING_ID);
-    expect(text).toContain('E21 to E30');
+    expect(text).toContain('E21 to E64');
   });
 });
 

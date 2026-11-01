@@ -9,7 +9,7 @@ import type { EveningResult } from '../engine/types';
  * to 0.5 is used, ties going to more food. The same rule for Salo and central greedy.
  */
 
-/** The only evenings tuning may use (guide p.12, decisions.md). Pilot (E11-E20) and main (E21-E30) are refused. */
+/** The only evenings tuning may use (guide p.12, decisions.md). Pilot (E11-E20) and main (E21-E64) are refused. */
 export const TUNING_EVENING_IDS: readonly string[] = ['E01', 'E02', 'E03', 'E04', 'E05', 'E06', 'E07', 'E08', 'E09', 'E10'];
 
 /** Guide p.12: the worst-served need met, averaged over the tuning evenings, must be at least this. */

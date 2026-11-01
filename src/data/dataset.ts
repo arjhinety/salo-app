@@ -1,7 +1,7 @@
 import type { Evening, World } from '../engine/types';
 import { RAW } from './dataset.generated';
 
-/** The bundled Salo Evening Dataset (v1.2) as engine inputs. */
+/** The bundled Salo Evening Dataset (v1.3) as engine inputs. */
 export const DATASET_VERSION = RAW.version;
 export const WORLD: World = {
   donors: RAW.donors,

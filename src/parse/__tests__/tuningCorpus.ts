@@ -2,7 +2,7 @@
  * Loads the parser development set: data/parse-dev/donor_messages_tuning.csv, tuning evenings E01..E10 only.
  *
  * Hard rule (Arjhine, 2026-10-20): the parser is built and scored on tuning messages only. This module is the one
- * place that reads that CSV. It never reads donor_messages.csv, pilot evenings (E11-E20) or main evenings (E21-E30).
+ * place that reads that CSV. It never reads donor_messages.csv, pilot evenings (E11-E20) or main evenings (E21-E64).
  * Helper file for tests (not a test itself; jest matches *.test.ts).
  */
 import { readFileSync } from 'fs';

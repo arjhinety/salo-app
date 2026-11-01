@@ -5,7 +5,7 @@
 //
 // Data rule (docs/decisions.md, "Parser development data: tuning evenings only"): the only dataset file read here is
 // data/parse-dev/donor_messages_tuning.csv, filtered to evening_id E01..E10 first, then asserted. Never donor_messages.csv,
-// pilot (E11-E20) or main (E21-E30) rows.
+// pilot (E11-E20) or main (E21-E64) rows.
 //
 // Usage:  node scripts/gen-parse-prompt-data.mjs            (writes the two files)
 //         node scripts/gen-parse-prompt-data.mjs --check    (exits 1 if the files on disk are stale)

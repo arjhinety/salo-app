@@ -58,7 +58,7 @@ export function renderReport(rep: TuningReport): string {
   const lines: string[] = [
     '# M6 tuning, E01-E10: in-sample, not a result',
     '',
-    `**${LABEL}** The settings below were chosen on these ten evenings, so none of these numbers is evidence about Salo or any other policy. The only reported results are the main evenings (E21-E30, Results screen).`,
+    `**${LABEL}** The settings below were chosen on these ten evenings, so none of these numbers is evidence about Salo or any other policy. The only reported results are the main evenings (E21-E64, Results screen).`,
     '',
     `Written by the gated runner \`src/tuning/__tests__/m6-tuning-run.test.ts\` (M6_TUNING=1) on ${rep.date}. Runtime ${rep.runtimeSeconds.toFixed(0)} s, one process, one evening at a time. Sampler seed ${rep.seed}, budget ${rep.budget} sampled settings per policy plus setting 0 (untuned) = ${rep.budget + 1} evaluated.`,
     '',

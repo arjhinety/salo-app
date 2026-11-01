@@ -10,17 +10,17 @@ export const BOOTSTRAP_SEED = 20260927;
 export const RESAMPLES = 10000;
 
 /**
- * Main evenings in dataset v1.2 (E21-E30, decisions.md). Stated here for the screen's check; the runner counts the
+ * Main evenings in dataset v1.3 (E21-E64, decisions.md). Stated here for the screen's check; the runner counts the
  * evenings it is given, and refuses a count that differs.
  */
-export const MAIN_EVENINGS_IN_DATASET = 10;
+export const MAIN_EVENINGS_IN_DATASET = 44;
 
 /**
  * The pre-registration record (RES-03, RES-06; guide p.19). Nothing about the main evenings is computed or shown
  * until the pilot has run and the main-evening count is written here.
  * The pilot ran on E11-E20 on 2026-11-01 (docs/reports/m6-pilot.md, src/tuning/pilotCount.ts). The count is
- * max(n_food, n_fair, 10) = 44, from the pilot's SDs. That is more than the 10 main evenings in dataset v1.2, so the
- * runner refuses to run until more main evenings exist (Arjhine's decision). The screen stays closed meanwhile.
+ * max(n_food, n_fair, 10) = 44, from the pilot's SDs. Dataset v1.3 has 44 main evenings (E21-E64, Arjhine's decision),
+ * so the count matches. The runner runs only when it is called, and the Results screen never calls it.
  */
 export interface Registration {
   mainEveningCount: number | null;

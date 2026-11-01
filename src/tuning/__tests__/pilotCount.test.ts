@@ -117,7 +117,7 @@ describe('refusals (the count only takes ten pilot evenings and finite numbers)'
     expect(() => assertPilotEvenings(pilot.slice(0, 9))).toThrow('pilot needs exactly');
   });
 
-  test('a main evening (E21-E30) is refused, even with the pilot split', () => {
+  test('a main evening (E21-E64) is refused, even with the pilot split', () => {
     expect(() => assertPilotEvening({ id: 'E21', split: 'main_sample' })).toThrow('refuses evening E21');
     expect(() => assertPilotEvening({ id: 'E21', split: 'pilot' })).toThrow('only E11-E20 may be used');
     expect(() => assertPilotEvening({ id: 'E11', split: 'tuning' })).toThrow('its split is tuning');

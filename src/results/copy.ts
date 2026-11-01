@@ -19,7 +19,7 @@ export const RESULTS_COPY = {
   gateRecordedNoRun: 'The pilot has run and the main-evening count is recorded. The main evenings have not been run, so no main result is shown (guide p.19).',
   /** The recorded count is more main evenings than the dataset has. The runner would refuse it, so the screen stays closed. */
   gateCountMismatch: 'The recorded main-evening count does not match the main evenings in the dataset, so no main result is shown (guide p.19).',
-  evenings: 'Evenings reported: E21 to E30 (main_sample).',
+  evenings: 'Evenings reported: E21 to E64 (main_sample).',
   policiesHeading: 'Four policies, same evenings',
   policies: {
     salo: 'Agents (Salo)',

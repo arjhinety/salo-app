@@ -35,9 +35,9 @@ select is(
      select row_to_json(x)::text as t from public.donors x
      union all select row_to_json(x)::text from public.pantries x
      union all select row_to_json(x)::text from public.drivers x) s
-   where s.t ~ '\mE(1[1-9]|2[0-9]|30)\M'),
+   where s.t ~ '\mE(1[1-9]|[2-5][0-9]|6[0-4])\M'),
   0::bigint,
-  'reference data holds no pilot or main evening ids (E11-E30)'
+  'reference data holds no pilot or main evening ids (E11-E64)'
 );
 
 select is(

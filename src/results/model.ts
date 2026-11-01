@@ -159,8 +159,8 @@ export function openModel(
 }
 
 /**
- * What the screen shows today: no main result. The pilot is recorded and the count is 44, which dataset v1.2 cannot
- * meet (10 main evenings), so the screen stays closed. This function never runs an evening, even if the record opens.
+ * What the screen shows today: no main result. The pilot is recorded and the count is 44, which dataset v1.3 matches
+ * (44 main evenings), so the gate's checks pass, but no main evening has been run. This function never runs an evening.
  */
 export function currentModel(): ScreenModel {
   return closedModel(REGISTRATION, FROZEN_PARAMS);

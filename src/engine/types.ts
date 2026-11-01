@@ -27,7 +27,7 @@ export type PantryId = string;
 export type DriverId = string;
 export type LotId = string;
 
-/** Evening identifiers from evenings.csv, e.g. "E01" .. "E30". */
+/** Evening identifiers from evenings.csv, e.g. "E01" .. "E64". */
 export type EveningId = string;
 
 /** The four allocation policies compared on the same evenings (guide page 19). */

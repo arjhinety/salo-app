@@ -79,8 +79,8 @@ export function renderPilotReport(rep: PilotReport): string {
   const ceilingRows = ORDER.map((p) => `| ${LABEL[p]} | ${rep.perPolicy[p].filter((d) => d.ceilingHit).length} of ${rep.perPolicy[p].length} |`);
   const extra =
     count > MAIN_EVENINGS_IN_DATASET
-      ? `The count exceeds the ${MAIN_EVENINGS_IN_DATASET} main evenings in dataset v1.2 → more main evenings must be generated (Arjhine's decision). Nothing was generated here.`
-      : `The count (${count}) does not exceed the ${MAIN_EVENINGS_IN_DATASET} main evenings in dataset v1.2.`;
+      ? `The count exceeds the ${MAIN_EVENINGS_IN_DATASET} main evenings in dataset v1.3 → more main evenings must be generated (Arjhine's decision). Nothing was generated here.`
+      : `The count (${count}) does not exceed the ${MAIN_EVENINGS_IN_DATASET} main evenings in dataset v1.3.`;
 
   return [
     `# ${PILOT_LABEL}`,

@@ -4,7 +4,7 @@
  * SOURCE AND FILTER (hard rule, Arjhine 2026-10-20). Every table in this file was built from the tuning messages only:
  *   data/parse-dev/donor_messages_tuning.csv, kept rows whose evening_id is E01..E10 (170 rows, split == "tuning").
  *   The filter is asserted in src/parse/__tests__/tuningCorpus.ts. Nothing here comes from the food catalog
- *   (src/donor), the dataset bundle (src/data), pilot messages (E11-E20) or main messages (E21-E30).
+ *   (src/donor), the dataset bundle (src/data), pilot messages (E11-E20) or main messages (E21-E64).
  *
  * Tables: CANONICAL_FOODS (distinct gold food_item + gold_unit pairs), SYNONYMS (surface forms seen in the tuning
  * messages), VAGUE_FOOD_WORDS, AMBIGUOUS_FOOD_WORDS, UNIT_WORDS, NUMBER_WORDS, HOUR_WORDS, TIME_CUES, HEDGE_WORDS.

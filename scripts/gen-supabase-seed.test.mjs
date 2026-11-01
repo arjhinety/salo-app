@@ -35,8 +35,8 @@ test('a known row is written exactly (D01 closes 17:30 = 1050 minutes)', () => {
   ));
 });
 
-test('the seed holds no pilot or main evening ids (E11-E30)', () => {
-  assert.equal(/\bE(1[1-9]|2[0-9]|30)\b/.test(seed), false);
+test('the seed holds no pilot or main evening ids (E11-E64)', () => {
+  assert.equal(/\bE(1[1-9]|[2-5][0-9]|6[0-4])\b/.test(seed), false);
 });
 
 test('the seed loads only the three reference tables', () => {

@@ -9,7 +9,7 @@ import { UNTUNED_PARAMS } from '../../engine/params';
 import { POLICY_IDS } from '../../engine/policies';
 import { runEvening } from '../../engine/simulate';
 import type { Evening, EveningResult, FrozenParams, PolicyId } from '../../engine/types';
-import { checksumParams, type Registration, REGISTRATION } from '../registration';
+import { checksumParams, MAIN_EVENINGS_IN_DATASET, type Registration, REGISTRATION } from '../registration';
 import { mainEvenings, ResultsGateError, runLearningComparison, runMainResults, summarize } from '../runner';
 
 jest.mock('../../engine/simulate', () => ({ runEvening: jest.fn() }));
@@ -75,9 +75,9 @@ describe('the gate is closed before the pilot is recorded (RES-03, RES-06), with
     expect(() => runMainResults({ params: UNTUNED_PARAMS, registration: beforePilot })).toThrow(/the pilot has not run/);
   });
 
-  test('the default evenings are exactly E21 to E30, and no tuning or pilot evening is selected', () => {
+  test('the default evenings are exactly E21 to E64, and no tuning or pilot evening is selected', () => {
     const ids = mainEvenings(EVENINGS).map((e) => e.id);
-    expect(ids).toEqual(['E21', 'E22', 'E23', 'E24', 'E25', 'E26', 'E27', 'E28', 'E29', 'E30']);
+    expect(ids).toEqual(Array.from({ length: 44 }, (_, i) => `E${21 + i}`));
     expect(mainEvenings(EVENINGS).every((e) => e.split === 'main_sample')).toBe(true);
     expect(mockedRun).not.toHaveBeenCalled();
   });
@@ -157,10 +157,18 @@ describe('summarize (no engine call)', () => {
 
 });
 
-describe('the recorded state (pilot done, count 44): the runner still refuses the real main evenings', () => {
-  test('the real record and the frozen parameters: the gate checks pass, but 44 is not the 10 evenings given, so it throws before any run', () => {
+describe('the recorded state (pilot done, count 44) against the dataset (44 main evenings)', () => {
+  test('the real record matches the dataset: 44 recorded, 44 main_sample evenings, so the count check passes', () => {
     expect(REGISTRATION).toMatchObject({ pilotDone: true, mainEveningCount: 44 });
-    expect(() => runMainResults({ params: FROZEN_PARAMS })).toThrow('The recorded count is 44 but 10 evenings were given.');
+    expect(MAIN_EVENINGS_IN_DATASET).toBe(REGISTRATION.mainEveningCount);
+    expect(mainEvenings(EVENINGS)).toHaveLength(44);
+    expect(mockedRun).not.toHaveBeenCalled();
+  });
+
+  test('the count check still refuses a different count: 44 recorded, 2 evenings given, so it throws before any run', () => {
+    expect(() => runMainResults({ params: FROZEN_PARAMS, evenings: synthetic(['M1', 'M2']) })).toThrow(
+      'The recorded count is 44 but 2 evenings were given.',
+    );
     expect(mockedRun).not.toHaveBeenCalled();
   });
 
@@ -174,7 +182,7 @@ describe('the learning-off comparison (RES-07) goes through the same gate', () =
   test('gate closed (synthetic record before the pilot, untuned parameters): throws, and runEvening is never called', () => {
     expect(() => runLearningComparison({ params: UNTUNED_PARAMS, registration: beforePilot })).toThrow(ResultsGateError);
     expect(() => runLearningComparison({ params: tuned, registration: beforePilot })).toThrow(/the pilot has not run/);
-    expect(() => runLearningComparison({ params: FROZEN_PARAMS })).toThrow('The recorded count is 44 but 10 evenings were given.');
+    expect(() => runLearningComparison({ params: FROZEN_PARAMS, evenings: synthetic(['M1', 'M2']) })).toThrow('The recorded count is 44 but 2 evenings were given.');
     expect(mockedRun).not.toHaveBeenCalled();
   });
 

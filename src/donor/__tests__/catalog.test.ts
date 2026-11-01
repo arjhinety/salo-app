@@ -2,7 +2,7 @@ import { EVENINGS } from '../../data/dataset';
 import { buildCatalog, CATALOG, estKgFor, findEntry, loadUnitsFor, type CatalogEntry } from '../catalog';
 import { donorItemKeys, splitPicker } from '../postForm';
 
-// Worked literal values, checked against the bundled dataset v1.2. If the dataset changes, these change on purpose.
+// Worked literal values, checked against the bundled dataset v1.3. If the dataset changes, these change on purpose.
 
 const adobo = () => {
   const e = findEntry('pork adobo', 'tray');
@@ -82,10 +82,11 @@ describe('load units (assumption mirroring the dataset generator)', () => {
 
 describe('picker order for donor D01', () => {
   test('the items D01 has posted in any evening come first', () => {
+    // v1.3: 13 = 9 items in E01-E30 + 4 that D01 posts only in the new main evenings E31-E64 (checked against food_offers.csv).
     const history = donorItemKeys(EVENINGS, 'D01');
-    expect(history.size).toBe(9);
+    expect(history.size).toBe(13);
     const { mine, others } = splitPicker(CATALOG, history);
-    expect(mine.length).toBe(9);
+    expect(mine.length).toBe(13);
     expect(mine.every((e) => history.has(`${e.foodItem}|${e.unit}`))).toBe(true);
     expect(others.some((e) => history.has(`${e.foodItem}|${e.unit}`))).toBe(false);
     expect(mine.length + others.length).toBe(CATALOG.length);

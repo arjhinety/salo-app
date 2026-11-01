@@ -1,7 +1,7 @@
 /// <reference types="node" />
 /// <reference types="jest" />
 // M6 pilot runner (milestone M6 step 2). Runs only when M6_PILOT=1 (skipped in normal test runs, like m6-tuning-run.test.ts).
-// Pilot evenings E11-E20 only: assertPilotEvenings refuses anything else. Main evenings (E21-E30) are not selected, read
+// Pilot evenings E11-E20 only: assertPilotEvenings refuses anything else. Main evenings (E21-E64) are not selected, read
 // or counted here. The frozen settings only (FROZEN_PARAMS, never UNTUNED_PARAMS), learning on, the four policies.
 // No bootstrap interval and no verdict is computed: the pilot only sets the main-evening count.
 // Writes docs/reports/m6-pilot.md. Sequential, one evening at a time.
