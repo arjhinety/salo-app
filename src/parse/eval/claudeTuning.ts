@@ -22,6 +22,11 @@
  *
  * Cost: every attempt counts, retried and unscored ones included, because each may have been billed. Cost is computed
  * from the logged usage and the prices in server/eval/pricing.json (passed in by the caller).
+ *
+ * Targets: a line or marker with target "edge" comes from the deployed Supabase Edge Function (server/eval/record-tuning.js
+ * --target edge). A line without target is the laptop proxy. Each target is read from its own folder and reported on its
+ * own. A pass of the other target, or a pass with lines of both, is invalid and excluded. Attempts with HTTP 401 are the
+ * edge token refresh: not a parse outcome, never scored, counted under 401.
  */
 import { readdirSync, readFileSync } from 'fs';
 import { join } from 'path';
@@ -57,6 +62,9 @@ export interface Pricing {
   cache_write_5m_multiplier: number;
 }
 
+/** Which deployment a pass recorded. A line with no target is the laptop proxy. */
+export type Target = 'laptop' | 'edge';
+
 export interface AttemptLine {
   type: 'attempt';
   message_id: string;
@@ -78,6 +86,7 @@ export interface AttemptLine {
   body: unknown;
   body_text_if_not_json: string | null;
   usage: Usage | null;
+  target?: Target;
 }
 
 export interface PassEnd {
@@ -92,6 +101,7 @@ export interface PassEnd {
   request_config_sha256: string;
   git_commit: string | null;
   git_dirty: boolean | null;
+  target?: Target;
 }
 
 export interface PassFile {
@@ -107,6 +117,12 @@ const isHash = (v: unknown): boolean => typeof v === 'string' && /^[0-9a-f]{64}$
 const isCommitOrNull = (v: unknown): boolean => v === null || (typeof v === 'string' && /^[0-9a-f]{40}$/.test(v));
 const isDirtyOrNull = (v: unknown): boolean => v === null || typeof v === 'boolean';
 const isTokenOrNull = (v: unknown): boolean => v === null || (typeof v === 'number' && Number.isInteger(v) && v >= 0);
+const isTargetOrAbsent = (v: unknown): boolean => v === undefined || v === 'laptop' || v === 'edge';
+
+/** The target of one line: a missing target is the laptop proxy. */
+export function targetOfLine(v: { target?: Target }): Target {
+  return v.target ?? 'laptop';
+}
 
 /** An outage attempt: a network error (status null) or a 503 model_unavailable. Mirrors server/eval/record-tuning.js. */
 export function isOutage(status: number | null, error: string | null): boolean {
@@ -142,6 +158,7 @@ function checkAttempt(o: Record<string, unknown>, pass: number, where: string): 
   if (!isDirtyOrNull(o.git_dirty)) fail('git_dirty must be true, false or null');
   if (typeof o.sent_at !== 'string' || typeof o.received_at !== 'string') fail('sent_at and received_at must be strings');
   if (!isStrOrNull(o.body_text_if_not_json)) fail('body_text_if_not_json must be a string or null');
+  if (!isTargetOrAbsent(o.target)) fail('target must be laptop or edge when present');
   return { ...o, usage: checkUsage(o.usage === undefined ? null : o.usage, where) } as unknown as AttemptLine;
 }
 
@@ -159,6 +176,7 @@ function checkEnd(o: Record<string, unknown>, pass: number, where: string): Pass
   if (!isHash(o.request_config_sha256)) fail('request_config_sha256 must be 64 hex characters');
   if (!isCommitOrNull(o.git_commit)) fail('git_commit must be 40 hex characters or null');
   if (!isDirtyOrNull(o.git_dirty)) fail('git_dirty must be true, false or null');
+  if (!isTargetOrAbsent(o.target)) fail('target must be laptop or edge when present');
   return o as unknown as PassEnd;
 }
 
@@ -235,6 +253,8 @@ export interface Outcome {
 export interface PassCounts {
   attempts: number;
   http429: number;
+  /** Edge only: 401 attempts (token refresh). Never a parse outcome. */
+  http401: number;
   retries: number;
   /** 503 model_unavailable attempts by error_kind ("none" when absent). */
   outage503: Record<string, number>;
@@ -266,6 +286,8 @@ export interface PassResult {
   promptSha256: string | null;
   /** The one request_config_sha256 of the pass, or null when they disagree (status invalid). */
   requestConfigSha256: string | null;
+  /** The target of the pass; 'mixed' when its lines or marker disagree; null when there is no file. */
+  target: Target | 'mixed' | null;
   /** Distinct request config hashes seen in the lines and the marker. */
   requestConfigHashesSeen: string[];
   gitCommits: string[];
@@ -292,6 +314,8 @@ export interface Group {
 }
 
 export interface Evaluation {
+  /** The target this evaluation reads: passes of any other target are invalid. */
+  target: Target;
   rows: ScoredRow[];
   /** One entry per pass number from 1 to the highest pass file present. A number with no file has status "no file". */
   passes: PassResult[];
@@ -304,7 +328,8 @@ export interface Evaluation {
 }
 
 function outcomeFor(row: ScoredRow, attempts: AttemptLine[]): Outcome {
-  const usable = attempts.filter((a) => a.http_status !== 429 && !isOutage(a.http_status, a.error));
+  // 429 (rate limit) and 401 (edge token refresh) are not parse outcomes, and neither are outages.
+  const usable = attempts.filter((a) => a.http_status !== 429 && a.http_status !== 401 && !isOutage(a.http_status, a.error));
   if (usable.length === 0) {
     return { message_id: row.message_id, scored: false, status: null, label: null, resp: null, scores: scoreResponse(row, null) };
   }
@@ -364,7 +389,7 @@ export function costUsd(t: { input: number; output: number; cacheWrite: number; 
  * file, or a "completed" pass that does not cover all 170 messages. A pass whose hashes disagree internally is not an
  * error: it gets status "invalid" and is excluded.
  */
-export function evaluate(rows: ScoredRow[], files: PassFile[], ignoredFiles: string[] = []): Evaluation {
+export function evaluate(rows: ScoredRow[], files: PassFile[], ignoredFiles: string[] = [], expectTarget: Target = 'laptop'): Evaluation {
   if (rows.length !== TUNING_MESSAGE_COUNT) throw new Error(`expected ${TUNING_MESSAGE_COUNT} tuning rows, got ${rows.length}`);
   if (files.length === 0) throw new Error('no pass files given');
   const byId = new Map(rows.map((r) => [r.message_id, r]));
@@ -382,13 +407,15 @@ export function evaluate(rows: ScoredRow[], files: PassFile[], ignoredFiles: str
     const file = filesByPass.get(pass);
     const attemptsAll = [...(file?.attempts ?? [])];
     const byMsg = new Map<string, AttemptLine[]>();
-    const counts: PassCounts = { attempts: 0, http429: 0, retries: 0, outage503: {}, networkErrors: 0 };
+    const counts: PassCounts = { attempts: 0, http429: 0, http401: 0, retries: 0, outage503: {}, networkErrors: 0 };
     const models = new Set<string>();
     const promptHashes = new Set<string>();
     const rcHashes = new Set<string>();
     const commits = new Set<string>();
     const dirties: (boolean | null)[] = [];
+    const targets = new Set<Target>();
     for (const a of attemptsAll) {
+      targets.add(targetOfLine(a));
       const row = byId.get(a.message_id);
       if (!row) throw new Error(`pass ${pass}: message ${a.message_id} is not in the tuning set`);
       if (a.evening_id !== row.evening_id) throw new Error(`pass ${pass}: ${a.message_id} has evening ${a.evening_id}, expected ${row.evening_id}`);
@@ -399,6 +426,7 @@ export function evaluate(rows: ScoredRow[], files: PassFile[], ignoredFiles: str
       counts.attempts++;
       if (a.attempt > 1) counts.retries++;
       if (a.http_status === 429) counts.http429++;
+      if (a.http_status === 401) counts.http401++;
       if (a.http_status === null) counts.networkErrors++;
       if (a.http_status === 503 && a.error === 'model_unavailable') {
         const kind = a.error_kind ?? 'none';
@@ -426,7 +454,9 @@ export function evaluate(rows: ScoredRow[], files: PassFile[], ignoredFiles: str
       dirties.push(end.git_dirty);
       models.add(end.model);
       allModels.add(end.model);
+      targets.add(targetOfLine(end));
     }
+    const passTarget: Target | 'mixed' | null = !file ? null : targets.size > 1 ? 'mixed' : (targets.size === 0 ? 'laptop' : [...targets][0]);
     const sentIds = rows.map((r) => r.message_id).filter((id) => byMsg.has(id));
     const notSentIds = rows.map((r) => r.message_id).filter((id) => !byMsg.has(id));
     const outcomes = new Map<string, Outcome>();
@@ -447,7 +477,13 @@ export function evaluate(rows: ScoredRow[], files: PassFile[], ignoredFiles: str
     let status: PassStatus;
     let reason: string | null = end?.reason ?? null;
     if (!file) status = 'no file';
-    else if (promptList.length > 1 || rcList.length > 1) {
+    else if (passTarget === 'mixed') {
+      status = 'invalid';
+      reason = 'laptop and edge lines in one pass';
+    } else if (passTarget !== expectTarget) {
+      status = 'invalid';
+      reason = `${passTarget} pass; this report reads ${expectTarget} passes only`;
+    } else if (promptList.length > 1 || rcList.length > 1) {
       status = 'invalid';
       const which = promptList.length > 1 ? `prompt_sha256 (${promptList.map((h) => h.slice(0, 12)).join(', ')})`
         : `request_config_sha256 (${rcList.map((h) => h.slice(0, 12)).join(', ')})`;
@@ -462,6 +498,7 @@ export function evaluate(rows: ScoredRow[], files: PassFile[], ignoredFiles: str
       markerMessagesSent: end?.messages_sent ?? null,
       promptSha256: promptList.length === 1 ? promptList[0] : null,
       requestConfigSha256: rcList.length === 1 ? rcList[0] : null,
+      target: passTarget,
       requestConfigHashesSeen: rcList,
       gitCommits: [...commits].sort(),
       gitState: gitStateOf(dirties),
@@ -488,7 +525,7 @@ export function evaluate(rows: ScoredRow[], files: PassFile[], ignoredFiles: str
     g.passes.push(p);
     for (const c of p.gitCommits) if (!g.gitCommits.includes(c)) g.gitCommits.push(c);
   }
-  return { rows, passes, ignoredFiles: [...ignoredFiles].sort(), completed, excluded, groups, models: [...allModels].sort() };
+  return { target: expectTarget, rows, passes, ignoredFiles: [...ignoredFiles].sort(), completed, excluded, groups, models: [...allModels].sort() };
 }
 
 export interface FieldRate {
@@ -559,6 +596,9 @@ const shortCommit = (c: string | null): string => (c === null ? 'unknown' : c.sl
 
 const VERBATIM_BOUNDARY = 'Scores are computed on the raw ParseResponse (src/parse output), before any catalog mapping.';
 const VERBATIM_IN_SAMPLE = "In-sample score: the proxy's prompt quotes tuning messages M0001, M0008 and M0025 with their answers, and its food list comes from the gold labels of all 170 tuning messages. This score is in-sample and must never be quoted as expected accuracy.";
+// The edge function has the same prompt (same prompt_sha256), so the same in-sample overlap applies.
+const VERBATIM_IN_SAMPLE_EDGE = "In-sample score: the Edge Function's prompt (the same prompt_sha256 as the laptop proxy) quotes tuning messages M0001, M0008 and M0025 with their answers, and its food list comes from the gold labels of all 170 tuning messages. This score is in-sample and must never be quoted as expected accuracy.";
+const EDGE_LABEL = 'Edge Function (Supabase parse), tuning in-sample';
 
 function scoreTable(group: Group, include: (id: string) => boolean, title: string): string[] {
   const s = summarize(group.passes, include);
@@ -571,12 +611,24 @@ function scoreTable(group: Group, include: (id: string) => boolean, title: strin
 /** The report: verbatim scope lines, pass status, one section per request-config group, excluded passes, lists, counts and cost. */
 export function renderClaudeReport(ev: Evaluation, pricing: Pricing): string {
   const L: string[] = [];
-  L.push('# Parser tuning evaluation: Claude path (laptop proxy)', '');
+  const edge = ev.target === 'edge';
+  if (edge) {
+    L.push(`# Parser tuning evaluation: Claude path, ${EDGE_LABEL}`, '');
+    L.push(`**${EDGE_LABEL}.** Every score here is for the deployed Supabase Edge Function \`parse\`, not the laptop proxy. ` +
+      'Laptop-proxy passes are in their own report and are never pooled with these.', '');
+  } else {
+    L.push('# Parser tuning evaluation: Claude path (laptop proxy)', '');
+  }
   L.push('**Scope: tuning messages only.** 170 rows, evenings E01 to E10, from `data/parse-dev/donor_messages_tuning.csv`. ' +
     'The messages are template-generated, so every number here is an **optimistic upper bound**. ' +
     'No pilot or main message was sent or scored.', '');
   L.push(VERBATIM_BOUNDARY, '');
-  L.push(VERBATIM_IN_SAMPLE, '');
+  L.push(edge ? VERBATIM_IN_SAMPLE_EDGE : VERBATIM_IN_SAMPLE, '');
+  if (edge) {
+    L.push('Identity: the Edge Function reports no git commit. The git commit and dirty state in each row are the local repo ' +
+      'at the start of each pass (they may change during a run). They do not identify the deployed code. ' +
+      'request_config_sha256 is the identity used for grouping. The recorder stops a pass when that hash or the prompt hash changes.', '');
+  }
   L.push(`Model id(s) seen: ${ev.models.length ? ev.models.join(', ') : 'none'}.`, '');
 
   const done = ev.completed.length;
@@ -714,6 +766,10 @@ export function renderClaudeReport(ev: Evaluation, pricing: Pricing): string {
       `${kindList.map((k) => p.counts.outage503[k] ?? 0).join(' | ')} | ${p.counts.networkErrors} |`);
   }
   L.push(`| total | | ${tot.attempts} | ${tot.http429} | ${tot.retries} | ${kindList.map((k) => tot.kinds[k] ?? 0).join(' | ')} | ${tot.network} |`, '');
+  const http401 = ev.passes.reduce((s, p) => s + p.counts.http401, 0);
+  if (http401 > 0) {
+    L.push(`Attempts with HTTP 401 (edge token refresh, not a parse outcome, never scored, included in the attempt and retry counts above): ${http401}.`, '');
+  }
 
   L.push('## 8. Tokens and cost (every attempt, retried and unscored ones included)', '');
   L.push(`Prices: ${pricing.model}, $${pricing.input_per_mtok} per million input tokens, $${pricing.output_per_mtok} per million output tokens ` +
