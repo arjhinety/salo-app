@@ -39,7 +39,8 @@
 //   - 400 bad_request and 403 device_not_registered are setup faults: the pass stops at once with that reason.
 //   - cost guard (reason cost_cap): the logged usage (server/eval/pricing.json) of every .jsonl in the edge folder is
 //     summed. An outage attempt with no usage is counted at its worst case (2048 output tokens), since it may have been
-//     billed. A send is refused when the total plus that call's worst case would exceed $0.60.
+//     billed. The folder is re-read before every send. A send is refused when the total plus the worst case of
+//     EDGE_IN_FLIGHT_RESERVE (3) calls would exceed the cap: $0.60 for the tuning folder, $0.40 pilot, $1.50 main.
 //   - every attempt line and the pass_end marker carry "target": "edge". Laptop lines have no target key (missing = laptop).
 //   - output: docs/reports/claude-tuning-edge/pass-<n>.jsonl. docs/reports/claude-tuning/ is never touched.
 //   - --probe (edge only) sends ONE message (the first tuning message) to docs/reports/claude-tuning-edge/probe.jsonl.
@@ -49,6 +50,17 @@
 //   node eval/record-tuning.js --target edge --dry-run --pass 1
 //   node eval/record-tuning.js --target edge --probe
 //   node eval/record-tuning.js --target edge --pass <n>
+//
+// Held-out split (added 2026-11-01, docs/decisions.md "Parser held-out scoring"): --split pilot|main runs the same edge
+// recorder on E11..E20 (pilot) or E21..E64 (main) from the dataset v1.3 CSV (eval/heldout.js). Edge target only.
+//   - output: docs/reports/claude-pilot-edge/ or docs/reports/claude-main-edge/ (its own folder, its own cost cap:
+//     $0.40 pilot, $1.50 main; --cost-cap <usd> may lower it or pass a different amount). The tuning default is unchanged.
+//   - concurrency: each process signs in with its own anonymous user and device, so the 10-per-minute device limit applies
+//     per process. Up to three passes may run at once (the function's global limit is 30 per minute). Each process writes
+//     only its own pass file. The cost guard re-reads the folder before every send, and reserves the worst case of
+//     EDGE_IN_FLIGHT_RESERVE calls (this one plus two others that may be in flight), so concurrent passes cannot overspend.
+//   node eval/record-tuning.js --target edge --split pilot --pass <n>
+//   node eval/record-tuning.js --target edge --split main --pass <n> [--cost-cap <usd>] [--dry-run]
 import { appendFileSync, closeSync, existsSync, mkdirSync, openSync, readdirSync, readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { createRequire } from "node:module";
@@ -57,6 +69,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { z } from "zod/v4";
 import { MODEL, MAX_OUTPUT_TOKENS, RATE_LIMIT_PER_MINUTE, loadEnvFile } from "../src/config.js";
 import { loadTuningRows } from "../src/tuning.js";
+import { HELDOUT_SPLITS, loadSplitRows } from "./heldout.js";
 import { buildSystemPrompt } from "../src/prompt.js";
 import { ModelOutput } from "../src/schema.js";
 
@@ -90,6 +103,14 @@ export const EDGE_DEVICE = { role: "dashboard", profileId: null };
 export const EDGE_FATAL_ERRORS = ["bad_request", "device_not_registered"];
 export const DEFAULT_EDGE_OUT_DIR = resolve(fileURLToPath(new URL("../../docs/reports/claude-tuning-edge", import.meta.url)));
 export const PROBE_FILE = "probe.jsonl";
+// Held-out splits (edge only). Caps are per output folder: each split's own spend is what its cap counts.
+export const SPLIT_COST_CAP_USD = Object.freeze({ pilot: 0.4, main: 1.5 });
+export const SPLIT_OUT_DIR = Object.freeze({
+  pilot: resolve(fileURLToPath(new URL("../../docs/reports/claude-pilot-edge", import.meta.url))),
+  main: resolve(fileURLToPath(new URL("../../docs/reports/claude-main-edge", import.meta.url))),
+});
+// Calls whose worst case is reserved on top of the logged spend: this process's next call plus two others in flight.
+export const EDGE_IN_FLIGHT_RESERVE = 3;
 export const REPO_ROOT = resolve(fileURLToPath(new URL("../..", import.meta.url)));
 export const ROOT_ENV_URL = new URL("../../.env", import.meta.url);
 
@@ -102,7 +123,7 @@ export class RecorderError extends Error {
 }
 
 export function parseArgs(argv) {
-  const opts = { baseUrl: DEFAULT_BASE_URL, pass: null, outDir: DEFAULT_OUT_DIR, dryRun: false, target: "laptop", probe: false };
+  const opts = { baseUrl: DEFAULT_BASE_URL, pass: null, outDir: DEFAULT_OUT_DIR, dryRun: false, target: "laptop", probe: false, split: null, costCap: null };
   let baseUrlGiven = false;
   let outDirGiven = false;
   let passGiven = false;
@@ -129,6 +150,15 @@ export function parseArgs(argv) {
     } else if (name === "--target") {
       opts.target = value();
       if (!TARGETS.includes(opts.target)) throw new RecorderError(`--target must be laptop or edge (got "${opts.target}")`);
+    } else if (name === "--split") {
+      opts.split = value();
+      if (!Object.prototype.hasOwnProperty.call(HELDOUT_SPLITS, opts.split)) {
+        throw new RecorderError(`--split must be pilot or main (got "${opts.split}")`);
+      }
+    } else if (name === "--cost-cap") {
+      const v = value();
+      if (!/^\d+(\.\d+)?$/.test(v) || Number(v) <= 0) throw new RecorderError(`--cost-cap must be a positive USD amount (got "${v}")`);
+      opts.costCap = Number(v);
     } else if (name === "--dry-run" && inline === undefined) opts.dryRun = true;
     else if (name === "--probe" && inline === undefined) opts.probe = true;
     else throw new RecorderError(`unknown argument: ${arg}`);
@@ -137,6 +167,12 @@ export function parseArgs(argv) {
     if (baseUrlGiven) throw new RecorderError("--base-url is for the laptop proxy; the edge target reads its URL from the root .env");
     if (!outDirGiven) opts.outDir = DEFAULT_EDGE_OUT_DIR;
   }
+  if (opts.split !== null) {
+    if (opts.target !== "edge") throw new RecorderError("--split needs --target edge (held-out runs are for the deployed Edge Function only)");
+    if (opts.probe) throw new RecorderError("--split and --probe cannot be combined");
+    if (!outDirGiven) opts.outDir = SPLIT_OUT_DIR[opts.split];
+  }
+  if (opts.costCap !== null && opts.target !== "edge") throw new RecorderError("--cost-cap needs --target edge");
   if (opts.probe) {
     if (opts.target !== "edge") throw new RecorderError("--probe needs --target edge");
     if (passGiven) throw new RecorderError("--probe sends one message and takes no --pass");
@@ -147,6 +183,12 @@ export function parseArgs(argv) {
   opts.pass = Number(opts.pass);
   opts.baseUrl = opts.baseUrl.replace(/\/+$/, "");
   return opts;
+}
+
+// The cap for this run: --cost-cap when given, else the split's own cap, else the tuning edge cap ($0.60, unchanged).
+export function costCapOf(opts) {
+  if (opts.costCap !== null && opts.costCap !== undefined) return opts.costCap;
+  return opts.split ? SPLIT_COST_CAP_USD[opts.split] : EDGE_COST_CAP_USD;
 }
 
 // Retry-After as whole seconds, or null when the header is absent or not a whole number.
@@ -387,12 +429,18 @@ export function createSpendLedger(rows, systemPrompt, pricing = PRICING) {
     addAttempt,
     addFile(name, text) {
       files.push(name);
-      text.split("\n").forEach((line, i) => {
+      // Another pass may be appending right now. A last piece with no final newline that is not complete JSON is that
+      // line in progress: skipped here, and counted on the next read once its newline is written. A complete JSON
+      // object cannot be a partial one, so a finished line is never skipped.
+      const pieces = text.split("\n");
+      const lastIsOpen = !text.endsWith("\n") && text !== "";
+      pieces.forEach((line, i) => {
         if (line.trim() === "") return;
         let o;
         try {
           o = JSON.parse(line);
         } catch {
+          if (lastIsOpen && i === pieces.length - 1) return;
           throw new RecorderError(`${name} line ${i + 1} is not JSON; the cost guard cannot read it`, "cost_ledger");
         }
         if (o && o.type === "attempt") addAttempt(o);
@@ -480,7 +528,11 @@ export async function run(opts, deps = {}) {
   const now = deps.now ?? (() => Date.now());
   const sleep = deps.sleep ?? ((ms) => new Promise((r) => setTimeout(r, ms)));
   const log = deps.log ?? ((m) => console.log(m));
-  const allRows = deps.rows ?? loadTuningRows();
+  const allRows = deps.rows ?? (opts.split ? loadSplitRows(opts.split) : loadTuningRows());
+  // The prompt is always the tuning prompt (the function builds its own; this is only the worst-case token estimate).
+  const promptRows = opts.split ? (deps.promptRows ?? loadTuningRows()) : allRows;
+  const systemPrompt = buildSystemPrompt(promptRows);
+  const cap = costCapOf(opts);
   const rows = opts.probe ? allRows.slice(0, 1) : allRows;
   const file = join(opts.outDir, opts.probe ? PROBE_FILE : `pass-${opts.pass}.jsonl`);
   const passNo = opts.probe ? 0 : opts.pass;
@@ -494,10 +546,8 @@ export async function run(opts, deps = {}) {
   }
 
   let auth = null;
-  let ledger = null;
   let meta;
   if (edge) {
-    ledger = loadSpendLedger(opts.outDir, allRows);
     auth = deps.auth ?? (await openEdgeAuth(opts.supabase, { createClient: deps.createClient ?? loadCreateClient(), now, log }));
     const h = await edgeHealth(auth, healthUrl, fetchImpl);
     const gs = deps.gitState ? deps.gitState() : readGitState({ exclude: relative(REPO_ROOT, opts.outDir).split(sep).join("/") });
@@ -570,10 +620,13 @@ export async function run(opts, deps = {}) {
         if (attempt > 1) stats.retries++;
         if (edge) {
           await auth.ensureFresh();
-          const projected = ledger.total() + ledger.worstFor(row);
-          if (projected > EDGE_COST_CAP_USD) {
-            throw new RecorderError(`stopped before ${row.message_id}, attempt ${attempt}: the logged spend plus this call's worst case ` +
-              `would be $${projected.toFixed(4)}, above the $${EDGE_COST_CAP_USD.toFixed(2)} cap. Nothing more is sent. ` +
+          // Fresh read of the folder before every send: other passes may have written since the last send.
+          const ledger = loadSpendLedger(opts.outDir, allRows, systemPrompt);
+          const projected = ledger.total() + EDGE_IN_FLIGHT_RESERVE * ledger.worstFor(row);
+          if (projected > cap) {
+            throw new RecorderError(`stopped before ${row.message_id}, attempt ${attempt}: the logged spend plus the worst case of this call ` +
+              `and two calls that may be in flight elsewhere would be $${projected.toFixed(4)}, above the $${cap.toFixed(2)} cap for ` +
+              `${opts.split ?? "the tuning"} folder ${relative(REPO_ROOT, opts.outDir).split(sep).join("/")}. Nothing more is sent. ` +
               "The pass file keeps every attempt written so far.", "cost_cap");
           }
         }
@@ -624,7 +677,6 @@ export async function run(opts, deps = {}) {
           sent_at: iso(sentMs), received_at: iso(rec.receivedMs), body: rec.body, body_text_if_not_json: rec.bodyText, usage: rec.usage,
           ...tag,
         });
-        if (ledger) ledger.addAttempt({ message_id: row.message_id, usage: rec.usage, http_status: rec.status, error: rec.error });
         const outage = isOutage(rec.status, rec.error);
         if (outage) stats.outageAttempts++;
         if (rec.status === null) stats.networkErrors++;
@@ -712,16 +764,17 @@ export function edgePlanLines({ rows, opts, systemPrompt, health, git, spend, fi
       "(this does not identify the deployed code)",
     "  auth: one anonymous user; a real run registers one devices row (role dashboard, no profile) and prints the user id. A dry run registers nothing",
     opts.probe ? `  probe: ONE message (${rows[0].message_id}) to ${PROBE_FILE}; the scorer ignores it, the cost guard counts it` : `  pass: ${opts.pass}`,
-    `  messages: ${n} tuning messages (E01..E10), file order`,
+    opts.split ? `  messages: ${n} held-out ${opts.split} messages (${HELDOUT_SPLITS[opts.split].datasetSplit} split, E${HELDOUT_SPLITS[opts.split].firstEvening}..E${HELDOUT_SPLITS[opts.split].lastEvening}), file order`
+      : `  messages: ${n} tuning messages (E01..E10), file order`,
     `  requests: ${n} if nothing is retried; at most ${n * MAX_ATTEMPTS} with retries`,
     `  pacing: at least ${EDGE_MIN_SPACING_MS} ms between sends; at most ${EDGE_RATE_LIMIT_PER_MINUTE} sends per ${WINDOW_MS / 1000} s sliding window (the function's per-device limit)`,
     "  retries: 429 waits Retry-After (60 s if absent); 503 model_unavailable and network errors wait 2, 4, 8, 16 s; 503 model_output_rejected and 422 are never retried; " +
       `401 refreshes the session once and resends (a second 401 stops, reason auth); at most ${MAX_ATTEMPTS} attempts per message`,
     `  safety stops: auth, bad_request and device_not_registered (setup faults); ${SAFETY_STOP_CONSECUTIVE} consecutive messages with no usable response; ` +
       "cost_cap; a caught crash or Ctrl+C",
-    `  cost guard: $${EDGE_COST_CAP_USD.toFixed(2)} cap over every .jsonl in ${opts.outDir} (${spend.files.length} file${spend.files.length === 1 ? "" : "s"} now). ` +
+    `  cost guard: $${costCapOf(opts).toFixed(2)} cap over every .jsonl in ${opts.outDir} (${spend.files.length} file${spend.files.length === 1 ? "" : "s"} now). ` +
       `Logged spend so far ${usd(spend.logged)}; worst case for ${spend.unknownCalls} outage attempt${spend.unknownCalls === 1 ? "" : "s"} with no usage ${usd(spend.unknown)}. ` +
-      "A send is refused when the total plus that call's worst case would pass the cap.",
+      `A send is refused when the total plus the worst case of ${EDGE_IN_FLIGHT_RESERVE} calls (this one and two in flight elsewhere) would pass the cap.`,
     `  minimum duration: ${n - 1} gaps x ${EDGE_MIN_SPACING_MS / 1000} s = ${minSec.toFixed(1)} s (about ${(minSec / 60).toFixed(1)} min), plus model time and any waits`,
     `  output: ${file}${fileExists ? "  (EXISTS: a real run would refuse)" : "  (new file)"}`,
     "  SDK retries: the function's SALO_SDK_MAX_RETRIES (a Supabase secret; the code default is 1) is not reported by /health. " +
@@ -738,9 +791,9 @@ export async function edgeDryRun(opts, deps = {}) {
   const fetchImpl = deps.fetchImpl ?? globalThis.fetch;
   const now = deps.now ?? (() => Date.now());
   const log = deps.log ?? ((m) => console.log(m));
-  const allRows = deps.rows ?? loadTuningRows();
+  const allRows = deps.rows ?? (opts.split ? loadSplitRows(opts.split) : loadTuningRows());
   const rows = opts.probe ? allRows.slice(0, 1) : allRows;
-  const systemPrompt = buildSystemPrompt(allRows);
+  const systemPrompt = buildSystemPrompt(opts.split ? (deps.promptRows ?? loadTuningRows()) : allRows);
   const spend = loadSpendLedger(opts.outDir, allRows, systemPrompt).summary();
   const auth = await openEdgeAuth(opts.supabase, { createClient: deps.createClient ?? loadCreateClient(), now, log });
   const health = await edgeHealth(auth, `${opts.baseUrl}/health`, fetchImpl);
@@ -752,7 +805,7 @@ export async function edgeDryRun(opts, deps = {}) {
 
 export async function main(argv = process.argv.slice(2), deps = {}) {
   const opts = parseArgs(argv);
-  const rows = deps.rows ?? loadTuningRows();
+  const rows = deps.rows ?? (opts.split ? loadSplitRows(opts.split) : loadTuningRows());
   if (opts.target === "edge") {
     const cfg = edgeConfig(deps.env ?? rootEnv());
     opts.baseUrl = cfg.functionUrl;

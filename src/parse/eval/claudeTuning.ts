@@ -33,6 +33,7 @@ import { join } from 'path';
 import type { ParseResponse } from '../types';
 import { validateResponse } from '../validate';
 import { FIELDS, scoreResponse, type Field, type FieldScores, type ScoredRow } from './score';
+import { heldoutLabel, type HeldoutSplit } from './heldout';
 
 /** The plan: 3 completed passes per request config. Pass numbers are not limited to this (a stopped pass gets a new number). */
 export const PLANNED_PASSES = 3;
@@ -316,6 +317,8 @@ export interface Group {
 export interface Evaluation {
   /** The target this evaluation reads: passes of any other target are invalid. */
   target: Target;
+  /** null for the tuning set; the held-out split (pilot or main) otherwise. */
+  split: HeldoutSplit | null;
   rows: ScoredRow[];
   /** One entry per pass number from 1 to the highest pass file present. A number with no file has status "no file". */
   passes: PassResult[];
@@ -384,13 +387,22 @@ export function costUsd(t: { input: number; output: number; cacheWrite: number; 
 }
 
 /**
- * Evaluates the pass files against the tuning universe. Throws on any integrity problem: a message id or evening that is
- * not in the tuning set, a duplicate or non-contiguous attempt number, a marker whose messages_sent disagrees with the
- * file, or a "completed" pass that does not cover all 170 messages. A pass whose hashes disagree internally is not an
- * error: it gets status "invalid" and is excluded.
+ * Evaluates the pass files against the universe: the 170 tuning messages, or the held-out split given in `split` (its
+ * count is asserted here too). Throws on any integrity problem: a message id or evening that is not in the universe, a
+ * duplicate or non-contiguous attempt number, a marker whose messages_sent disagrees with the file, or a "completed" pass
+ * that does not cover every message of the universe. A pass whose hashes disagree internally is not an error: it gets
+ * status "invalid" and is excluded.
  */
-export function evaluate(rows: ScoredRow[], files: PassFile[], ignoredFiles: string[] = [], expectTarget: Target = 'laptop'): Evaluation {
-  if (rows.length !== TUNING_MESSAGE_COUNT) throw new Error(`expected ${TUNING_MESSAGE_COUNT} tuning rows, got ${rows.length}`);
+export function evaluate(
+  rows: ScoredRow[],
+  files: PassFile[],
+  ignoredFiles: string[] = [],
+  expectTarget: Target = 'laptop',
+  split: HeldoutSplit | null = null,
+): Evaluation {
+  const expected = split ? split.count : TUNING_MESSAGE_COUNT;
+  const universe = split ? `held-out ${split.name}` : 'tuning';
+  if (rows.length !== expected) throw new Error(`expected ${expected} ${universe} rows, got ${rows.length}`);
   if (files.length === 0) throw new Error('no pass files given');
   const byId = new Map(rows.map((r) => [r.message_id, r]));
   const filesByPass = new Map<number, PassFile>();
@@ -417,7 +429,7 @@ export function evaluate(rows: ScoredRow[], files: PassFile[], ignoredFiles: str
     for (const a of attemptsAll) {
       targets.add(targetOfLine(a));
       const row = byId.get(a.message_id);
-      if (!row) throw new Error(`pass ${pass}: message ${a.message_id} is not in the tuning set`);
+      if (!row) throw new Error(`pass ${pass}: message ${a.message_id} is not in the ${universe} set`);
       if (a.evening_id !== row.evening_id) throw new Error(`pass ${pass}: ${a.message_id} has evening ${a.evening_id}, expected ${row.evening_id}`);
       const list = byMsg.get(a.message_id) ?? [];
       if (list.some((x) => x.attempt === a.attempt)) throw new Error(`pass ${pass}: ${a.message_id} attempt ${a.attempt} twice`);
@@ -467,8 +479,8 @@ export function evaluate(rows: ScoredRow[], files: PassFile[], ignoredFiles: str
       if (end.messages_sent !== sentIds.length) {
         throw new Error(`pass ${pass}: marker says ${end.messages_sent} messages sent, the file has ${sentIds.length}`);
       }
-      if (end.status === 'completed' && sentIds.length !== TUNING_MESSAGE_COUNT) {
-        throw new Error(`pass ${pass}: marked completed but only ${sentIds.length} of ${TUNING_MESSAGE_COUNT} messages were sent`);
+      if (end.status === 'completed' && sentIds.length !== expected) {
+        throw new Error(`pass ${pass}: marked completed but only ${sentIds.length} of ${expected} messages were sent`);
       }
     }
 
@@ -525,7 +537,7 @@ export function evaluate(rows: ScoredRow[], files: PassFile[], ignoredFiles: str
     g.passes.push(p);
     for (const c of p.gitCommits) if (!g.gitCommits.includes(c)) g.gitCommits.push(c);
   }
-  return { target: expectTarget, rows, passes, ignoredFiles: [...ignoredFiles].sort(), completed, excluded, groups, models: [...allModels].sort() };
+  return { target: expectTarget, split, rows, passes, ignoredFiles: [...ignoredFiles].sort(), completed, excluded, groups, models: [...allModels].sort() };
 }
 
 export interface FieldRate {
@@ -599,6 +611,9 @@ const VERBATIM_IN_SAMPLE = "In-sample score: the proxy's prompt quotes tuning me
 // The edge function has the same prompt (same prompt_sha256), so the same in-sample overlap applies.
 const VERBATIM_IN_SAMPLE_EDGE = "In-sample score: the Edge Function's prompt (the same prompt_sha256 as the laptop proxy) quotes tuning messages M0001, M0008 and M0025 with their answers, and its food list comes from the gold labels of all 170 tuning messages. This score is in-sample and must never be quoted as expected accuracy.";
 const EDGE_LABEL = 'Edge Function (Supabase parse), tuning in-sample';
+// Held-out splits: the food list in the prompt is the 21 foods of the tuning gold labels, so a gold food outside it cannot
+// match. The prompt's worked examples are tuning messages and are not in these universes.
+const VERBATIM_HELDOUT_CAVEAT = "Caveat: the prompt's food list is the 21 foods of the tuning gold labels. A gold food outside that list (for example pechay or canned sardines, if the split has them) cannot match, so those rows count as wrong. The prompt's worked examples (M0001, M0008, M0025) are tuning messages and are not in this universe.";
 
 function scoreTable(group: Group, include: (id: string) => boolean, title: string): string[] {
   const s = summarize(group.passes, include);
@@ -612,24 +627,43 @@ function scoreTable(group: Group, include: (id: string) => boolean, title: strin
 export function renderClaudeReport(ev: Evaluation, pricing: Pricing): string {
   const L: string[] = [];
   const edge = ev.target === 'edge';
-  if (edge) {
+  const held = ev.split;
+  if (held) {
+    const label = heldoutLabel(held);
+    L.push(`# Parser held-out evaluation: Claude path, ${label}`, '');
+    L.push(`**${label}.** Every score here is for the deployed Supabase Edge Function \`parse\` on held-out ${held.name} messages. ` +
+      'Tuning passes are in their own report and are never pooled with these.', '');
+  } else if (edge) {
     L.push(`# Parser tuning evaluation: Claude path, ${EDGE_LABEL}`, '');
     L.push(`**${EDGE_LABEL}.** Every score here is for the deployed Supabase Edge Function \`parse\`, not the laptop proxy. ` +
       'Laptop-proxy passes are in their own report and are never pooled with these.', '');
   } else {
     L.push('# Parser tuning evaluation: Claude path (laptop proxy)', '');
   }
-  L.push('**Scope: tuning messages only.** 170 rows, evenings E01 to E10, from `data/parse-dev/donor_messages_tuning.csv`. ' +
-    'The messages are template-generated, so every number here is an **optimistic upper bound**. ' +
-    'No pilot or main message was sent or scored.', '');
+  if (held) {
+    L.push(`**Scope: held-out ${held.name} messages only.** ${ev.rows.length} rows, evenings ${held.evenings}, from the evening dataset v1.3 ` +
+      `(\`donor_messages.csv\`, split \`${held.datasetLabel}\`; the evening comes from \`food_offers.csv\`). ` +
+      'The messages are template-generated, so every number here is an **optimistic upper bound**. ' +
+      'No tuning message and no message of the other held-out split was sent or scored.', '');
+  } else {
+    L.push('**Scope: tuning messages only.** 170 rows, evenings E01 to E10, from `data/parse-dev/donor_messages_tuning.csv`. ' +
+      'The messages are template-generated, so every number here is an **optimistic upper bound**. ' +
+      'No pilot or main message was sent or scored.', '');
+  }
   L.push(VERBATIM_BOUNDARY, '');
-  L.push(edge ? VERBATIM_IN_SAMPLE_EDGE : VERBATIM_IN_SAMPLE, '');
+  if (held) L.push(VERBATIM_HELDOUT_CAVEAT, '');
+  else L.push(edge ? VERBATIM_IN_SAMPLE_EDGE : VERBATIM_IN_SAMPLE, '');
   if (edge) {
     L.push('Identity: the Edge Function reports no git commit. The git commit and dirty state in each row are the local repo ' +
       'at the start of each pass (they may change during a run). They do not identify the deployed code. ' +
       'request_config_sha256 is the identity used for grouping. The recorder stops a pass when that hash or the prompt hash changes.', '');
   }
   L.push(`Model id(s) seen: ${ev.models.length ? ev.models.join(', ') : 'none'}.`, '');
+  if (held) {
+    const splitSpend = ev.passes.reduce((s, p) => s + costUsd({ input: p.tokens.input, output: p.tokens.output, cacheWrite: p.tokens.cacheWrite, cacheRead: p.tokens.cacheRead }, pricing), 0);
+    L.push(`Spend on this split, from logged usage over every attempt of every pass file (unscored and retried attempts included): ${usdFmt(splitSpend)}. ` +
+      'Attempts with no usage (outages) are not in that figure, so it is a floor. Section 8 has the per-pass split.', '');
+  }
 
   const done = ev.completed.length;
   const passList = (ps: PassResult[]): string => ps.map((p) => p.pass).join(', ');
@@ -697,9 +731,13 @@ export function renderClaudeReport(ev: Evaluation, pricing: Pricing): string {
     } else if (g.passes.length < PLANNED_PASSES) {
       L.push(`This group has ${g.passes.length} completed pass${g.passes.length === 1 ? '' : 'es'}, ${planNote(g.passes.length)}. Its means and spreads use only these.`, '');
     }
-    L.push(...scoreTable(g, () => true, `3${g.letter}.1 All 170 tuning messages (k/answered)`));
-    L.push(...scoreTable(g, excludeIds(PROMPT_EXAMPLE_IDS),
-      `3${g.letter}.2 The 167 messages without M0001, M0008 and M0025 (still in-sample: food list overlap; k/answered)`));
+    const universeName = held ? `held-out ${held.name} messages` : 'tuning messages';
+    L.push(...scoreTable(g, () => true, `3${g.letter}.1 All ${ev.rows.length} ${universeName} (k/answered)`));
+    // The prompt's worked examples are tuning messages, so the held-out universes never contain them: no 3.2 table there.
+    if (!held) {
+      L.push(...scoreTable(g, excludeIds(PROMPT_EXAMPLE_IDS),
+        `3${g.letter}.2 The 167 messages without M0001, M0008 and M0025 (still in-sample: food list overlap; k/answered)`));
+    }
     for (const key of ['language', 'difficulty'] as const) {
       const groups = summarizeByGroup(ev, key, g.passes);
       L.push(`#### 3${g.letter}.3 By ${key} (mean and min-max spread of k/answered over the group's passes)`, '');
