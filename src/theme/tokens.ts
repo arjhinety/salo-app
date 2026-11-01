@@ -12,6 +12,10 @@ export interface Palette {
   tarpInk: string;
   /** tarp-night in both themes: the post FAB's shadow colour. */
   tarpNight: string;
+  /** Fill of a selected chip or tab. Tarp in light; tarp ink at night (tarp-night is 1.3:1 on the night canopy). */
+  selectFill: string;
+  /** Text on a selected fill: white on tarp in light; the night ground on the lighter tarp ink at night. */
+  onSelect: string;
   onTarp: string;
   kraft: string;
   kraftEdge: string;
@@ -40,6 +44,8 @@ export const LIGHT: Palette = {
   tarp: '#1947b8',
   tarpInk: '#1947b8',
   tarpNight: '#0f2f7a',
+  selectFill: '#1947b8',
+  onSelect: '#ffffff',
   onTarp: '#ffffff',
   kraft: '#d6ae7b',
   kraftEdge: '#b68e5c',
@@ -68,6 +74,9 @@ export const DARK: Palette = {
   // tarp-night reads at 1.3 to 1.5:1 on the night canopy, so tarp-as-ink uses the next step of the tarp-night ramp.
   tarpInk: '#78a3f8',
   tarpNight: '#0f2f7a',
+  // Selected chips and tabs: the lighter ink fill with the night ground as text (7.4:1), not the 1.3:1 night tarp.
+  selectFill: '#78a3f8',
+  onSelect: '#0b1328',
   onTarp: '#ffffff',
   kraft: '#d6ae7b',
   kraftEdge: '#9c764a',

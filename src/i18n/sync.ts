@@ -6,7 +6,7 @@ export const SYNC = {
   join: {
     title: 'Sumali sa sesyon ngayong gabi · Join an evening',
     hint: 'Ilagay ang kodigo mula sa dashboard, saka pumili ng tungkulin. · Type the code from the dashboard, then choose your role.',
-    placeholder: 'ABC123',
+    placeholder: 'Hal. ABC123 · e.g. ABC123',
     a11y: 'Kodigo ng gabi, anim na letra o numero. Evening code, six letters or digits.',
     badCode: 'Anim na letra o numero ang kodigo · The code has six letters or digits.',
     tooMany: 'Masyadong maraming subok. Maghintay ng 10 minuto. · Too many tries. Wait 10 minutes.',

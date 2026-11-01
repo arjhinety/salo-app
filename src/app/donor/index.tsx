@@ -1,5 +1,6 @@
 import { router } from 'expo-router';
 import { ScrollView, StyleSheet, useWindowDimensions, View, Text } from 'react-native';
+import { Bi } from '../../components/Bi';
 import { PostFab } from '../../components/PostFab';
 import { SimControl } from '../../components/SimControl';
 import { StallString } from '../../components/StallString';
@@ -51,8 +52,8 @@ export default function DonorHome() {
         </View>
         {lots.length === 0 ? (
           <View style={[styles.empty, { borderColor: c.zinc }]}>
-            <Text style={[TYPE.bodyStrong, { color: c.text }]}>{S.emptyTonight.fil}</Text>
-            <Text style={[TYPE.body, { color: c.textMuted }]}>{S.emptyTonight.hint}</Text>
+            <Bi text={`${S.emptyTonight.fil} · ${S.emptyTonight.en}`} strong surface="ground" />
+            <Bi text={S.emptyTonight.hint} size="small" tone="muted" surface="ground" />
           </View>
         ) : (
           rows.map((row, i) => (

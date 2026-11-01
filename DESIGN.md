@@ -221,7 +221,7 @@ Filipino comes first on donor, pantry and driver screens, with English set small
 A saturated canopy blue and warm kraft brown, punctuated by one acid lime and marker red, over cool pale neutrals.
 
 ### Primary
-- **Tarp Blue** (tarp-blue; night: tarp-night): the canopy. Used for the top bar, the results band, the post FAB, filled primary actions (Replay with baseline, a driver's Offer), and selected choice chips and dashboard views. Text on it is always white (on-tarp).
+- **Tarp Blue** (tarp-blue; night: tarp-night): the canopy. Used for the top bar, the results band, the post FAB, filled primary actions (Replay with baseline, a driver's Offer), and selected choice chips and dashboard views. Text on it is always white (on-tarp). At night a selected chip or view is filled with tarp ink (tarp-ink-night) and reads in ground-night, because tarp-night is 1.3:1 on the night canopy.
 - **Tarp Ink** (tarp-ink; night: tarp-ink-night): tarp as ink on the ground or raised ground, for the link-weight labels (PUMASOK, CLOSE, the role-state label), the back link, radio rings and dots, the listening mic, the composer caret, and the dashed outline of a stranded box. The night tarp-night reads at about 1.3:1 on the night canopy, so night uses the next step of the tarp-night ramp (#78a3f8, 6.4 to 7.4:1).
 
 ### Secondary
@@ -284,7 +284,8 @@ The layout is a single column on the phone. Each screen is a tarp bar (with the 
 - **The primary action sits at the thumb**: the donor FAB is pinned bottom-right (16dp plus the bottom inset), and the dashboard docks Cancel driver and Replay with baseline as two equal-width buttons along the bottom.
 - **Home bodies reserve 120dp bottom padding** so the FAB never covers the last tag.
 - **Rows wrap instead of scrolling sideways.** Slot rows, chip groups, driver choosers and dashboard controls use `flexWrap`. The lot strip is the only horizontal scroller, and it follows the newest chip.
-- **The tape fills the remaining height** on the dashboard, with the newest line at the bottom. It keeps following new lines while the reader is within 24dp of the end.
+- **The tape fills the remaining height** on the dashboard, with the newest line at the bottom. It keeps following new lines while the reader is within 24dp of the end. At 150% font scale and above, the ruler and the view tabs scroll above a tape that takes 55% of the window height, so the tape stays readable.
+- **The results band scrolls** with the Results content (the back link, the title and the subtitle), so at 200% it does not take the screen.
 - **Text is never truncated.** Nothing uses `numberOfLines`; text grows the container.
 - **Touch targets** are at least 48dp. Primary and FAB actions are 52 to 56dp, and list and radio rows are 64dp.
 
@@ -310,7 +311,7 @@ Borders say what an outline means. 1.5dp is a working outline, 2dp an emphasized
 
 ### Buttons
 - **Shape:** board corner (4dp), minimum height 48dp, 52dp for the docked dashboard actions.
-- **Primary:** tarp fill, white Body Strong label. There is one filled action per area (Replay with baseline, the driver's Offer).
+- **Primary:** tarp fill, white Body Strong label. There is one filled action per area (Replay with baseline, the driver's Offer, Run the main evenings). At night the fill is tarp-night with a 2dp tarp-ink edge, so the button shows against the ground.
 - **Outline:** a transparent 1.5 to 2dp border in ink, or zinc when disabled, with an ink label. A destructive outline (Cancel driver) uses marker red for both border and label.
 - **On tarp:** a white 1.5dp outline on the canopy (play and pause, speed, Results, Back). The selected speed is white-filled with a tarp label.
 - **Pressed:** opacity drops to 0.7–0.88. There is no ripple color or scale change.
@@ -320,9 +321,9 @@ Borders say what an outline means. 1.5dp is a working outline, 2dp an emphasized
 This is the one primary action on the donor home: a Material extended FAB in tarp blue with an authored mic icon and "I-post ang tira", 56dp tall with 16dp corners. At 150% font scale and above it becomes a 56dp round icon-only button that keeps the same TalkBack label.
 
 ### Chips
-- **Choice chips** (pickup time, items): 48dp, 8dp corners, raised-ground fill with a rule outline. Selected chips turn tarp with white text.
+- **Choice chips** (pickup time, items): 48dp, 8dp corners, raised-ground fill with a rule outline. Selected chips turn tarp with white text (at night, tarp ink with ground-night text).
 - **Lot-strip chips:** kraft, 4dp, 56dp tall and 120 to 200dp wide, with the name in Chip Item and a sticker below. Selection is shown by an ink outline 3dp thick.
-- **Driver chooser chips:** 2dp ink outline. Selected chips are tarp-filled.
+- **Driver chooser chips:** 2dp ink outline. Selected chips are tarp-filled (at night, tarp-ink-filled).
 
 ### Price Tag (signature)
 A kraft tag with chamfered top corners and a kraft-edge stroke, hung from the stall string by a 2dp zinc drop into a punched hole. The sticker sits top-right in the layout flow, so it never covers the hole or the name at any scale. Then come the item in Marker, the English gloss in Small, a kraft-edge rule at 60% opacity, and slot rows (an uppercase Narrow label on the left, a Body Strong value on the right, wrapping when needed). An optional fridge note and destination line follow, and the five-station journey line sits at the bottom. The whole tag is one TalkBack sentence and a polite live region.

@@ -1,4 +1,5 @@
 import { verdict as ruleVerdict, type Verdict } from '../engine/metrics';
+import { kgInterval, pointsInterval } from './units';
 
 export type { Verdict };
 
@@ -20,9 +21,10 @@ export function verdictOf(food: Interval, worstServed: Interval): Verdict {
   return ruleVerdict(food, worstServed);
 }
 
-const fmt = (x: number) => `${x >= 0 ? '+' : '−'}${Math.abs(x).toFixed(2)}`;
-
-/** The verdict line, with the two intervals it used (RES-04). */
+/**
+ * The verdict line, with the two intervals it used (RES-04). The intervals use the same units as the rows and the
+ * post-hoc note (units.ts): kg to one decimal, need met in points to one decimal. The numbers are not changed here.
+ */
 export function verdictLine(food: Interval, worstServed: Interval): string {
-  return `${VERDICT_LABEL[verdictOf(food, worstServed)]}: food rescued [${fmt(food.low)}, ${fmt(food.high)}] kg per evening; worst-served need met [${fmt(worstServed.low)}, ${fmt(worstServed.high)}].`;
+  return `${VERDICT_LABEL[verdictOf(food, worstServed)]}: food rescued ${kgInterval(food.low, food.high)} per evening; worst-served need met ${pointsInterval(worstServed.low, worstServed.high)}.`;
 }

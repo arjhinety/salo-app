@@ -14,12 +14,12 @@ export const RESULTS_COPY = {
   subtitle: 'Simulated data. Main evenings only.',
   back: 'Back to dashboard',
   /** The one plain gate line. The pilot is named without its evening ids (RES-06: no pilot ids on the screen). */
-  gateClosed: 'Main results appear after the pilot has run and the number of main evenings is recorded (guide p.19).',
+  gateClosed: 'Main results appear after the pilot has run and the number of main evenings is recorded.',
   /** The gate is open and no run has been made yet this session: the button below runs the main evenings on this phone. */
-  gateRecordedNoRun: 'The pilot has run and the main-evening count is recorded. No main result is shown until the main evenings are run on this phone (guide p.19).',
+  gateRecordedNoRun: 'The pilot has run and the main-evening count is recorded. No main result is shown until the main evenings are run on this phone.',
   /** The recorded count is more main evenings than the dataset has. The runner would refuse it, so the screen stays closed. */
-  gateCountMismatch: 'The recorded main-evening count does not match the main evenings in the dataset, so no main result is shown (guide p.19).',
-  evenings: 'Evenings reported: E21 to E64 (main_sample).',
+  gateCountMismatch: 'The recorded main-evening count does not match the main evenings in the dataset, so no main result is shown.',
+  evenings: 'Evenings reported: E21 to E64.',
   policiesHeading: 'Four policies, same evenings',
   policies: {
     salo: 'Agents (Salo)',
@@ -34,9 +34,9 @@ export const RESULTS_COPY = {
     stranded: 'Stranded awards',
   },
   mainHeading: 'Main comparison against central greedy (97.5%)',
-  supportingHeading: 'Supporting comparisons (95%). Supporting only, never a win on their own.',
+  supportingHeading: 'Supporting comparisons (95%)',
   supportingNote:
-    'Food wasted mirrors food rescued (the same kg is posted under every policy), so its intervals are not independent support.',
+    'Supporting only, never a win on their own. Food wasted mirrors food rescued (the same kg is posted under every policy), so its intervals are not independent support.',
   learningHeading: 'Supporting: learning off',
   /** One row per policy: "<policy> · Food rescued, learning on minus off (95%)". Supporting only. */
   learningRow: 'Food rescued, learning on minus off (95%)',
@@ -47,8 +47,12 @@ export const RESULTS_COPY = {
   runButton: 'Run the main evenings',
   /** Progress line while the run goes: evening `done` of `total` is running. */
   runProgress: (done: number, total: number) => `Evening ${done} of ${total} …`,
+  /** Announced once when the run starts (the screen's live announcer; the progress line itself is not live). */
+  runStarted: 'Running the main evenings on this phone …',
   /** Shown after the last evening while the intervals and the verdict are worked out. */
   runIntervals: 'Working out the intervals and the verdict …',
+  /** Under the run button before any result: the empty state of every table on the closed screen. */
+  emptyTable: 'Run the main evenings to fill this table.',
   runCancel: 'Cancel run',
   /** Shown when the user cancels the run. Nothing is kept. */
   runCancelled: 'The run was cancelled. No main result is shown.',
@@ -62,10 +66,13 @@ export const RESULTS_COPY = {
   verdictHeading: 'Verdict',
   /** Shown under the verdict only when both main 97.5% intervals lie inside the gaps. Post hoc, supporting only. */
   insideGapsNote:
-    'Supporting, post hoc (not pre-registered as an equivalence test): both 97.5% intervals lie entirely inside ±6 kg and ±0.10, the smallest differences worth caring about, so a difference that large is unlikely in either direction. The verdict above is unchanged.',
+    'Post-hoc check, not pre-registered: both 97.5% intervals lie entirely inside ±6 kg and ±10 points, the smallest differences worth caring about, so a difference that large is unlikely in either direction. This is not a pre-registered equivalence test. The verdict above is unchanged.',
   noClear: 'No clear difference',
   saloBetter: 'Salo better',
   baselineBetter: 'Baseline better',
+  /** The learning-off readings, worded like the main readings ("Salo better"): capitalised, no full stop. */
+  learningHelps: 'Learning helps',
+  learningHurts: 'Learning hurts',
   method: 'Paired bootstrap intervals on the difference between policies, evening by evening (Bestgen, 2022).',
   resamples: 'Resamples',
   seed: 'Random seed',

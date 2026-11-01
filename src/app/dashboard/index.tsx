@@ -1,6 +1,6 @@
 import { router, type Href } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, View, useWindowDimensions, Text } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View, useWindowDimensions, Text } from 'react-native';
 import { databaseStatusLine } from '../../backend/outbox';
 import { startNewRun, useBackendStatus } from '../../backend/runtime';
 import { useDashboardStatus } from '../../backend/useSession';
@@ -28,6 +28,11 @@ import { useTheme } from '../../theme/theme';
 import { SPACE, TYPE } from '../../theme/tokens';
 
 /** Seconds per simulated minute: 1x is the default 6 s (decision D-k). */
+/** At this font scale (200% is 2) the ruler and tabs scroll, so the tape keeps a readable height. */
+const LARGE_TEXT = 1.5;
+/** Share of the window height the tape takes when the top scrolls. */
+const TAPE_SHARE = 0.55;
+
 const SPEEDS = [
   { label: '1×', secs: 6 },
   { label: '2×', secs: 3 },
@@ -37,7 +42,7 @@ const SPEEDS = [
 /** The live dashboard: the evening as a receipt tape, for the panel. English copy (decision). Simulated data. */
 export default function Dashboard() {
   const { c } = useTheme();
-  const { fontScale } = useWindowDimensions();
+  const { fontScale, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const sim = useLiveSnapshot();
   const backend = useBackendStatus();
@@ -106,28 +111,8 @@ export default function Dashboard() {
   const emptyText = posted.length === 0 ? dash.noLotYet : selectedId ? dash.tapeEmpty : dash.noLotSelected;
   const stackActions = fontScale >= 1.5;
 
-  return (
-    <View style={{ flex: 1, backgroundColor: c.ground }}>
-      <TarpBar
-        english
-        clock={clock24(sim.minute)}
-        subtitle={dash.policyLine(dash.policies[sim.policy].name)}
-        chip={{ text: `E05 · ${dash.simulated}`, label: `${dash.simulatedA11y}, evening E05` }}
-      >
-        <View style={styles.controls}>
-          <SimControl english running={sim.running} ended={sim.ended} onPress={togglePlay} />
-          <SpeedChoice current={sim.secondsPerMinute} onPick={(secs) => liveEvening.setSpeed(secs)} />
-          <Pressable
-            onPress={() => router.push(RESULTS_ROUTE as Href)}
-            accessibilityRole="link"
-            accessibilityLabel={RESULTS_COPY.link}
-            style={({ pressed }) => [styles.resultsLink, { borderColor: c.onTarp, opacity: pressed ? 0.7 : 1 }]}
-          >
-            <Text style={[TYPE.bodyStrong, { color: c.onTarp }]}>{RESULTS_COPY.link}</Text>
-          </Pressable>
-        </View>
-      </TarpBar>
-
+  const top = (
+    <>
       {sim.policy !== 'salo' ? (
         <View style={[styles.replayNote, { backgroundColor: c.groundRaised, borderBottomColor: c.rule }]}>
           <Text style={[TYPE.small, { color: c.text }]} accessibilityRole="text">
@@ -163,6 +148,10 @@ export default function Dashboard() {
 
       <ViewChoice current={view} onPick={setView} />
 
+    </>
+  );
+  const body = (
+    <>
       {view === 'tape' ? (
         <ReceiptTape key={selectedId ?? 'none'} rows={rows} emptyText={emptyText} header={header} />
       ) : view === 'bids' ? (
@@ -184,6 +173,44 @@ export default function Dashboard() {
         <View style={styles.body}>
           <DriverTrackPanel tracks={tracks} />
         </View>
+      )}
+
+    </>
+  );
+
+  return (
+    <View style={{ flex: 1, backgroundColor: c.ground }}>
+      <TarpBar
+        english
+        clock={clock24(sim.minute)}
+        subtitle={dash.policyLine(dash.policies[sim.policy].name)}
+        chip={{ text: `E05 · ${dash.simulated}`, label: `${dash.simulatedA11y}, evening E05` }}
+      >
+        <View style={styles.controls}>
+          <SimControl english running={sim.running} ended={sim.ended} onPress={togglePlay} />
+          <SpeedChoice current={sim.secondsPerMinute} onPick={(secs) => liveEvening.setSpeed(secs)} />
+          <Pressable
+            onPress={() => router.push(RESULTS_ROUTE as Href)}
+            accessibilityRole="link"
+            accessibilityLabel={RESULTS_COPY.link}
+            style={({ pressed }) => [styles.resultsLink, { borderColor: c.onTarp, opacity: pressed ? 0.7 : 1 }]}
+          >
+            <Text style={[TYPE.bodyStrong, { color: c.onTarp }]}>{RESULTS_COPY.link}</Text>
+          </Pressable>
+        </View>
+      </TarpBar>
+
+      {fontScale >= LARGE_TEXT ? (
+        // At 150% font scale and above the ruler and view tabs scroll above a fixed-height tape, so the tape stays readable.
+        <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
+          {top}
+          <View style={{ height: Math.round(height * TAPE_SHARE) }}>{body}</View>
+        </ScrollView>
+      ) : (
+        <>
+          {top}
+          {body}
+        </>
       )}
 
       <View style={[styles.dock, { backgroundColor: c.ground, borderTopColor: c.rule, paddingBottom: insets.bottom + SPACE.s }]}>
@@ -243,10 +270,10 @@ function ViewChoice({ current, onPick }: { current: DashView; onPick: (v: DashVi
             accessibilityLabel={dash.viewA11y(dash.views[v])}
             style={({ pressed }) => [
               styles.viewBtn,
-              { borderColor: c.text, backgroundColor: on ? c.tarp : 'transparent', opacity: pressed ? 0.7 : 1 },
+              { borderColor: c.text, backgroundColor: on ? c.selectFill : 'transparent', opacity: pressed ? 0.7 : 1 },
             ]}
           >
-            <Text style={[TYPE.bodyStrong, { color: on ? c.onTarp : c.text }]}>{dash.views[v]}</Text>
+            <Text style={[TYPE.bodyStrong, { color: on ? c.onSelect : c.text }]}>{dash.views[v]}</Text>
           </Pressable>
         );
       })}
@@ -341,4 +368,6 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   filled: { borderWidth: 0 },
+  scroll: { flex: 1 },
+  scrollContent: { flexGrow: 1 },
 });

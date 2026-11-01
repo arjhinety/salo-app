@@ -1,5 +1,6 @@
 import { router, useLocalSearchParams, type Href } from 'expo-router';
 import { ScrollView, StyleSheet, View, Text } from 'react-native';
+import { Bi } from '../../components/Bi';
 import { PantryTag } from '../../components/pantry/PantryTag';
 import { SessionBanner } from '../../components/SessionBanner';
 import { SimControl } from '../../components/SimControl';
@@ -64,8 +65,8 @@ export default function PantryHome() {
         </View>
 
         <View style={[styles.budget, { borderColor: c.zinc }]} accessible accessibilityLabel={`${PANTRY_COPY.budget.line(feed.sharesLeft, SHARE_BUDGET_PER_EVENING)} ${PANTRY_COPY.budget.note}`}>
-          <Text style={[TYPE.bodyStrong, { color: c.text }]}>{PANTRY_COPY.budget.line(feed.sharesLeft, SHARE_BUDGET_PER_EVENING)}</Text>
-          <Text style={[TYPE.small, { color: c.textMuted }]}>{PANTRY_COPY.budget.note}</Text>
+          <Bi text={PANTRY_COPY.budget.line(feed.sharesLeft, SHARE_BUDGET_PER_EVENING)} title surface="ground" />
+          <Bi text={PANTRY_COPY.budget.note} size="small" tone="muted" surface="ground" />
         </View>
 
         <Section title={PANTRY_COPY.awards} empty={PANTRY_COPY.noAwards} views={awards} onOpen={openLot} />

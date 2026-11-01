@@ -10,34 +10,10 @@ import { donorPosition, pantryPosition } from '../../data/places';
 import type { Ask, Trip } from '../../driver/board';
 import { useTheme } from '../../theme/theme';
 import { SPACE, TYPE } from '../../theme/tokens';
+import { Bi } from '../Bi';
 import { Sticker, type StickerKind } from '../Sticker';
 
-/**
- * A bilingual line: Filipino large, English beneath (CC-05). TalkBack reads both, in order. `surface` picks the ink:
- * text on a kraft tag, or text on the tarp's ground (light or night canopy).
- */
-export function Bi({
-  text,
-  strong = false,
-  tone = 'ink',
-  surface = 'kraft',
-}: {
-  text: string;
-  strong?: boolean;
-  tone?: 'ink' | 'muted';
-  surface?: 'kraft' | 'ground';
-}) {
-  const { c } = useTheme();
-  const { fil, en } = splitBi(text);
-  const ink = surface === 'kraft' ? c.onKraft : c.text;
-  const muted = surface === 'kraft' ? c.onKraftMuted : c.textMuted;
-  return (
-    <View accessible={false}>
-      <Text style={[strong ? TYPE.bodyStrong : TYPE.body, { color: tone === 'muted' ? muted : ink }]}>{fil}</Text>
-      {en ? <Text style={[TYPE.small, { color: muted }]}>{en}</Text> : null}
-    </View>
-  );
-}
+export { Bi };
 
 /** The spoken form of a bilingual string: the separator becomes a pause. */
 export const spoken = (text: string) => text.replace(' · ', '. ');
@@ -272,8 +248,8 @@ export function DriverChooser({
   return (
     <View style={styles.chooser}>
       <Bi text={DRV.chooserLabel} strong surface="ground" />
-      <Bi text={DRV.chooserHint} tone="muted" surface="ground" />
-      {locked ? <Bi text={DRV.chooserLocked} tone="muted" surface="ground" /> : null}
+      <Bi text={DRV.chooserHint} size="small" tone="muted" surface="ground" />
+      {locked ? <Bi text={DRV.chooserLocked} size="small" tone="muted" surface="ground" /> : null}
       <View style={styles.chips}>
         {drivers.map((d) => {
           const on = d.id === selectedId;
@@ -285,9 +261,9 @@ export function DriverChooser({
               accessibilityRole="button"
               accessibilityLabel={DRV.chooserItem(d.name)}
               accessibilityState={{ selected: on, disabled: locked && !on }}
-              style={[styles.chip, { backgroundColor: on ? c.tarp : 'transparent', borderColor: c.text }]}
+              style={[styles.chip, { backgroundColor: on ? c.selectFill : 'transparent', borderColor: c.text }]}
             >
-              <Text style={[TYPE.label, { color: on ? c.onTarp : c.text }]}>{d.name}</Text>
+              <Text style={[TYPE.label, { color: on ? c.onSelect : c.text }]}>{d.name}</Text>
             </Pressable>
           );
         })}

@@ -60,18 +60,18 @@ describe('copy', () => {
   });
 
   test('"becomes" names one lot', () => {
-    expect(S.postForm.becomes(['LIVE-1'])).toBe('Ito ang magiging lot ID: LIVE-1. / This will be lot LIVE-1.');
+    expect(S.postForm.becomes(['LIVE-1'])).toBe('Ito ang magiging lot ID: LIVE-1. · This will be lot LIVE-1.');
   });
 
   test('"becomes" names two lots', () => {
     expect(S.postForm.becomes(['LIVE-1', 'LIVE-2'])).toBe(
-      'Ito ang mga magiging lot ID: LIVE-1 at LIVE-2. / These will be lots LIVE-1 and LIVE-2.',
+      'Ito ang mga magiging lot ID: LIVE-1 at LIVE-2. · These will be lots LIVE-1 and LIVE-2.',
     );
   });
 
   test('"becomes" names three lots', () => {
     expect(S.postForm.becomes(['LIVE-1', 'LIVE-2', 'LIVE-3'])).toBe(
-      'Ito ang mga magiging lot ID: LIVE-1, LIVE-2 at LIVE-3. / These will be lots LIVE-1, LIVE-2 and LIVE-3.',
+      'Ito ang mga magiging lot ID: LIVE-1, LIVE-2 at LIVE-3. · These will be lots LIVE-1, LIVE-2 and LIVE-3.',
     );
   });
 

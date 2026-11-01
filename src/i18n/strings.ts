@@ -16,12 +16,13 @@ export const S = {
   emptyTonight: {
     fil: 'Wala ka pang nai-post ngayong gabi.',
     en: 'Nothing posted yet tonight.',
-    hint: 'Pindutin ang “I-post ang tira” at isulat kung ano ang natira, gaya ng pag-text.',
+    hint: 'Pindutin ang “I-post ang tira” at isulat kung ano ang natira, gaya ng pag-text. · Tap “I-post ang tira” and write what is left, the way you would text.',
   },
   /** The donor post screen. The Filipino lines are the donor's; `en` lines are the English subtitles. */
   postScreen: {
-    question: 'Ano ang natira?',
-    example: 'Isulat gaya ng pag-text. Halimbawa: “May 3 tray ng adobo pa, kunin bago mag-8 PM.”',
+    question: 'Ano ang natira? · What is left?',
+    example:
+      'Isulat gaya ng pag-text. Halimbawa: “May 3 tray ng adobo pa, kunin bago mag-8 PM.” · Write it the way you would text. Example: “3 trays of adobo left, pick up before 8 PM.”',
     placeholder: 'May 3 tray ng adobo pa, kunin bago mag-8',
     back: 'Bumalik · Back',
   },
@@ -43,17 +44,17 @@ export const S = {
     chooseA11y: (fil: string, en: string) => `Piliin ang ${fil}. Choose ${en}.`,
   },
   /**
-   * The manual post form under the text box (M3). Filipino first; English after " · " or " / ". The one word
+   * The manual post form under the text box (M3). Filipino first; English after " · ". The one word
    * "expiry" appears only inside the negated pickup note; the test in src/donor/__tests__ checks that.
    */
   postForm: {
     heading: 'O pumili rito · Or pick here',
-    hint: 'Pumili ng hanggang 5 item, ilagay ang dami, at piliin ang oras ng pagkuha. / Pick up to 5 items, set the amounts, and choose a pickup time.',
+    hint: 'Pumili ng hanggang 5 item, ilagay ang dami, at piliin ang oras ng pagkuha. · Pick up to 5 items, set the amounts, and choose a pickup time.',
     fromBefore: 'Galing sa mga na-post mo dati · From your earlier posts',
     others: 'Iba pa · Others',
     addA11y: (fil: string, en: string) => `Idagdag ang ${fil}. Add ${en}.`,
-    full: 'Hanggang 5 item lang sa isang post. / Up to 5 items per post.',
-    noItems: 'Wala pang napiling item. / No items picked yet.',
+    full: 'Hanggang 5 item lang sa isang post. · Up to 5 items per post.',
+    noItems: 'Wala pang napiling item. · No items picked yet.',
     amount: 'Dami · Amount',
     decreaseA11y: (fil: string, en: string) => `Bawasan ang dami ng ${fil}. Decrease the amount of ${en}.`,
     increaseA11y: (fil: string, en: string) => `Dagdagan ang dami ng ${fil}. Increase the amount of ${en}.`,
@@ -65,18 +66,18 @@ export const S = {
     removeA11y: (fil: string, en: string) => `Alisin ang ${fil}. Remove ${en}.`,
     pickupLabel: 'Oras ng pagkuha · Pickup time',
     pickupChip: (time: string) => `Kunin bago ${time}`,
-    pickupNote: 'Oras ito ng pagkuha, hindi expiry. / This is a pickup time, not an expiry date.',
-    pickupClosed: 'Sarado na ang pagkuha ngayong gabi. / Pickups are closed for tonight.',
+    pickupNote: 'Oras ito ng pagkuha, hindi expiry. · This is a pickup time, not an expiry date.',
+    pickupClosed: 'Sarado na ang pagkuha ngayong gabi. · Pickups are closed for tonight.',
     /** Names the ids the posts will get: one lot, or two or more lots (callers pass at least one id). */
     becomes: (ids: readonly string[]) => {
-      if (ids.length === 1) return `Ito ang magiging lot ID: ${ids[0]}. / This will be lot ${ids[0]}.`;
+      if (ids.length === 1) return `Ito ang magiging lot ID: ${ids[0]}. · This will be lot ${ids[0]}.`;
       const last = ids[ids.length - 1];
       const head = ids.slice(0, -1);
-      return `Ito ang mga magiging lot ID: ${head.join(', ')} at ${last}. / These will be lots ${head.join(', ')} and ${last}.`;
+      return `Ito ang mga magiging lot ID: ${head.join(', ')} at ${last}. · These will be lots ${head.join(', ')} and ${last}.`;
     },
     post: 'Tama, i-post · Correct, post it',
-    pickFirst: 'Pumili muna ng item. / Pick an item first.',
-    problems: 'Hindi pa ma-post ngayon. Tingnan ang oras ng pagkuha at subukan ulit. / Not able to post yet. Check the pickup time and try again.',
+    pickFirst: 'Pumili muna ng item. · Pick an item first.',
+    problems: 'Hindi pa ma-post ngayon. Tingnan ang oras ng pagkuha at subukan ulit. · Not able to post yet. Check the pickup time and try again.',
   },
   /** TalkBack hint on a donor tag. */
   openLot: 'Buksan ang detalye ng lot',

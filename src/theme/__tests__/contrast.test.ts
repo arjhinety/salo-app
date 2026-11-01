@@ -39,6 +39,25 @@ const PAIRS: readonly Pair[] = [
   { name: 'white on tarp canopy (small)', fg: 'onTarp', bg: 'tarp', role: 'small' },
   { name: 'white on tarp fill (button)', fg: 'onTarp', bg: 'tarp', role: 'bodyStrong' },
   { name: 'disabled label on rule (exempt, kept above AA)', fg: 'textMuted', bg: 'rule', role: 'bodyStrong' },
+  // Selected states: driver chips, dashboard views and donor post chips (fill with the chip's label on it).
+  { name: 'selected chip label (bodyStrong)', fg: 'onSelect', bg: 'selectFill', role: 'bodyStrong' },
+  { name: 'selected driver chip label (label)', fg: 'onSelect', bg: 'selectFill', role: 'label' },
+  { name: 'selected dashboard view label', fg: 'onSelect', bg: 'selectFill', role: 'bodyStrong' },
+  // Run the main evenings: the filled primary button (tarp fill, white label), and its progress run.
+  { name: 'run button label on tarp fill', fg: 'onTarp', bg: 'tarp', role: 'bodyStrong' },
+  { name: 'run button cancel label on ground', fg: 'text', bg: 'ground', role: 'bodyStrong' },
+  { name: 'run failed or cancelled line (red on ground)', fg: 'red', bg: 'ground', role: 'body' },
+];
+
+/**
+ * Non-text pairs (WCAG 1.4.11): a selected state, the run button's edge and the run's progress fill must stand out
+ * from the ground they sit on, at 3:1 or more, in both themes.
+ */
+const NON_TEXT: readonly { name: string; fg: keyof Palette; bg: keyof Palette }[] = [
+  { name: 'selected fill against the ground', fg: 'selectFill', bg: 'ground' },
+  { name: 'selected fill against raised ground', fg: 'selectFill', bg: 'groundRaised' },
+  { name: 'run button edge (tarp ink) on the ground', fg: 'tarpInk', bg: 'ground' },
+  { name: 'run progress fill (tarp ink) on the ground', fg: 'tarpInk', bg: 'ground' },
 ];
 
 const THEMES: readonly [string, Palette][] = [
@@ -83,6 +102,25 @@ describe('theme text pairs meet WCAG AA', () => {
       expect(ratio).toBeGreaterThanOrEqual(need);
     });
   }
+});
+
+describe('selected states and the run button meet WCAG AA (non-text 3:1)', () => {
+  for (const [theme, palette] of THEMES) {
+    it.each(NON_TEXT.map((p) => [p.name, p] as const))(`${theme}: %s`, (_name, p) => {
+      expect(contrastRatio(palette[p.fg], palette[p.bg])).toBeGreaterThanOrEqual(3);
+    });
+  }
+
+  it('the night selected fill is the ink step, not the night tarp (which is 1.3:1 on the canopy)', () => {
+    expect(DARK.selectFill).toBe(DARK.tarpInk);
+    expect(contrastRatio(DARK.tarp, DARK.ground)).toBeLessThan(3);
+    expect(contrastRatio(DARK.selectFill, DARK.ground)).toBeGreaterThanOrEqual(3);
+  });
+
+  it('light selected states keep white text on tarp, as before', () => {
+    expect(LIGHT.selectFill).toBe(LIGHT.tarp);
+    expect(LIGHT.onSelect).toBe(LIGHT.onTarp);
+  });
 });
 
 describe('why the tokens are split', () => {

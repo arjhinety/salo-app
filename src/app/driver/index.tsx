@@ -1,7 +1,8 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useMemo } from 'react';
 import { ScrollView, StyleSheet, View, Text } from 'react-native';
-import { Bi, DriverChooser, openDirections, RequestCard, RunCard, spoken } from '../../components/driver/DriverCards';
+import { Bi } from '../../components/Bi';
+import { DriverChooser, openDirections, RequestCard, RunCard, spoken } from '../../components/driver/DriverCards';
 import { SimControl } from '../../components/SimControl';
 import { TarpBar } from '../../components/TarpBar';
 import { WORLD } from '../../data/dataset';
@@ -98,7 +99,7 @@ export default function DriverHome() {
           requests.length === 0 ? (
             <View style={[styles.empty, { borderColor: c.zinc }]}>
               <Bi text={DRV.requestsEmpty} strong surface="ground" />
-              <Bi text={DRV.requestsEmptyHint} tone="muted" surface="ground" />
+              <Bi text={DRV.requestsEmptyHint} size="small" tone="muted" surface="ground" />
             </View>
           ) : (
             requests.map((ask) => (
@@ -119,7 +120,7 @@ export default function DriverHome() {
         <Heading text={DRV.runs} />
         {board && driver && canAct ? (
           runs.length === 0 ? (
-            <Bi text={DRV.runsEmpty} tone="muted" surface="ground" />
+            <Bi text={DRV.runsEmpty} size="small" tone="muted" surface="ground" />
           ) : (
             runs.map((ask) => (
               <RunCard
@@ -136,7 +137,7 @@ export default function DriverHome() {
           )
         ) : null}
 
-        <Bi text={DRV.simNote} tone="muted" surface="ground" />
+        <Bi text={DRV.simNote} size="small" tone="muted" surface="ground" />
       </ScrollView>
     </View>
   );

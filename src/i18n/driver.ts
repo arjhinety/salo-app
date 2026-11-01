@@ -5,14 +5,14 @@
  */
 export const DRV = {
   title: 'Tagahatid · Volunteer driver',
-  simNote: 'Gawa-gawa lang para sa simulasyon ang lahat ng tagahatid, lugar, at numero rito · Every driver, place and number here is fictional or simulated',
+  simNote: 'Gawa-gawa lang para sa simulasyon ang lahat ng tagahatid, lugar, at numero rito. · Every driver, place and number here is fictional or simulated.',
   chooserLabel: 'Sino ka sa simulasyon? · Who are you in the simulation?',
-  chooserHint: 'Pumili ng tagahatid na tatanggap ng mga request. Ikaw ang gaganap bilang napili mo · Choose a driver who gets requests. You hold the one you choose',
-  chooserLocked: 'Hindi na mapapalitan ang tagahatid ngayong gabi. I-pause at i-rewind sa 5:00 PM para mapalitan · You cannot change the driver tonight. Pause and rewind to 5:00 PM to change it',
+  chooserHint: 'Pumili ng tagahatid na tatanggap ng mga request. Ikaw ang gaganap bilang napili mo. · Choose a driver who gets requests. You hold the one you choose.',
+  chooserLocked: 'Hindi na mapapalitan ang tagahatid ngayong gabi. I-pause at i-rewind sa 5:00 PM para mapalitan. · You cannot change the driver tonight. Pause and rewind to 5:00 PM to change it.',
   chooserItem: (name: string) => `Piliin si ${name} · Choose ${name}`,
   requests: 'Mga request · Requests',
   requestsEmpty: 'Wala pang request sa ngayon · No requests right now',
-  requestsEmptyHint: 'Lalabas dito ang mga request habang umuusad ang oras sa simulasyon · Requests appear here as the simulated clock moves',
+  requestsEmptyHint: 'Lalabas dito ang mga request habang umuusad ang oras sa simulasyon. · Requests appear here as the simulated clock moves.',
   pickupFrom: 'Kunin sa · Pick up at',
   dropoffAt: 'Ihatid sa · Drop off at',
   before: (t: string) => `bago ang ${t} · before ${t}`,

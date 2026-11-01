@@ -37,7 +37,13 @@ describe('verdictLine', () => {
   test('shows the label and both intervals it used', () => {
     const line = verdictLine({ low: 2, high: 8 }, { low: -0.01, high: 0.2 });
     expect(line.startsWith('Salo better:')).toBe(true);
-    expect(line).toContain('food rescued [+2.00, +8.00] kg per evening');
-    expect(line).toContain('worst-served need met [−0.01, +0.20]');
+    expect(line).toContain('food rescued [+2.0, +8.0] kg per evening');
+    expect(line).toContain('worst-served need met [−1.0, +20.0] points');
+  });
+
+  test('the same units as the rows and the post-hoc note: kg to one decimal, need met in points, no two-decimal fractions', () => {
+    const line = verdictLine({ low: -2.78, high: 1.79 }, { low: -0.026, high: 0.053 });
+    expect(line).toBe('No clear difference: food rescued [−2.8, +1.8] kg per evening; worst-served need met [−2.6, +5.3] points.');
+    expect(line).not.toMatch(/\d\.\d{2}/);
   });
 });

@@ -10,6 +10,7 @@ import type { OnDeviceResults } from './onDevice';
 import { gateReasons, MAIN_EVENINGS_IN_DATASET, REGISTRATION, type Registration } from './registration';
 import { verdictLine } from './verdict';
 import { insideGap } from './width';
+import { kgValue, signed } from './units';
 
 export interface Row {
   label: string;
@@ -37,8 +38,6 @@ export interface ScreenModel {
   footer: Row[];
 }
 
-const MINUS = '−';
-const signed = (x: number, digits: number) => `${x >= 0 ? '+' : MINUS}${Math.abs(x).toFixed(digits)}`;
 const commas = (n: number) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
 /** One cell: kg for food, a percentage for the worst-served need met, awards for stranded lots. */
@@ -66,8 +65,8 @@ export function formatComparison(c: Comparison): string {
 
 /** One policy's learning-off comparison (supporting, RES-07): mean and bounds in kg, and the reading. */
 function learningText(l: LearningComparison): string {
-  const reading = l.reading === 'learning_helps' ? 'learning helps' : l.reading === 'learning_hurts' ? 'learning hurts' : C.noClear;
-  return `${signed(l.mean, 1)} kg [${signed(l.low, 1)}, ${signed(l.high, 1)}] · ${reading}`;
+  const reading = l.reading === 'learning_helps' ? C.learningHelps : l.reading === 'learning_hurts' ? C.learningHurts : C.noClear;
+  return `${kgValue(l.mean)} kg [${kgValue(l.low)}, ${kgValue(l.high)}] · ${reading}`;
 }
 
 function footer(reg: Registration, checksum: string): Row[] {

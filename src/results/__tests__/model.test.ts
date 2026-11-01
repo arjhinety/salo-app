@@ -64,7 +64,16 @@ describe('the results of a run on the screen (the gate is open and a run is show
 
   test('the post-hoc inside-gaps note shows under the unchanged verdict for the recorded main run', () => {
     expect(m.postHocNote).toBe(RESULTS_COPY.insideGapsNote);
-    expect(m.postHocNote).toContain('not pre-registered as an equivalence test');
+    expect(m.postHocNote).toContain('Post-hoc check, not pre-registered:');
+    expect(m.postHocNote).toContain('±6 kg and ±10 points');
+  });
+
+  test('the verdict and the rows use one unit system: the same brackets, in kg and in points', () => {
+    const bracket = (label: string) => /\[[^\]]+\]/.exec(m.mainRows.find((r) => r.label.startsWith(label))!.value)![0];
+    expect(m.verdict).toContain(`${bracket('Food rescued')} kg`);
+    expect(m.verdict).toContain(`${bracket('Need met')} points`);
+    expect(m.verdict).not.toMatch(/\d\.\d{2}/);
+    expect(m.postHocNote).not.toMatch(/0\.10/);
   });
 
   test('the verdict is the pre-registered label, followed by the two intervals it used (RES-04)', () => {
@@ -117,7 +126,7 @@ describe('no result is shown when the gate is closed, whatever run is given', ()
   test('the gate closed (no pilot recorded): closed, no button, with the gate line', () => {
     const m = currentModel(run, beforePilot, FROZEN_PARAMS);
     expectClosed(m);
-    expect(m.gateLine).toBe('Main results appear after the pilot has run and the number of main evenings is recorded (guide p.19).');
+    expect(m.gateLine).toBe('Main results appear after the pilot has run and the number of main evenings is recorded.');
   });
 
   test('no frozen parameters in the build: closed', () => {
@@ -129,7 +138,7 @@ describe('no result is shown when the gate is closed, whatever run is given', ()
     const m = currentModel(run, mismatch, FROZEN_PARAMS);
     expectClosed(m);
     expect(m.gateLine).toBe(
-      'The recorded main-evening count does not match the main evenings in the dataset, so no main result is shown (guide p.19).',
+      'The recorded main-evening count does not match the main evenings in the dataset, so no main result is shown.',
     );
     expect(m.reasons).toEqual(['the recorded count is 10, not the 44 main evenings in the dataset']);
   });
@@ -147,7 +156,7 @@ describe('closed screen: the gate is open and no run has been made yet', () => {
     expect(m.open).toBe(false);
     expect(m.canRun).toBe(true);
     expect(m.gateLine).toBe(
-      'The pilot has run and the main-evening count is recorded. No main result is shown until the main evenings are run on this phone (guide p.19).',
+      'The pilot has run and the main-evening count is recorded. No main result is shown until the main evenings are run on this phone.',
     );
     expect(m.reasons).toEqual([]);
   });
@@ -179,7 +188,7 @@ describe('closed screen: the gate is open and no run has been made yet', () => {
     const before = closedModel(beforePilot, FROZEN_PARAMS);
     expect(before.open).toBe(false);
     expect(before.canRun).toBe(false);
-    expect(before.gateLine).toBe('Main results appear after the pilot has run and the number of main evenings is recorded (guide p.19).');
+    expect(before.gateLine).toBe('Main results appear after the pilot has run and the number of main evenings is recorded.');
     expect(before.reasons).toEqual(['the pilot has not run', 'the number of main evenings is not recorded']);
   });
 
@@ -213,6 +222,22 @@ describe('the Results screen source (src/app/results.tsx)', () => {
 });
 
 describe('the run copy (src/results/copy.ts)', () => {
+  test('no internal reference (a guide page or a dataset split name) reaches the copy the screen shows', () => {
+    expect(JSON.stringify(RESULTS_COPY)).not.toMatch(/main_sample|guide p\./);
+    expect(RESULTS_COPY.evenings).toBe('Evenings reported: E21 to E64.');
+  });
+
+  test('the supporting heading is short; "never a win on their own" is in its note', () => {
+    expect(RESULTS_COPY.supportingHeading).toBe('Supporting comparisons (95%)');
+    expect(RESULTS_COPY.supportingNote.startsWith('Supporting only, never a win on their own.')).toBe(true);
+  });
+
+  test('the empty state of a table, and the learning readings worded like the main readings', () => {
+    expect(RESULTS_COPY.emptyTable).toBe('Run the main evenings to fill this table.');
+    expect(RESULTS_COPY.learningHelps).toBe('Learning helps');
+    expect(RESULTS_COPY.learningHurts).toBe('Learning hurts');
+  });
+
   test('the button, progress, cancelled and in-memory lines are as listed in the handoff', () => {
     expect(RESULTS_COPY.runButton).toBe('Run the main evenings');
     expect(RESULTS_COPY.runProgress(12, 44)).toBe('Evening 12 of 44 …');

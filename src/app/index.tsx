@@ -1,6 +1,7 @@
 import { router, type Href } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Keyboard, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Bi } from '../components/Bi';
 import { TarpBar } from '../components/TarpBar';
 import { WORLD } from '../data/dataset';
 import { follower, pickRole, useStrandedOutbox } from '../backend/runtime';
@@ -77,20 +78,26 @@ export default function Picker() {
         ) : null}
 
         <View style={[styles.join, { borderColor: c.rule }]}>
-          <Text style={[TYPE.bodyStrong, { color: c.text }]}>{SYNC.join.title}</Text>
+          <Bi text={SYNC.join.title} title surface="ground" />
           <Text style={[TYPE.small, { color: c.textMuted }]}>{SYNC.join.hint}</Text>
-          <TextInput
-            value={joinCode}
-            onChangeText={(t) => setJoinCode(t.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6))}
-            placeholder={SYNC.join.placeholder}
-            placeholderTextColor={c.textMuted}
-            autoCapitalize="characters"
-            autoCorrect={false}
-            maxLength={6}
-            accessibilityLabel={SYNC.join.a11y}
-            accessibilityHint={SYNC.join.hint}
-            style={[TYPE.bodyStrong, styles.joinInput, { color: c.text, borderColor: c.rule }]}
-          />
+          <View>
+            <TextInput
+              value={joinCode}
+              onChangeText={(t) => setJoinCode(t.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6))}
+              autoCapitalize="characters"
+              autoCorrect={false}
+              maxLength={6}
+              accessibilityLabel={SYNC.join.a11y}
+              accessibilityHint={SYNC.join.hint}
+              style={[TYPE.bodyStrong, styles.joinInput, { color: c.text, borderColor: c.rule }]}
+            />
+            {/* The example code, in Small, shown only while the box is empty. Hidden from TalkBack: the field's label says it all. */}
+            {joinCode.length === 0 ? (
+              <View pointerEvents="none" style={styles.hint} importantForAccessibility="no-hide-descendants" accessibilityElementsHidden>
+                <Text style={[TYPE.small, { color: c.textMuted }]}>{SYNC.join.placeholder}</Text>
+              </View>
+            ) : null}
+          </View>
         </View>
 
         <View style={[styles.list, { borderColor: c.rule }]}>
@@ -98,7 +105,11 @@ export default function Picker() {
             <Pressable
               key={r.key}
               disabled={!r.ready || r.route === null}
-              onPress={() => r.route && void go(r.role, r.profileId, r.route, joinCode)}
+              onPress={() => {
+                // The keyboard closes before the screen changes, so the next screen is not left under it.
+                Keyboard.dismiss();
+                if (r.route) void go(r.role, r.profileId, r.route, joinCode);
+              }}
               accessibilityRole="button"
               accessibilityState={{ disabled: !r.ready }}
               accessibilityLabel={PICKER.roleA11y(r.fil, r.en, r.who, r.ready)}
@@ -127,8 +138,10 @@ export default function Picker() {
 const styles = StyleSheet.create({
   body: { padding: 16, gap: SPACE.s },
   list: { marginTop: SPACE.l, borderTopWidth: 1 },
-  join: { marginTop: SPACE.l, gap: SPACE.xs, borderBottomWidth: 1, paddingBottom: SPACE.m },
+  join: { marginTop: SPACE.l, gap: SPACE.xs },
   joinInput: { minHeight: 48, borderWidth: 1.5, borderRadius: 4, paddingHorizontal: SPACE.m, letterSpacing: 4 },
+  // Over the empty field, inside its 1.5dp border and horizontal padding. Absolute, so it never changes the field's height.
+  hint: { position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, justifyContent: 'center', paddingLeft: SPACE.m + 1.5 },
   stranded: { marginTop: SPACE.m, borderWidth: 2, borderStyle: 'dashed', borderRadius: 4, padding: SPACE.m, gap: SPACE.xs },
   discard: { alignSelf: 'flex-start', minHeight: 48, justifyContent: 'center', borderWidth: 1, paddingHorizontal: SPACE.m, marginTop: SPACE.xs },
   row: {

@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, TextInput, View, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Bi } from '../../components/Bi';
 import { DraftCards } from '../../components/DraftCards';
 import { MicIcon } from '../../components/icons';
 import { TarpBar } from '../../components/TarpBar';
@@ -166,14 +167,14 @@ export default function Post() {
         style={({ pressed }) => [
           styles.chip,
           {
-            backgroundColor: selected ? c.tarp : c.groundRaised,
-            borderColor: selected ? c.tarp : c.rule,
+            backgroundColor: selected ? c.selectFill : c.groundRaised,
+            borderColor: selected ? c.selectFill : c.rule,
             opacity: disabled ? 0.45 : pressed ? 0.8 : 1,
           },
         ]}
       >
-        <Text style={[TYPE.bodyStrong, { color: selected ? c.onTarp : c.text }]}>{entry.foodItemFil}</Text>
-        {showEn ? <Text style={[TYPE.small, { color: selected ? c.onTarp : c.textMuted }]}>{entry.foodItem}</Text> : null}
+        <Text style={[TYPE.bodyStrong, { color: selected ? c.onSelect : c.text }]}>{entry.foodItemFil}</Text>
+        {showEn ? <Text style={[TYPE.small, { color: selected ? c.onSelect : c.textMuted }]}>{entry.foodItem}</Text> : null}
       </Pressable>
     );
   };
@@ -190,10 +191,8 @@ export default function Post() {
         contentContainerStyle={[styles.body, { paddingBottom: SPACE.l + insets.bottom }]}
         keyboardShouldPersistTaps="handled"
       >
-        <Text nativeID="msgLabel" style={[TYPE.title, { color: c.text }]}>
-          {S.postScreen.question}
-        </Text>
-        <Text style={[TYPE.small, { color: c.textMuted }]}>{S.postScreen.example}</Text>
+        <Bi text={S.postScreen.question} title surface="ground" nativeID="msgLabel" />
+        <Bi text={S.postScreen.example} size="small" tone="muted" surface="ground" />
         <View style={[styles.box, { backgroundColor: c.groundRaised, borderColor: c.rule }]}>
           <TextInput
             accessibilityLabelledBy="msgLabel"
@@ -253,16 +252,16 @@ export default function Post() {
           {lines.length > 0 ? (
             <DraftCards lines={lines} onChange={update} />
           ) : parseSource !== null ? (
-            <Text style={[TYPE.body, { color: c.textMuted }]}>{S.parsePost.noItems}</Text>
+            <Bi text={S.parsePost.noItems} tone="muted" surface="ground" />
           ) : (
-            <Text style={[TYPE.body, { color: c.textMuted }]}>{S.postForm.noItems}</Text>
+            <Bi text={S.postForm.noItems} tone="muted" surface="ground" />
           )}
 
           <Text style={[TYPE.bodyStrong, { color: c.text }]}>{S.postForm.pickupLabel}</Text>
           {choices.length === 0 ? (
-            <Text style={[TYPE.body, { color: c.text }]} accessibilityLiveRegion="polite">
-              {S.postForm.pickupClosed}
-            </Text>
+            <View accessibilityLiveRegion="polite">
+              <Bi text={S.postForm.pickupClosed} surface="ground" />
+            </View>
           ) : (
             <>
               <View style={styles.chips} accessibilityRole="radiogroup">
@@ -278,13 +277,13 @@ export default function Post() {
                       style={({ pressed }) => [
                         styles.chip,
                         {
-                          backgroundColor: selected ? c.tarp : c.groundRaised,
-                          borderColor: selected ? c.tarp : c.rule,
+                          backgroundColor: selected ? c.selectFill : c.groundRaised,
+                          borderColor: selected ? c.selectFill : c.rule,
                           opacity: pressed ? 0.8 : 1,
                         },
                       ]}
                     >
-                      <Text style={[TYPE.bodyStrong, { color: selected ? c.onTarp : c.text }]}>
+                      <Text style={[TYPE.bodyStrong, { color: selected ? c.onSelect : c.text }]}>
                         {S.postForm.pickupChip(hhmm(m))}
                       </Text>
                     </Pressable>
@@ -292,16 +291,16 @@ export default function Post() {
                 })}
               </View>
               {pickup === null && pickupState.ask ? (
-                <Text style={[TYPE.body, { color: c.red }]} accessibilityLiveRegion="polite">
-                  {S.parsePost.pickupAsk}
-                </Text>
+                <View accessibilityLiveRegion="polite">
+                  <Bi text={S.parsePost.pickupAsk} tone="alert" surface="ground" />
+                </View>
               ) : null}
-              <Text style={[TYPE.small, { color: c.textMuted }]}>{S.postForm.pickupNote}</Text>
+              <Bi text={S.postForm.pickupNote} size="small" tone="muted" surface="ground" />
             </>
           )}
 
-          {canPost && mode === 'joined' ? <Text style={[TYPE.bodyStrong, { color: c.text }]}>{SYNC.request.sentToDashboard}</Text> : null}
-          {canPost && mode === 'local' ? <Text style={[TYPE.bodyStrong, { color: c.text }]}>{S.postForm.becomes(ids)}</Text> : null}
+          {canPost && mode === 'joined' ? <Bi text={SYNC.request.sentToDashboard} strong surface="ground" /> : null}
+          {canPost && mode === 'local' ? <Bi text={S.postForm.becomes(ids)} strong surface="ground" /> : null}
           <Pressable
             onPress={onPost}
             disabled={!canPost || mode === 'blocked'}
@@ -315,12 +314,12 @@ export default function Post() {
           >
             <Text style={[TYPE.bodyStrong, { color: canPost ? c.onTarp : c.textMuted }]}>{S.postForm.post}</Text>
           </Pressable>
-          {lines.length === 0 ? <Text style={[TYPE.small, { color: c.textMuted }]}>{S.postForm.pickFirst}</Text> : null}
-          {lines.length > 0 && !canPost ? <Text style={[TYPE.small, { color: c.text }]}>{S.parsePost.fixFirst}</Text> : null}
+          {lines.length === 0 ? <Bi text={S.postForm.pickFirst} size="small" tone="muted" surface="ground" /> : null}
+          {lines.length > 0 && !canPost ? <Bi text={S.parsePost.fixFirst} size="small" surface="ground" /> : null}
           {failed ? (
-            <Text style={[TYPE.body, { color: c.red }]} accessibilityLiveRegion="polite">
-              {S.postForm.problems}
-            </Text>
+            <View accessibilityLiveRegion="polite">
+              <Bi text={S.postForm.problems} tone="alert" surface="ground" />
+            </View>
           ) : null}
         </View>
 
@@ -328,17 +327,17 @@ export default function Post() {
           <Text style={[TYPE.title, { color: c.text }]} accessibilityRole="header">
             {S.postForm.heading}
           </Text>
-          <Text style={[TYPE.small, { color: c.textMuted }]}>{S.postForm.hint}</Text>
+          <Bi text={S.postForm.hint} size="small" tone="muted" surface="ground" />
 
           {PICKER.mine.length > 0 ? (
             <>
-              <Text style={[TYPE.small, { color: c.textMuted }]}>{S.postForm.fromBefore}</Text>
+              <Bi text={S.postForm.fromBefore} strong surface="ground" />
               <View style={styles.chips}>{PICKER.mine.map(chip)}</View>
             </>
           ) : null}
-          <Text style={[TYPE.small, { color: c.textMuted }]}>{S.postForm.others}</Text>
+          <Bi text={S.postForm.others} strong surface="ground" />
           <View style={styles.chips}>{PICKER.others.map(chip)}</View>
-          {full ? <Text style={[TYPE.small, { color: c.text }]}>{S.postForm.full}</Text> : null}
+          {full ? <Bi text={S.postForm.full} surface="ground" /> : null}
         </View>
 
         <Pressable
